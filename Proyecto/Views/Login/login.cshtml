@@ -1,0 +1,125 @@
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Rappi'Doz</title>
+    <link rel="stylesheet" href="~/css/_StylesLogin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+
+    <div class="form">
+        <h1>Iniciar Sesión</h1>
+
+        @* Usamos ID para procesar por AJAX *@
+        <form id="loginForm" asp-controller="Acceso" asp-action="Login" method="post">
+            @Html.AntiForgeryToken()
+
+            <section>
+                <div class="container-translucid">
+                    <input type="email" name="correo" id="correo" placeholder="Correo electrónico" autofocus required>
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+            </section>
+
+            <section>
+                <div class="container-translucid">
+                    <input type="password" name="password" id="password" placeholder="Contraseña" required>
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+            </section>
+
+            <section>
+                <div class="container">
+                    <label id="remember"><input type="checkbox"> Recordarme</label>
+                    <a href="#" id="forgot-password">¿Olvidaste tu contraseña?</a>
+                </div>
+            </section>
+
+            @* Contenedor dinámico para errores sin recargar *@
+            <div id="error-message" style="color: #ff4d4d; text-align: center; margin-bottom: 10px; font-weight: bold; display:none;"></div>
+
+            <section>
+                <div class="container-button">
+                    <button type="submit" id="button">Entrar</button>
+                </div>
+            </section>
+        </form>
+
+        <div class="register" style="margin-top: 25px;">
+            <a asp-controller="Usuario" asp-action="Registrar" id="register">¿No tienes una cuenta? Regístrate</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const form = this;
+            const errorDiv = document.getElementById('error-message');
+            const formData = new FormData(form);
+
+            // Ocultar mensaje de error previo si existe
+            errorDiv.style.display = "none";
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            })
+            .then(response => {
+                if (response.redirected) {
+                    // AVISO DE ÉXITO: Aparece justo antes de redirigir
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Acceso Correcto!',
+                        text: 'Bienvenido de nuevo a Rappi\'Doz',
+                        showConfirmButton: false,
+                        timer: 1500, // Se cierra solo en 1.5 segundos
+                        background: '#fff4e2'
+                    }).then(() => {
+                        window.location.href = response.url;
+                    });
+                    return;
+                }
+                return response.text();
+            })
+            .then(data => {
+                if (data) {
+                    // AVISO DE ERROR: El servidor devolvió la vista (credenciales mal)
+                    errorDiv.textContent = "Correo o contraseña incorrectos.";
+                    errorDiv.style.display = "block";
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de acceso',
+                        text: 'Las credenciales no coinciden. Inténtalo de nuevo.',
+                        confirmButtonColor: '#4a2c2a',
+                        background: '#fff4e2'
+                    });
+                }
+            })
+            .catch(error => {
+                // AVISO DE ERROR TÉCNICO
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Servidor no disponible',
+                    text: 'Hubo un problema de conexión. Inténtalo más tarde.',
+                    confirmButtonColor: '#4a2c2a',
+                    background: '#fff4e2'
+                });
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

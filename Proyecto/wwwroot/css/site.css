@@ -1,0 +1,173 @@
+/* VARIABLES RAPIDDOZ */
+:root {
+    --rd-cafe: #472825;
+    --rd-dorado: #d3ab80;
+    --rd-crema: #fdf2e2;
+    --sidebar-w: 260px;
+}
+
+.dashboard-wrapper {
+    display: flex;
+    min-height: 100vh;
+    background: #f9f6f2;
+}
+
+/* SIDEBAR */
+.sidebar-rd {
+    width: var(--sidebar-w);
+    background: white;
+    border-right: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.sidebar-header {
+    padding: 30px;
+    text-align: center;
+}
+
+.logo-text {
+    color: var(--rd-cafe);
+    font-weight: 800;
+    font-size: 1.8rem;
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+    padding: 10px 20px;
+}
+
+.nav-link-rd {
+    width: 100%;
+    border: none;
+    background: none;
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #777;
+    font-weight: 600;
+    transition: 0.3s;
+    margin-bottom: 5px;
+}
+
+    .nav-link-rd.active {
+        background: var(--rd-cafe);
+        color: white;
+    }
+
+    .nav-link-rd:hover:not(.active) {
+        background: var(--rd-crema);
+        color: var(--rd-cafe);
+    }
+
+/* STAT CARDS */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+    .stat-icon.res {
+        background: #e7f0ff;
+        color: #0d6efd;
+    }
+
+    .stat-icon.prod {
+        background: #fff4e5;
+        color: #ff9800;
+    }
+
+/* REUTILIZANDO TU ESTILO DE CARTAS */
+.card-gestion-crud {
+    background: white;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    transition: 0.3s;
+}
+
+.card-principal {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+}
+
+.avatar-card {
+    width: 50px;
+    height: 50px;
+    background: var(--rd-crema);
+    color: var(--rd-cafe);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.etiqueta-rol {
+    font-size: 0.75rem;
+    background: #eee;
+    padding: 2px 10px;
+    border-radius: 50px;
+    color: #666;
+    font-weight: bold;
+}
+
+/* --- ESTILO GLOBAL PARA TODOS LOS MODALES --- */
+
+/* 1. Quitamos el fondo blanco cuadrado por defecto de Bootstrap */
+.modal-content {
+    background-color: #fffdfa !important; /* El color crema de tu marca */
+    border-radius: 45px !important; /* Bordes muy redondeados */
+    border: 1px solid #f3e5d0 !important; /* Borde sutil café claro */
+    box-shadow: 0 25px 50px rgba(0,0,0,0.15) !important;
+    overflow: hidden;
+}
+
+/* 2. Suavizamos los encabezados de los modales */
+.modal-header {
+    border-bottom: 1px solid #f1ece4 !important;
+    padding: 20px 30px !important;
+}
+
+/* 3. Estilo para el botón de cerrar (X) de todos los modales */
+.btn-close {
+    filter: sepia(1) saturate(5) hue-rotate(340deg); /* Lo vuelve color café/dorado */
+    opacity: 0.8;
+}
+
+/* 4. Aseguramos que el cuerpo tenga buen espacio */
+.modal-body {
+    padding: 30px !important;
+}
+
+/* 5. Si usas botones de footer en otros modales */
+.modal-footer {
+    border-top: 1px solid #f1ece4 !important;
+    padding: 20px !important;
+}

@@ -1,0 +1,279 @@
+﻿@model IEnumerable<RappiDozApp.Models.Cupon>
+
+<div class="animate__animated animate__fadeIn" style="background: var(--cream-bg);">
+    @* --- CABECERA --- *@
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="fw-800 mb-1" style="color: #472825; font-weight: 800;">Gestión de Cupones</h1>
+            <p class="text-muted">Administra los códigos de descuento exclusivos.</p>
+        </div>
+        <button onclick="abrirForm('Cupon', 'Crear')" class="btn-circular shadow">
+            <i class="fa-solid fa-plus"></i>
+        </button>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var item in Model)
+        {
+            var estaVencido = item.FechaExpiracion < DateTime.Now;
+            // Quitamos decimales
+            var descuentoEntero = Math.Floor(item.Descuento);
+
+            <div class="col-md-6 col-lg-4">
+                <div class="coupon-ticket @(estaVencido ? "expired" : "")">
+
+                    @* LADO IZQUIERDO (CAFÉ) *@
+                    <div class="t-left">
+                        @* Muescas del color del fondo (#fdfaf6) para que no se noten *@
+                        <div class="notch n-tl"></div>
+                        <div class="notch n-bl"></div>
+                        <div class="notch n-tr"></div>
+                        <div class="notch n-br"></div>
+
+                        <div class="t-content">
+                            <span class="t-val">@descuentoEntero@(item.EsPorcentaje ? "%" : "₡")</span>
+                            <span class="t-off">OFF</span>
+                        </div>
+                    </div>
+
+                    @* LADO DERECHO (BLANCO) *@
+                    <div class="t-right">
+                        @* Muescas en la extrema derecha *@
+                        <div class="notch n-tr-far"></div>
+                        <div class="notch n-br-far"></div>
+
+                        <div class="t-inner-padding d-flex flex-column h-100 justify-content-between " style="margin: -10px;">
+                            <div>
+                                <h5 class="t-title">@item.Titulo</h5>
+                                <div class="t-code-wrapper">
+                                    <span class="t-label">CÓDIGO</span>
+                                    <span class="t-code">@item.Codigo</span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-end mt-2">
+                                <div class="t-info">
+                                    <span class="rd-badge @(estaVencido ? "b-exp" : (item.Activo ? "b-act" : "b-ina"))">
+                                        @(estaVencido ? "VENCIDO" : (item.Activo ? "ACTIVO" : "INACTIVO"))
+                                    </span>
+                                    <div class="t-date">
+                                        <i class="fa-regular fa-calendar-days me-1"></i>
+                                        @(item.FechaExpiracion?.ToString("dd/MM/yyyy") ?? "N/A")
+                                    </div>
+                                </div>
+
+                                <div class="t-actions">
+                                    <button onclick="abrirForm('Cupon', 'Editar', @item.Id)" class="btn-i edit">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                    <button onclick="eliminarRegistro('Cupon', @item.Id)" class="btn-i del">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    :root {
+        --rd-brown: #472825;
+        --rd-gold: #d3ab80;
+        --rd-bg-page: #fdfaf6; /* COLOR DE TU FONDO EXACTO */
+    }
+
+    .coupon-ticket {
+        display: flex;
+        height: 165px;
+        filter: drop-shadow(0 10px 15px rgba(0,0,0,0.05));
+        transition: transform 0.3s ease;
+        position: relative;
+    }
+
+        .coupon-ticket:hover {
+            transform: translateY(-5px);
+        }
+
+    /* LADO CAFÉ */
+    .t-left {
+        background: var(--rd-brown);
+        width: 125px;
+        min-width: 125px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-right: 2px dashed rgba(211,171,128,0.2);
+        border-radius: 15px 0 0 15px;
+    }
+
+    /* ESTILO DE MUESCAS (CIRCULOS) */
+    .notch {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        background: var(--cream-bg);
+        border-radius: 50%;
+        z-index: 5;
+    }
+
+    /* Posiciones muescas Izquierda y Unión */
+    .n-tl {
+        top: -12px;
+        left: -12px;
+    }
+
+    .n-bl {
+        bottom: -12px;
+        left: -12px;
+    }
+
+    .n-tr {
+        top: -12px;
+        right: -13px;
+    }
+
+    .n-br {
+        bottom: -12px;
+        right: -13px;
+    }
+
+    /* LADO BLANCO */
+    .t-right {
+        flex-grow: 1;
+        background: white;
+        border-radius: 0 15px 15px 0;
+        position: relative;
+    }
+
+    /* Muescas Derecha extrema */
+    .n-tr-far {
+        top: -12px;
+        right: -12px;
+    }
+
+    .n-br-far {
+        bottom: -12px;
+        right: -12px;
+    }
+
+    /* CONTENIDO INTERNO (NO PEGADO A BORDES) */
+    .t-inner-padding {
+        padding: 25px 30px;
+    }
+
+    .t-content {
+        text-align: center;
+        z-index: 6;
+        color: var(--rd-gold);
+    }
+
+    .t-val {
+        display: block;
+        font-size: 1.85rem;
+        font-weight: 900;
+        line-height: 1;
+    }
+
+    .t-off {
+        font-size: 0.7rem;
+        font-weight: bold;
+        letter-spacing: 2px;
+    }
+
+    .t-title {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--rd-brown);
+        margin-bottom: 8px;
+    }
+
+    .t-code-wrapper {
+        display: inline-flex;
+        flex-direction: column;
+        background: #fdfaf6;
+        padding: 5px 12px;
+        border-radius: 8px;
+        border: 1px solid #f2e6d9;
+    }
+
+    .t-label {
+        font-size: 0.5rem;
+        color: #a08a70;
+        font-weight: 700;
+    }
+
+    .t-code {
+        font-family: 'Courier New', monospace;
+        font-weight: 800;
+        color: var(--rd-brown);
+        font-size: 0.95rem;
+    }
+
+    .rd-badge {
+        font-size: 0.65rem;
+        font-weight: 800;
+        padding: 3px 10px;
+        border-radius: 50px;
+        margin-bottom: 5px;
+        display: inline-block;
+    }
+
+    .b-act {
+        background: #e7f5ec;
+        color: #008a32;
+    }
+
+    .b-exp {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .b-ina {
+        background: #fef1e6;
+        color: #d97706;
+    }
+
+    .btn-i {
+        border: none;
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        transition: 0.2s;
+        margin-left: 6px;
+    }
+
+        .btn-i.edit {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-i.del {
+            background: #fff1f2;
+            color: #e11d48;
+        }
+
+    .btn-circular {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: none;
+        background: var(--rd-brown);
+        color: white;
+        font-size: 1.2rem;
+        transition: 0.3s;
+    }
+
+        .btn-circular:hover {
+            background: var(--rd-gold);
+            transform: rotate(90deg);
+        }
+
+    .expired {
+        opacity: 0.7;
+    }
+</style>

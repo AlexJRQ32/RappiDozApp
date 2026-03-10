@@ -1,0 +1,248 @@
+/* --- CONFIGURACIÓN GENERAL --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+html, body {
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    /* Color base muy oscuro para que los colores "neón tierra" resalten */
+
+    background-color: #1a0f0e;
+    /* Gradientes con colores más saturados */
+
+    background-image: radial-gradient(at 0% 0%, #472825 0%, transparent 50%), radial-gradient(at 100% 100%, #8b4513 0%, transparent 50%), /* Marrón más rojizo */
+    radial-gradient(at 100% 0%, #d3ab80 0%, transparent 50%), /* Dorado más sólido */
+    radial-gradient(at 0% 100%, #5d3531 0%, transparent 50%); /* Mancha extra para llenar el vacío */
+
+    background-attachment: fixed;
+    background-size: 200% 200%; /* Aumentamos el tamaño para que el recorrido sea largo */
+    /* Animación más rápida (10s) y con un movimiento más complejo */
+
+    animation: liquidMove 10s ease-in-out infinite alternate;
+}
+
+/* Mantenemos tu animación tal cual */
+@keyframes liquidMove {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    33% {
+        background-position: 100% 10%;
+    }
+
+    66% {
+        background-position: 20% 90%;
+    }
+
+    100% {
+        background-position: 80% 50%;
+    }
+}
+
+/* --- CONTENEDOR DE CRISTAL ANIMADO --- */
+.form {
+    width: 100%;
+    max-width: 520px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px); /* Soporte Safari */
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 25px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    color: white;
+    padding: 50px 40px;
+    text-align: center;
+    animation: fadeInScale 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+    .form h1 {
+        font-size: 36px;
+        margin-bottom: 35px;
+        font-weight: 700;
+        letter-spacing: -1px;
+        text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+/* --- INPUTS CON INTERACCIÓN GOLD --- */
+.container-translucid {
+    position: relative;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    transition: var(--transicion-suave);
+}
+
+    .container-translucid input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50px;
+        padding: 14px 55px 14px 25px;
+        font-size: 16px;
+        color: white;
+        outline: none;
+        transition: all 0.4s ease;
+    }
+
+        .container-translucid input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Efecto al seleccionar el input */
+        .container-translucid input:focus {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: #d3ab80; /* Color Madera/Dorado */
+            box-shadow: 0 0 20px rgba(211, 171, 128, 0.3);
+            transform: translateX(5px);
+        }
+
+    /* Iconos que reaccionan al foco */
+    .container-translucid i {
+        position: absolute;
+        right: 22px;
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.7);
+        transition: all 0.4s ease;
+    }
+
+    .container-translucid input:focus + i {
+        color: #d3ab80;
+        transform: scale(1.2);
+    }
+
+/* --- BOTÓN DE ENTRADA PREMIUM --- */
+#button {
+    width: 100%;
+    background-color: white;
+    color: #472825; /* Tu marrón profundo */
+    border: none;
+    padding: 16px;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    margin-top: 15px;
+}
+
+    #button:hover {
+        background-color: #f8f8f8;
+        transform: translateY(-4px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        color: #d3ab80; /* El texto se vuelve dorado al pasar */
+    }
+
+    #button:active {
+        transform: scale(0.95);
+    }
+
+/* --- LINKS Y CHECKBOX --- */
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    margin: 10px 0 30px;
+    padding: 0 15px;
+}
+
+#forgot-password, #register {
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+    #forgot-password:hover, #register:hover {
+        color: #d3ab80;
+    }
+
+    #forgot-password:active, #register:active {
+        transform: scale(0.95);
+    }
+
+/* Estilo para el checkbox */
+#remember input[type="checkbox"] {
+    accent-color: #d3ab80;
+    cursor: pointer;
+}
+
+.register{
+    margin-top: 20px;
+}
+
+/* --- RESPONSIVO --- */
+@media (max-width: 600px) {
+    .form {
+        padding: 40px 25px;
+        border-radius: 30px;
+    }
+
+        .form h1 {
+            font-size: 28px;
+        }
+
+    .container {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    /* Botón más grande para dedos en móvil */
+    #button {
+        padding: 18px;
+        font-size: 16px;
+    }
+
+    .container-translucid input:focus {
+        transform: none; /* Evitamos el desplazamiente lateral en móvil */
+        border-width: 2px;
+    }
+}
+
+/* Animación de los campos al cargar */
+.form section {
+    animation: fadeInScale 0.5s ease backwards;
+}
+
+    .form section:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+
+    .form section:nth-child(3) {
+        animation-delay: 0.2s;
+    }
+
+    .form section:nth-child(4) {
+        animation-delay: 0.3s;
+    }

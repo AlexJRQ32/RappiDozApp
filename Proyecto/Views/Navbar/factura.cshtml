@@ -1,0 +1,180 @@
+﻿@model RappiDozApp.Models.Pedido
+@{
+    ViewData["Title"] = "Comprobante de Pago | Rappi'Doz";
+
+    // Calculamos el subtotal real sumando Cantidad * Precio de los detalles guardados
+    decimal subtotalCalculado = Model.Detalles?.Sum(x => x.PrecioHistorico * x.Cantidad) ?? 0;
+
+    // Definimos los costos fijos que sumamos en el controlador (Total 2000)
+    decimal envio = 1500;
+    decimal tarifa = 500;
+}
+
+<style>
+    .factura-container {
+        background-color: #fde4bc;
+        min-height: 100vh;
+        padding: 80px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .ticket {
+        width: 100%;
+        max-width: 450px;
+        background: white;
+        padding: 40px;
+        border-radius: 0 0 20px 20px;
+        position: relative;
+        box-shadow: 0 15px 35px rgba(71, 40, 37, 0.2);
+        font-family: 'Courier New', Courier, monospace;
+    }
+
+        /* Decoración de ticket cortado en los lados */
+        .ticket::before {
+            content: "";
+            position: absolute;
+            top: -15px;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            background: linear-gradient(-45deg, white 10px, transparent 0), linear-gradient(45deg, white 10px, transparent 0);
+            background-size: 20px 20px;
+        }
+
+    .header-ticket {
+        text-align: center;
+        border-bottom: 2px dashed #fde4bc;
+        padding-bottom: 20px;
+        margin-bottom: 25px;
+    }
+
+    .linea-producto {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        color: #472825;
+        font-size: 0.95rem;
+    }
+
+    .seccion-totales {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+
+    .fila-total {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        color: #96786f;
+    }
+
+    .gran-total {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 2px solid #472825;
+        color: #472825;
+        font-size: 1.7rem;
+        font-weight: 900;
+        font-family: sans-serif;
+    }
+
+    .btn-seguir {
+        display: block;
+        background: #472825;
+        color: white;
+        text-align: center;
+        padding: 18px;
+        border-radius: 15px;
+        text-decoration: none;
+        font-weight: 900;
+        margin-top: 35px;
+        font-family: sans-serif;
+        transition: 0.3s;
+    }
+
+        .btn-seguir:hover {
+            background: #5d3632;
+            transform: translateY(-2px);
+        }
+</style>
+
+<div class="factura-container">
+    <div class="ticket">
+
+        <div class="header-ticket">
+            <h1 style="color: #472825; font-family: sans-serif; margin: 0; font-weight: 900;">Rappi'Doz</h1>
+            <p style="color: #96786f; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin: 5px 0;">Comprobante de Pago</p>
+            <p style="font-size: 0.85rem; color: #d3ab80;">Orden #@Model.Id</p>
+            <p style="font-size: 0.85rem; color: #d3ab80;">@Model.FechaHora.ToString("dd/MM/yyyy hh:mm tt")</p>
+        </div>
+
+        <div class="items-pedido">
+            @if (Model.Detalles != null && Model.Detalles.Any())
+            {
+                foreach (var item in Model.Detalles)
+                {
+                    <div class="linea-producto">
+                        <span style="flex: 1;">@item.Cantidad x @(item.Producto?.Nombre ?? "Producto")</span>
+                        <span style="font-weight: 700;">₡@((item.PrecioHistorico * item.Cantidad).ToString("N0"))</span>
+                    </div>
+                }
+            }
+            else
+            {
+                <div style="background: #fff5f5; border: 1px dashed #e74c3c; padding: 15px; border-radius: 10px; text-align: center;">
+                    <p style="color: #e74c3c; font-weight: bold; font-size: 0.8rem; margin: 0;">
+                        AVISO: No se encontraron detalles de productos en la base de datos para esta orden.
+                    </p>
+                </div>
+            }
+        </div>
+
+        <div class="seccion-totales">
+            <div class="fila-total">
+                <span>Subtotal</span>
+                <b style="color: #472825;">₡@subtotalCalculado.ToString("N0")</b>
+            </div>
+
+            <div class="fila-total">
+                <span>Envío Express</span>
+                <span>₡@envio.ToString("N0")</span>
+            </div>
+
+            <div class="fila-total">
+                <span>Tarifa de Servicio</span>
+                <span>₡@tarifa.ToString("N0")</span>
+            </div>
+
+            @if (Model.MontoDescuento > 0)
+            {
+                <div class="fila-total" style="color: #27ae60; font-weight: 700;">
+                    <span>Descuento</span>
+                    <span>-₡@Model.MontoDescuento.ToString("N0")</span>
+                </div>
+            }
+
+            <div class="gran-total">
+                <span>TOTAL</span>
+                <span>₡@Model.Total.ToString("N0")</span>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; border-top: 1px dashed #eee; padding-top: 20px;">
+            <p style="color: #472825; font-weight: 700; font-family: sans-serif;">¡Gracias por tu pedido!</p>
+            <i class="fas fa-qrcode fa-4x" style="color: #472825; opacity: 0.1; margin: 15px 0;"></i>
+
+            <a asp-action="Seguimiento" asp-controller="Pedido" asp-route-id="@Model.Id" class="btn-seguir">
+                RASTREAR MI PEDIDO <i class="fas fa-motorcycle" style="margin-left: 10px;"></i>
+            </a>
+
+            <a href="@Url.Action("Index", "Home")" style="display: block; margin-top: 15px; color: #96786f; font-size: 0.8rem; text-decoration: none; font-weight: 700;">
+                VOLVER AL INICIO
+            </a>
+        </div>
+    </div>
+</div>

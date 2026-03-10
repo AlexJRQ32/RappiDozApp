@@ -1,0 +1,58 @@
+﻿@model RappiDozApp.Models.Usuario
+
+<div class="p-4">
+    <form id="formUsuario" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="text-center mb-5">
+            <div class="position-relative d-inline-block">
+                <img id="previewUser"
+                     src="@(Model.FotoBinaria != null ? $"data:{Model.ContentType};base64,{Convert.ToBase64String(Model.FotoBinaria)}" : "/img/default-avatar.png")"
+                     class="rounded-circle shadow" style="width: 130px; height: 130px; object-fit: cover; border: 5px solid white;" />
+                <button type="button" class="btn btn-dark btn-sm rounded-circle position-absolute bottom-0 end-0 p-2"
+                        onclick="document.getElementById('userFoto').click()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <input type="file" name="fotoArchivo" id="userFoto" class="d-none" accept="image/*" onchange="previewUserImg(this)" />
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-12">
+                <label class="form-label fw-bold">Nombre Completo</label>
+                <input asp-for="NombreCompleto" class="form-control rd-input" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Email</label>
+                <input asp-for="Email" type="email" class="form-control rd-input" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Rol de Usuario</label>
+                <select asp-for="RolId" asp-items="ViewBag.Roles" class="form-select rd-input"></select>
+            </div>
+            <div class="col-12">
+                <label class="form-label fw-bold">
+                    Contraseña @(Model.Id > 0 ? "(Dejar en blanco para no cambiar)" : "")
+                </label>
+                <input asp-for="PasswordHash" type="password" class="form-control rd-input" />
+            </div>
+        </div>
+
+        <div class="mt-5 pt-3 border-top">
+            <button type="button" onclick="guardarDatos('Usuario')" class="btn w-100 py-3"
+                    style="background: #472825; color: white; border-radius: 15px; font-weight: bold;">
+                <i class="fas fa-user-check me-2"></i> Confirmar Usuario
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function previewUserImg(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) { document.getElementById('previewUser').src = e.target.result; };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

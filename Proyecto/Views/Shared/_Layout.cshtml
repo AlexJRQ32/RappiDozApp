@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Rappi'Doz</title>
+
+    @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
+    <link rel="stylesheet" href="~/css/styles.css" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/css/_StylesCRUDs.css" rel="stylesheet" />
+    <link href="~/css/_StylesHome.css" rel="stylesheet" />
+    <link href="~/css/_StylesNavbar.css" rel="stylesheet" />
+    <link href="~/css/_StylesPedido.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    @await Html.PartialAsync("_PageTransition")
+    
+    @await Html.PartialAsync("_Header")
+
+ 
+    @RenderBody()
+
+    <div class="modal fade" id="modalGeneral" tabindex="-1" aria-hidden="true" style="z-index: 11000;">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content shadow-lg" id="bodyModalGeneral" style="border:none; background: transparent;">
+            </div>
+        </div>
+    </div>
+    
+
+    @await Html.PartialAsync("_Footer")
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/cupones.js" asp-append-version="true"></script>
+    <script src="~/js/rating.js" asp-append-version="true"></script>
+    <script>
+        // ==========================================
+        // 1. GESTIÓN DE PERFIL (IMAGEN Y ENVÍO)
+        // ==========================================
+
+        // Vista previa de la imagen al seleccionarla
+        $(document).on('change', '#fotoInput', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#previewPerfil').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Guardar cambios del perfil por AJAX
+        $(document).on('submit', '#formPerfilUsuario', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            $.ajax({
+                url: '/Usuario/GuardarPerfil',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(res) {
+                    if(res.success) {
+                        // Actualización visual inmediata en el Navbar
+                        $("#navNombreUsuario").text($("#NombreCompleto").val());
+                        if ($("#navFotoUsuario").length) {
+                            $("#navFotoUsuario").attr('src', $('#previewPerfil').attr('src'));
+                        }
+
+                        // Cerrar modal
+                        bootstrap.Modal.getInstance(document.getElementById('modalGeneral')).hide();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Actualizado!',
+                            text: res.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.reload(); // Sincroniza sesión del servidor
+                        });
+                    } else {
+                        Swal.fire('Error', res.message, 'error');
+                    }
+                }
+            });
+        });
+
+        // ==========================================
+        // 2. GESTIÓN DE VALORACIONES (ESTRELLAS)
+        // ==========================================
+
+        $(document).on('click', '#contenedorEstrellas i', function() {
+            const val = $(this).data('value');
+            $('#inputEstrellas').val(val);
+            $('#contenedorEstrellas i').each(function() {
+                $(this).toggleClass('active', $(this).data('value') <= val);
+            });
+        });
+
+        $(document).on('submit', '#formCalificar', function(e) {
+            e.preventDefault();
+            if ($('#inputEstrellas').val() == "0") {
+                Swal.fire('Atención', 'Selecciona al menos una estrella', 'warning');
+                return;
+            }
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(res) {
+                    bootstrap.Modal.getInstance(document.getElementById('modalGeneral')).hide();
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Gracias!',
+                        text: 'Valoración enviada',
+                        timer: 1500
+                    }).then(() => { window.location.reload(); });
+                }
+            });
+        });
+
+        // ==========================================
+        // 3. APERTURA DE MODALES DINÁMICOS
+        // ==========================================
+
+        window.abrirPerfil = function() {
+            const modalEl = document.getElementById('modalGeneral');
+            const contenedor = document.getElementById('bodyModalGeneral');
+            bootstrap.Modal.getOrCreateInstance(modalEl).show();
+            contenedor.innerHTML = '<div class="text-center p-5" style="background:#fffdfa; border-radius:30px;"><div class="spinner-border text-warning"></div><p class="mt-2">Cargando...</p></div>';
+
+            fetch('/Usuario/Perfil').then(r => r.text()).then(html => { contenedor.innerHTML = html; });
+        };
+
+        window.abrirCalificar = function() {
+            const modalEl = document.getElementById('modalGeneral');
+            const contenedor = document.getElementById('bodyModalGeneral');
+            bootstrap.Modal.getOrCreateInstance(modalEl).show();
+            contenedor.innerHTML = '<div class="text-center p-5" style="background:#fffdfa; border-radius:30px;"><div class="spinner-border text-warning"></div><p class="mt-2">Cargando...</p></div>';
+
+            fetch('/Valoracion/Crear').then(r => r.text()).then(html => { contenedor.innerHTML = html; });
+        };
+    </script>
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

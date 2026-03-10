@@ -1,0 +1,109 @@
+@{
+    Layout = null;
+    // Capturamos el ID del usuario que viene del controlador
+    int userId = ViewBag.UsuarioId ?? 0;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selección de Perfil - Rappi'Doz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="~/css/_StylesLogin.css">
+    <style>
+        .cards-wrapper {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card-option {
+            flex: 1;
+            padding: 30px 10px;
+            border: 1px solid rgba(255, 255, 255, .2);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            color: white;
+            width: 100%; /* Para que el botón ocupe todo el form */
+            font-family: inherit;
+        }
+
+            .card-option:hover {
+                background: rgba(255, 255, 255, 0.3);
+                color: #173831;
+                transform: translateY(-5px);
+            }
+
+            .card-option i {
+                font-size: 50px;
+                margin-bottom: 15px;
+            }
+
+            .card-option h2 {
+                font-size: 22px;
+                margin-bottom: 10px;
+            }
+
+            .card-option p {
+                font-size: 14px;
+                opacity: 0.9;
+            }
+
+        @@media (max-width: 600px) {
+            .cards-wrapper {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form">
+        <div style="text-align: center; margin-bottom: 10px;">
+            <span style="color: #e74c3c; font-weight: bold; font-size: 1.5rem;">Rappi</span><span style="color: #2ecc71; font-weight: bold; font-size: 1.2rem;">'Doz</span>
+        </div>
+
+        <h1>¿Quién eres?</h1>
+
+        <div class="cards-wrapper">
+            @* FORMULARIO PARA USUARIO COMÚN (ROL 1) *@
+            <form asp-controller="Acceso" asp-action="AsignarRol" method="post" style="flex: 1;">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="usuarioId" value="@userId" />
+                <input type="hidden" name="rolId" value="1" />
+                <button type="submit" class="card-option">
+                    <i class="fa-solid fa-pizza-slice"></i>
+                    <h2>Usuario</h2>
+                    <p>Quiero pedir comida</p>
+                </button>
+            </form>
+
+            @* FORMULARIO PARA RESTAURANTE (ROL 2) *@
+            <form asp-controller="Acceso" asp-action="AsignarRol" method="post" style="flex: 1;">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="usuarioId" value="@userId" />
+                <input type="hidden" name="rolId" value="2" />
+                <button type="submit" class="card-option">
+                    <i class="fa-solid fa-shop"></i>
+                    <h2>Restaurante</h2>
+                    <p>Quiero vender</p>
+                </button>
+            </form>
+        </div>
+
+        <div class="register" style="margin-top: 30px; text-align: center;">
+            <a asp-controller="Acceso" asp-action="Login" style="color: white; text-decoration: none;">
+                <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+            </a>
+        </div>
+    </div>
+</body>
+</html>

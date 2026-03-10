@@ -1,0 +1,350 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.EntityFrameworkCore
+@inject IHttpContextAccessor HttpContextAccessor
+@inject RappiDozApp.Data.ApplicationDbContext _context
+
+@{
+    // Unificamos nombres con el Controlador
+    var nombreUsuario = HttpContextAccessor.HttpContext.Session.GetString("NombreUsuario");
+    var fotoUsuario = HttpContextAccessor.HttpContext.Session.GetString("FotoUsuario");
+    var rolUsuario = HttpContextAccessor.HttpContext.Session.GetString("RolUsuario");
+    var carritoCount = HttpContextAccessor.HttpContext.Session.GetString("CarritoCount");
+    int? idUsuarioSesion = HttpContextAccessor.HttpContext.Session.GetInt32("UsuarioId");
+
+    bool tieneUbicacion = false;
+    if (idUsuarioSesion.HasValue)
+    {
+        var usuarioDb = _context.Usuarios.FirstOrDefault(u => u.Id == idUsuarioSesion.Value);
+        if (usuarioDb != null && usuarioDb.Latitud != null && usuarioDb.Longitud != null)
+        {
+            tieneUbicacion = true;
+        }
+    }
+}
+
+<style>
+    /* 1. DISEÑO GENERAL DEL NAVBAR */
+    .navbar {
+        background-color: #472825;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 25px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 10000;
+        box-sizing: border-box;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .navbar-brand img {
+        height: 120px;
+        width: auto;
+        transition: transform 0.3s;
+    }
+
+    .sesion {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+        .sesion a {
+            color: #fff4e2;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .sesion a:hover {
+                color: #d3ab80;
+            }
+
+    /* CARRITO Y BADGE */
+    .cart-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .cart-badge {
+        position: absolute;
+        top: -8px;
+        right: -12px;
+        background-color: #ff4d4d;
+        color: white;
+        font-size: 0.7rem;
+        font-weight: bold;
+        min-width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #472825;
+        animation: pulse-red 2s infinite;
+    }
+
+    @@keyframes pulse-red {
+        0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7);
+        }
+
+        70% {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 6px rgba(255, 77, 77, 0);
+        }
+
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(255, 77, 77, 0);
+        }
+    }
+
+    /* DROPDOWNS */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #fff4e2;
+        font-weight: 600;
+        cursor: pointer;
+        background: none;
+        border: none;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: #472825;
+        min-width: 220px;
+        box-shadow: 0px 8px 16px rgba(0,0,0,0.4);
+        border: 1px solid #d3ab80;
+        border-radius: 12px;
+        overflow: hidden;
+        z-index: 1001;
+        padding: 8px 0;
+    }
+
+    .dropdown:hover > .dropdown-content {
+        display: block;
+    }
+
+    .dropdown-content a {
+        padding: 12px 18px;
+        display: block;
+        color: #fff4e2;
+    }
+
+        .dropdown-content a:hover {
+            background-color: #d3ab80;
+            color: #472825 !important;
+        }
+
+    /* USER PILL */
+    .user-pill {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(211, 171, 128, 0.15);
+        padding: 5px 15px;
+        border-radius: 50px;
+        border: 1px solid #d3ab80;
+        cursor: pointer;
+        color: #fff4e2;
+    }
+
+    .login {
+        color: #fff4e2 !important;
+        padding: 8px 20px;
+        border-radius: 50px;
+        border: 2px solid;
+        font-weight: bold;
+    }
+
+    .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: #fff4e2;
+        font-size: 1.6rem;
+    }
+
+    @@media (max-width: 992px) {
+        .menu-toggle {
+            display: block;
+        }
+
+        .sesion {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: #472825;
+            padding: 20px;
+        }
+
+            .sesion.active {
+                display: flex;
+            }
+    }
+</style>
+
+<nav class="navbar">
+    <a asp-controller="Home" asp-action="Index" class="navbar-brand">
+        <img src="~/img/logo-final.png" alt="Logo">
+    </a>
+
+    <button class="menu-toggle" id="btn-menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div class="sesion" id="navbar-menu">
+        @if (!string.IsNullOrEmpty(nombreUsuario))
+        {
+            <a asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house"></i> Inicio</a>
+            <a asp-controller="Home" asp-action="Explorar"><i class="fa-solid fa-magnifying-glass"></i> Búsqueda</a>
+
+            <div class="cart-container">
+                @if (tieneUbicacion)
+                {
+                    <a asp-controller="Carrito" asp-action="Index"><i class="fa-solid fa-cart-shopping"></i> Carrito</a>
+                }
+                else
+                {
+                    <a href="javascript:void(0);" onclick="alertaUbicacion()"><i class="fa-solid fa-cart-shopping"></i> Carrito</a>
+                }
+                @if (!string.IsNullOrEmpty(carritoCount) && carritoCount != "0")
+                {
+                    <span class="cart-badge">@carritoCount</span>
+                }
+            </div>
+
+            <div class="dropdown">
+                <button class="dropdown-btn">
+                    <i class="fa-solid fa-ellipsis-vertical"></i> Más
+                </button>
+                <div class="dropdown-content">
+                    <a asp-controller="Usuario" asp-action="Movimientos"><i class="fa-solid fa-clock-rotate-left"></i> Mis Pedidos</a>
+                    <a asp-controller="Cupon" asp-action="Index"><i class="fa-solid fa-ticket"></i> Cupones</a>
+                    <a href="javascript:void(0)" onclick="abrirCalificar()">
+                        <i class="fa-solid fa-star"></i> Califícanos
+                    </a>
+
+                    @if (rolUsuario == "Administrador" || rolUsuario == "Restaurante")
+                    {
+                        <div style="height: 1px; background: rgba(211, 171, 128, 0.3); margin: 8px 15px;"></div>
+                        <a asp-controller="Dashboard" asp-action="Index"><i class="fa-solid fa-gauge-high"></i> Panel Admin</a>
+                    }
+                </div>
+            </div>
+
+            @* PERFIL USUARIO CON IDS DINÁMICOS *@
+            <div class="dropdown">
+                <div class="user-pill">
+                    @if (!string.IsNullOrEmpty(fotoUsuario))
+                    {
+                        @* ID añadido para actualizar con JS *@
+                        <img id="navFotoUsuario" src="data:image/png;base64,@fotoUsuario" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 2px solid #d3ab80;">
+                    }
+                    else
+                    {
+                        <i id="navFotoDefault" class="fa-solid fa-circle-user" style="color: #d3ab80; font-size: 1.5rem;"></i>
+                    }
+                    <div style="text-align: left; display: flex; flex-direction: column; line-height: 1.2;">
+                        @* ID añadido para actualizar con JS *@
+                        <span id="navNombreUsuario" style="font-weight: bold; font-size: 0.8rem;">@nombreUsuario</span>
+                        <span style="color: #d3ab80; font-size: 0.6rem; text-transform: uppercase; font-weight: 800;">@rolUsuario</span>
+                    </div>
+                </div>
+                <div class="dropdown-content">
+                    <a href="javascript:void(0);" onclick="abrirPerfil()">
+                        <i class="fa-solid fa-user-gear"></i> Mi Cuenta
+                    </a>
+                    <div style="height: 1px; background: rgba(211, 171, 128, 0.3); margin: 8px 15px;"></div>
+                    <a href="javascript:void(0);" onclick="confirmarSalida()" style="color: #ff4d4d !important;">
+                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <a asp-controller="Acceso" asp-action="Login" class="login">
+                <i class="fa-solid fa-circle-user"></i> Iniciar sesión
+            </a>
+        }
+    </div>
+</nav>
+
+<script>
+    // Toggle menú móvil
+    const btnMenu = document.getElementById('btn-menu');
+    const navbarMenu = document.getElementById('navbar-menu');
+    if(btnMenu) {
+        btnMenu.addEventListener('click', () => { navbarMenu.classList.toggle('active'); });
+    }
+
+    function confirmarSalida() {
+        Swal.fire({
+            title: '¿Cerrar sesión?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#472825',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, salir',
+            background: '#fff4e2',
+            color: '#472825',
+            didOpen: () => {
+            // Esto asegura que el contenedor de la alerta sea el rey del z-index
+                const container = document.querySelector('.swal2-container');
+                if (container) {
+                    container.style.zIndex = '15000';
+                }
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Salir", "Acceso")';
+            }
+        });
+    }
+
+    function alertaUbicacion() {
+        Swal.fire({
+            title: '¡Falta tu ubicación!',
+            text: 'Necesitamos guardar tu ubicación para habilitar el carrito.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#472825',
+            confirmButtonText: 'Configurar Perfil',
+            background: '#fff4e2',
+            color: '#472825',
+            didOpen: () => {
+            // Esto asegura que el contenedor de la alerta sea el rey del z-index
+                const container = document.querySelector('.swal2-container');
+                if (container) {
+                    container.style.zIndex = '15000';
+                }
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                abrirPerfil();
+            }
+        });
+    }
+</script>

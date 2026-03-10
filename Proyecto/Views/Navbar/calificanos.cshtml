@@ -1,0 +1,170 @@
+@{
+    Layout = null;
+}
+
+<style>
+    /* RESET BOOTSTRAP */
+    #modalGeneral .modal-content {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    /* TARJETA PRINCIPAL */
+    .rd-card-main {
+        background-color: #fffdfa !important;
+        border-radius: 45px !important;
+        width: 100%;
+        max-width: 800px;
+        margin: auto;
+        padding: 45px 35px;
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25) !important;
+        position: relative;
+        border: 1px solid #f3e5d0;
+    }
+
+    /* ESTRELLAS */
+    .rating-stars {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-bottom: 25px;
+    }
+
+        .rating-stars i {
+            font-size: 3rem;
+            color: #e2d9c8;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+            .rating-stars i.active {
+                color: #d3ab80 !important;
+                transform: scale(1.2);
+                filter: drop-shadow(0 0 10px rgba(211, 171, 128, 0.4));
+            }
+
+    /* FORMULARIO */
+    .rd-input-group {
+        border-radius: 20px;
+        background-color: white;
+        border: 1px solid #f1ece4;
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .rd-textarea, .rd-select {
+        border: none !important;
+        padding: 18px;
+        font-size: 1rem;
+        background: transparent !important;
+        color: #472825 !important;
+        width: 100%;
+        outline: none !important;
+    }
+
+    /* BOTÓN */
+    .rd-btn-save {
+        background: #472825 !important;
+        color: #fff !important;
+        border-radius: 30px;
+        padding: 20px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        width: 100%;
+        border: none;
+        margin-top: 10px;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transition: 0.3s;
+    }
+
+        .rd-btn-save:hover {
+            background: #2b1816 !important;
+            transform: translateY(-2px);
+        }
+
+    .btn-close-custom {
+        position: absolute;
+        top: 25px;
+        right: 35px;
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: #d3ab80;
+        cursor: pointer;
+        opacity: 0.7;
+    }
+
+        .btn-close-custom:hover {
+            opacity: 1;
+        }
+</style>
+
+<div class="rd-card-main">
+    <button type="button" class="btn-close-custom" data-bs-dismiss="modal">×</button>
+
+    <div class="text-center mb-5">
+        <h2 style="color: #472825; font-weight: 900; font-size: 2.2rem; margin-bottom: 5px;">Calificar Experiencia</h2>
+        <div style="width: 60px; height: 4px; background: #d3ab80; margin: 0 auto 15px; border-radius: 2px;"></div>
+        <p style="color: #8d7a66; font-size: 1.1rem;">Tu opinión es el ingrediente secreto de nuestra mejora.</p>
+    </div>
+
+    <form id="formCalificar" asp-controller="Valoracion" asp-action="Guardar" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="estrellas" id="inputEstrellas" value="0">
+
+        <div class="row align-items-center">
+            @* LADO IZQUIERDO: Feedback *@
+            <div class="col-md-6 px-4">
+                <label style="color: #8d7a66; font-weight: 800; font-size: 0.8rem; display: block; text-align: center; margin-bottom: 15px; letter-spacing: 1px;">¿CUÁNTAS ESTRELLAS NOS DAS?</label>
+
+                <div class="rating-stars" id="contenedorEstrellas">
+                    <i class="fas fa-star" data-value="1"></i>
+                    <i class="fas fa-star" data-value="2"></i>
+                    <i class="fas fa-star" data-value="3"></i>
+                    <i class="fas fa-star" data-value="4"></i>
+                    <i class="fas fa-star" data-value="5"></i>
+                </div>
+
+                <div class="rd-input-group">
+                    <textarea name="comentario" rows="4" class="rd-textarea" placeholder="Escribe aquí tu reseña..."></textarea>
+                </div>
+            </div>
+
+            @* LADO DERECHO: Logo y Branding *@
+            <div class="col-md-6 px-4 text-center border-start" style="border-color: #f1ece4 !important;">
+                <h4 style="color: #d3ab80; font-family: 'Georgia', serif; font-style: italic; font-weight: 400; margin-bottom: 20px;">
+                    "Sabor que llega, momentos que quedan"
+                </h4>
+
+                <div style="position: relative; display: inline-block;">
+                    <img src="/img/logo final.png" alt="RappiDoz Logo"
+                         style="width: 180px; height: 180px; border-radius: 50%; border: 6px solid #f9f4ec; box-shadow: 0 10px 25px rgba(0,0,0,0.05); background: white; object-fit: cover;">
+                    <div style="position: absolute; bottom: 10px; right: 10px; background: #472825; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white;">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <label style="color: #8d7a66; font-weight: 800; font-size: 0.7rem; letter-spacing: 1px;">¿NOS RECOMENDARÍAS?</label>
+                    <div class="rd-input-group mt-2">
+                        <select name="recomendacion" class="rd-select">
+                            <option value="si">¡Totalmente!</option>
+                            <option value="talvez">Podría ser</option>
+                            <option value="no">Por ahora no</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12 px-4">
+                <button type="submit" class="rd-btn-save">ENVIAR MI VALORACIÓN</button>
+            </div>
+        </div>
+    </form>
+</div>

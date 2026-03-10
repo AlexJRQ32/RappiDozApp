@@ -1,0 +1,222 @@
+@model IEnumerable<RappiDozApp.Models.Restaurante>
+
+@{
+    ViewData["Title"] = "Explora Sabores | Rappi'Doz";
+    var textoBuscado = Context.Request.Query["buscar"];
+}
+
+<style>
+    .main-search {
+        background-color: #fff4e2;
+        min-height: 100vh;
+        padding-top: 70px;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* --- TARJETAS COMPACTAS --- */
+    .res-card-ref {
+        display: flex;
+        background: white;
+        border-radius: 20px; /* Bordes un poco más sutiles */
+        overflow: hidden;
+        border: 1px solid #d3ab80;
+        transition: 0.3s;
+        width: 100%;
+        max-width: 850px; /* Limitamos el ancho para que no se estire de más */
+        margin: 0 auto 15px; /* Menos margen entre tarjetas */
+        box-shadow: 0 4px 12px rgba(71, 40, 37, 0.03);
+    }
+
+        .res-card-ref:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(71, 40, 37, 0.08);
+        }
+
+    /* Imagen más pequeña (antes era 260px o 240px) */
+    .res-img-container {
+        width: 180px;
+        height: 130px;
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    /* Fuentes y espacios reducidos */
+    .res-info-body {
+        padding: 15px 20px; /* Relleno más apretado */
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .res-title {
+        color: #472825;
+        font-size: 1.25rem; /* Título más pequeño */
+        margin: 0;
+        font-weight: 800;
+    }
+
+    .badge-status {
+        font-size: 0.65rem;
+        font-weight: 800;
+        padding: 3px 8px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+        .badge-status.open {
+            background: #e6f9ed;
+            color: #27ae60;
+        }
+
+        .badge-status.closed {
+            background: #fceaea;
+            color: #e74c3c;
+        }
+
+    .btn-menu-slim {
+        background: #472825;
+        color: white !important;
+        padding: 8px 18px; /* Botón más pequeño */
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.9rem;
+        transition: 0.3s;
+        white-space: nowrap;
+    }
+
+        .btn-menu-slim.disabled {
+            background: #96786f;
+            opacity: 0.7;
+        }
+
+    /* ============================================================
+           MEDIA QUERIES (RESPONSIVE)
+           ============================================================ */
+    @@media (max-width: 768px) {
+        .res-card-ref {
+            flex-direction: row; /* Mantenemos horizontal en tablets si hay espacio */
+            max-width: 100%;
+        }
+
+        .res-img-container {
+            width: 120px; /* Aún más pequeña en móvil */
+            height: 110px;
+        }
+
+        .res-info-body {
+            padding: 10px;
+        }
+
+        .res-title {
+            font-size: 1.1rem;
+        }
+
+        .hide-mobile {
+            display: none;
+        }
+        /* Para quitar info menos relevante en celular */
+    }
+
+    @@media (max-width: 480px) {
+        /* En celulares muy pequeños, la info se ajusta */
+        .res-info-body {
+            gap: 5px;
+        }
+
+        .btn-menu-slim {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+    }
+</style>
+
+<main class="main-search">
+    @* --- BUSCADOR --- *@
+    <section style="padding: 30px 20px; text-align: center;">
+        <div style="max-width: 600px; margin: 0 auto;">
+            <h1 style="color: #472825; font-size: 2.2rem; font-weight: 800; margin-bottom: 5px;">Tu próximo antojo</h1>
+            <p style="color: #96786f; margin-bottom: 20px; font-size: 0.95rem;">Busca por nombre, comida, zona o categoría.</p>
+
+            <form asp-action="Explorar" method="get" style="display: flex; align-items: center; background: white; padding: 6px; border-radius: 15px; border: 2px solid #d3ab80;">
+                <i class="fa-solid fa-magnifying-glass" style="color: #d3ab80; margin: 0 10px;"></i>
+                <input type="text" name="buscar" value="@textoBuscado" placeholder="¿Qué quieres comer?" style="flex-grow: 1; border: none; outline: none; font-size: 1rem; color: #472825; background: transparent;">
+                <button type="submit" style="background: #472825; color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer;">Buscar</button>
+            </form>
+        </div>
+    </section>
+
+    @* --- RESULTADOS --- *@
+    <section style="padding: 0 15px 60px; max-width: 900px; margin: 0 auto;">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #d3ab80; padding-bottom: 8px;">
+            <h2 style="color: #472825; font-weight: 800; font-size: 1.2rem; margin: 0;">
+                @(string.IsNullOrEmpty(textoBuscado) ? "Restaurantes" : "Resultados: " + textoBuscado)
+            </h2>
+            <small style="color: #96786f; font-weight: 600;">@Model.Count() locales</small>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    <div class="res-card-ref" style="opacity: @(item.EstaAbierto ? "1" : "0.8");">
+
+                        <div class="res-img-container">
+                            @if (item.LogoBinario != null)
+                            {
+                                <img src="data:@item.ContentType;base64,@Convert.ToBase64String(item.LogoBinario)" style="width: 100%; height: 100%; object-fit: cover;">
+                            }
+                            else
+                            {
+                                <img style="width: 100%; height: 100%; object-fit: cover;">
+                            }
+
+                            @if (!item.EstaAbierto)
+                            {
+                                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(71, 40, 37, 0.4); display: flex; align-items: center; justify-content: center;">
+                                    <span style="background: white; color: #e74c3c; padding: 2px 8px; border-radius: 5px; font-weight: 900; font-size: 0.65rem;">CERRADO</span>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="res-info-body">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                                <div>
+                                    <h3 class="res-title">@item.NombreComercial</h3>
+                                    <p style="color: #96786f; font-size: 0.85rem; margin: 2px 0; display: flex; align-items: center; gap: 4px;">
+                                        <i class="fa-solid fa-location-dot" style="color: #d3ab80; font-size: 0.75rem;"></i>
+                                        <span class="text-truncate" style="max-width: 180px; display: inline-block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">@item.Direccion</span>
+                                    </p>
+                                </div>
+                                <span class="badge-status @(item.EstaAbierto ? "open" : "closed")">
+                                    @(item.EstaAbierto ? "ABIERTO" : "CERRADO")
+                                </span>
+                            </div>
+
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+                                <div style="color: #96786f; font-weight: 600; font-size: 0.75rem; line-height: 1.2;">
+                                    <span class="hide-mobile"><i class="fa-regular fa-clock"></i> @item.HoraApertura.ToString(@"hh\:mm")-@item.HoraCierre.ToString(@"hh\:mm")<br></span>
+                                    <span style="color: #27ae60;">₡1,000 envío • 30 min</span>
+                                </div>
+
+                                <a href="/Restaurante/Menu/@item.Id" class="btn-menu-slim @(item.EstaAbierto ? "" : "disabled")">
+                                    @(item.EstaAbierto ? "Ver Menú" : "Local")
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div style="text-align: center; padding: 40px 20px; background: white; border-radius: 20px; border: 1px dashed #d3ab80;">
+                    <p style="color: #472825; font-weight: 700;">No hay coincidencias.</p>
+                </div>
+            }
+        </div>
+    </section>
+</main>

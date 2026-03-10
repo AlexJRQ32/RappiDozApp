@@ -1,0 +1,273 @@
+﻿@model RappiDozApp.Models.Pedido
+@{
+    ViewData["Title"] = "Seguimiento | RappiDoz";
+}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+<style>
+    /* Ocultar elementos que estorban */
+    .cta-final, footer, .footer-content {
+        display: none !important;
+    }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .main-container {
+        position: relative;
+        width: 100%;
+        height: calc(100vh - 70px);
+        margin-top: 70px;
+    }
+
+    #map {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+
+    /* TARJETA ESQUINEADA (PC Y RESPONSIVE) */
+    .tracking-card {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.96);
+        width: 300px; /* Ancho fijo para que no se estire en responsive */
+        max-width: 85%; /* Para que en pantallas muy pequeñas no se salga */
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    /* Ajuste mínimo para que en móviles no se vea gigante */
+    @@media (max-width: 768px) {
+        .tracking-card {
+            top: 15px;
+            left: 15px;
+            padding: 15px;
+            width: 260px; /* Un pelín más delgada en móvil */
+        }
+
+        .main-container {
+            height: calc(100vh - 60px);
+            margin-top: 60px;
+        }
+    }
+
+    /* COLORES DE LETRAS DINÁMICOS */
+    .status-badge {
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        transition: all 0.4s ease;
+    }
+
+    /* Amarillo mientras va de camino */
+    .text-camino {
+        background: #fffde7;
+        color: #fbc02d !important;
+    }
+    /* Verde cuando llega */
+    .text-llegado {
+        background: #e8f5e9;
+        color: #2e7d32 !important;
+    }
+
+    .eta-box {
+        background: #472825;
+        color: white;
+        border-radius: 15px;
+        padding: 15px;
+        text-align: center;
+        margin: 12px 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 4px;
+        background: #d3ab80;
+        width: 0%;
+    }
+
+    /* ESPACIO DEL USUARIO CON MÁS INFO */
+    .client-info {
+        margin: 15px 0;
+        padding-top: 10px;
+        border-top: 1px dashed #eee;
+        color: #444;
+        font-size: 0.85rem;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 5px;
+    }
+
+        .info-row i {
+            color: #d3ab80;
+            width: 18px;
+            text-align: center;
+        }
+
+    .btn-back {
+        display: block;
+        width: 100%;
+        background: #fdfaf6;
+        color: #472825 !important;
+        text-align: center;
+        padding: 10px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: bold;
+        border: 1px solid #eee;
+        font-size: 0.9rem;
+    }
+
+    .moto-icon {
+        color: #472825;
+        font-size: 28px !important;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .leaflet-marker-icon.no-bg {
+        background: none !important;
+        border: none !important;
+    }
+</style>
+
+<div class="main-container">
+    <div id="map"></div>
+
+    <div class="tracking-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h5 style="margin:0; color:#472825; font-weight:800;">RappiDoz</h5>
+            <span id="status-tag" class="status-badge text-camino">En camino</span>
+        </div>
+
+        <div class="eta-box">
+            <h2 id="timer" style="margin:0; font-size: 2rem; font-weight:900;">10 seg</h2>
+            <div id="bar" class="progress-bar"></div>
+        </div>
+
+        <div class="client-info">
+            <div class="info-row">
+                <i class="fas fa-user"></i>
+                <span><strong>@ViewBag.NombreCliente</strong></span>
+            </div>
+            <div class="info-row">
+                <i class="fas fa-hashtag"></i>
+                <span>Orden: <strong>#@ViewBag.PedidoId</strong></span>
+            </div>
+            <div class="info-row">
+                <i class="fas fa-wallet"></i>
+                <span>Pago: <strong>Efectivo</strong></span>
+            </div>
+        </div>
+
+        <a asp-controller="Home" asp-action="Index" class="btn-back">Regresar</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const latO = parseFloat("@ViewBag.RepartidorLat".replace(',', '.'));
+            const lngO = parseFloat("@ViewBag.RepartidorLng".replace(',', '.'));
+            const latD = parseFloat("@ViewBag.UsuarioLat".replace(',', '.'));
+            const lngD = parseFloat("@ViewBag.UsuarioLng".replace(',', '.'));
+
+            const map = L.map('map', { zoomControl: false, attributionControl: false }).setView([latO, lngO], 15);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
+
+            const iconM = L.divIcon({
+                html: '<i class="fas fa-motorcycle moto-icon"></i>',
+                className: 'no-bg', iconSize: [40, 40], iconAnchor: [20, 20]
+            });
+
+            const markerM = L.marker([latO, lngO], { icon: iconM }).addTo(map);
+            L.marker([latD, lngD]).addTo(map);
+
+            function iniciar(puntos) {
+                const duracion = 10000;
+                const inicio = performance.now();
+
+                // Centrado dinámico con padding
+                map.fitBounds([[latO, lngO], [latD, lngD]], { padding: [60, 60] });
+
+                function frame(ahora) {
+                    const t = Math.min((ahora - inicio) / duracion, 1);
+                    const idx = Math.floor(t * (puntos.length - 1));
+
+                    const p = puntos[idx];
+                    if (p) {
+                        const curLat = p.lat !== undefined ? p.lat : p[0];
+                        const curLng = p.lng !== undefined ? p.lng : p[1];
+                        markerM.setLatLng([curLat, curLng]);
+                    }
+
+                    document.getElementById('bar').style.width = (t * 100) + "%";
+                    document.getElementById('timer').innerText = Math.ceil(10 - (t * 10)) + " seg";
+
+                    if (t < 1) {
+                        requestAnimationFrame(frame);
+                    } else {
+                        // CAMBIO A VERDE AL LLEGAR
+                        const tag = document.getElementById('status-tag');
+                        tag.innerText = "¡Llegó!";
+                        tag.classList.remove('text-camino');
+                        tag.classList.add('text-llegado');
+
+                        confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
+                    }
+                }
+                requestAnimationFrame(frame);
+            }
+
+            const control = L.Routing.control({
+                waypoints: [L.latLng(latO, lngO), L.latLng(latD, lngD)],
+                createMarker: () => null,
+                lineOptions: { addWaypoints: false, styles: [{ color: '#472825', weight: 4, opacity: 0.1 }] },
+                show: false
+            }).addTo(map);
+
+            let ok = false;
+            control.on('routesfound', (e) => {
+                if(!ok) { ok = true; iniciar(e.routes[0].coordinates); }
+            });
+
+            setTimeout(() => {
+                if(!ok) {
+                    ok = true;
+                    let r = [];
+                    for(let i=0; i<=100; i++) r.push([latO+(latD-latO)*(i/100), lngO+(lngD-lngO)*(i/100)]);
+                    iniciar(r);
+                }
+            }, 1200);
+        });
+    </script>
+}

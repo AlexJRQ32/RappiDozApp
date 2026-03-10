@@ -1,0 +1,299 @@
+/* ============================================================
+   SISTEMA GOLD UNIFICADO: RESPONSIVE + ANIMACIONES
+   ============================================================ */
+
+:root {
+    --deep-dark: #472825; /* Marrón profundo */
+    --dark-green: #96786f; /* Tierra suave */
+    --medium-green: #d3ab80; /* Dorado/Madera */
+    --soft-green: #fde4bc; /* Arena clara */
+    --light-mint: #fff4e2; /* Crema base */
+    --white: #ffffff;
+    --shadow-standard: 0 10px 40px rgba(71, 40, 37, 0.12);
+    --transicion-rebote: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transicion-suave: all 0.3s ease;
+}
+
+/* --- ANIMACIONES DE ENTRADA --- */
+@keyframes entradaSuave {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes brilloGold {
+    0% {
+        left: -150%;
+    }
+
+    100% {
+        left: 150%;
+    }
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.gestion-seccion {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 100px 5% 50px; /* Responsive padding */
+    background-color: var(--light-mint);
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.seccion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--soft-green);
+    animation: entradaSuave 0.5s ease-out forwards;
+}
+
+    .seccion-header h2 {
+        font-size: clamp(1.5rem, 4vw, 2rem); /* Texto fluido */
+        font-weight: 800;
+        color: var(--deep-dark);
+        margin: 0;
+    }
+
+/* --- BOTONES INTERACTIVOS (ANIMACIONES) --- */
+
+/* Botón Nuevo Circular */
+.btn-nuevo-producto {
+    background-color: var(--deep-dark);
+    color: var(--white);
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-size: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(71, 40, 37, 0.2);
+    transition: var(--transicion-rebote);
+}
+
+    .btn-nuevo-producto:hover {
+        background-color: var(--medium-green);
+        transform: scale(1.1) rotate(90deg);
+    }
+
+    /* Brillo que pasa por el botón al hacer hover */
+    .btn-nuevo-producto::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        height: 100%;
+        width: 50px;
+        background: rgba(255,255,255,0.2);
+        transform: skewX(-45deg);
+        left: -150%;
+    }
+
+    .btn-nuevo-producto:hover::after {
+        animation: brilloGold 0.6s infinite;
+    }
+
+    /* Efecto Click para todos los botones */
+    .btn-accion:active, .btn-nuevo-producto:active, #button:active {
+        transform: scale(0.85) !important;
+    }
+
+/* --- TARJETAS (GRID GESTIÓN) --- */
+.grid-gestion-crud {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.card-gestion-crud {
+    background: var(--white);
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: var(--shadow-standard);
+    border: 1px solid var(--soft-green);
+    transition: var(--transicion-suave);
+    animation: entradaSuave 0.6s ease-out both;
+}
+
+    .card-gestion-crud:hover {
+        transform: translateY(-5px);
+        border-color: var(--medium-green);
+        box-shadow: 0 15px 45px rgba(71, 40, 37, 0.15);
+    }
+
+.card-principal {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    flex-wrap: nowrap;
+}
+
+/* --- IMÁGENES --- */
+.card-contenido img {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 20px;
+    border: 3px solid var(--light-mint);
+    transition: transform 0.3s ease;
+}
+
+.card-gestion-crud:hover .card-contenido img {
+    transform: scale(1.1);
+}
+
+/* --- INFO BÁSICA Y RESPONSIVE --- */
+.info-basica {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+/* Etiquetas de estado */
+.etiqueta {
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: var(--light-mint);
+    color: var(--dark-green);
+}
+
+/* --- ACCIONES DERECHA --- */
+.acciones-der {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-accion {
+    background: var(--light-mint);
+    color: var(--deep-dark);
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: var(--transicion-rebote);
+}
+
+    .btn-accion.edit:hover {
+        background: var(--medium-green);
+        color: white;
+    }
+
+    .btn-accion.delete:hover {
+        background: #d9534f;
+        color: white;
+    }
+
+/* --- DETALLES DESPLEGABLES --- */
+.detalles-desplegables {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+    background: #fffcf8;
+}
+
+.toggle-detalles:checked ~ .detalles-desplegables {
+    max-height: 500px;
+    transition: max-height 1s ease-in-out;
+}
+
+/* ============================================================
+   MEDIA QUERIES (RESPONSIVE)
+   ============================================================ */
+
+/* TABLETS (Menos de 992px) */
+@media (max-width: 992px) {
+    .info-basica {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .meta-info {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 20px;
+    }
+}
+
+/* MÓVILES (Menos de 768px) */
+@media (max-width: 768px) {
+    .gestion-seccion {
+        padding-top: 80px;
+    }
+
+    .seccion-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .card-principal {
+        flex-direction: column;
+        padding: 25px 15px;
+        text-align: center;
+    }
+
+    .card-contenido {
+        flex-direction: column;
+        margin-bottom: 15px;
+    }
+
+        .card-contenido img {
+            margin-right: 0;
+            margin-bottom: 12px;
+            width: 80px;
+            height: 80px;
+        }
+
+    .info-basica {
+        align-items: center;
+    }
+
+    .acciones-der {
+        width: 100%;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid var(--soft-green);
+        justify-content: center;
+    }
+
+    .accion-izq {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+
+    .detalles-inner {
+        padding: 20px !important;
+        text-align: center;
+    }
+}
+
+/* AJUSTES PARA TOUCH */
+@media (hover: none) {
+    .card-gestion-crud:hover {
+        transform: none;
+    }
+}

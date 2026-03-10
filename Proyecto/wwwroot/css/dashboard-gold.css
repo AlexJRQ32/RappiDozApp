@@ -1,0 +1,292 @@
+﻿/* ============================================================
+    RAPPI'DOZ - ESTILO CLARO, ELEGANTE Y DEFINIDO
+   ============================================================ */
+:root {
+    --brown-dark: #472825; /* Marrón Identidad */
+    --gold-accent: #b8860b; /* Dorado para resaltar */
+    --gold-light: #d3ab80; /* Dorado suave */
+    --cream-bg: #fdfaf5; /* Fondo Dashboard */
+    --cream-form: #f9f6f2; /* Fondo Contenedor (Crema suave) */
+    --white-pure: #ffffff; /* Fondo Inputs y Card */
+    --text-main: #472825;
+}
+
+/* 1. ESTRUCTURA BASE */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--cream-bg);
+    margin: 0;
+    color: var(--text-main);
+}
+
+.dashboard-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* 2. SIDEBAR ORIGINAL */
+.sidebar {
+    width: 280px;
+    background: var(--brown-dark);
+    color: white;
+    padding: 30px 20px;
+    position: fixed;
+    height: 100vh;
+    z-index: 1000;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gold-light);
+    margin-bottom: 40px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    transition: all 0.3s;
+    background: transparent;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+}
+
+    .nav-item:hover, .nav-item.active {
+        background: linear-gradient(90deg, rgba(211, 171, 128, 0.2) 0%, transparent 100%);
+        color: var(--gold-light);
+    }
+
+/* 3. CONTENIDO PRINCIPAL Y FORMULARIO CLARO */
+.main-content {
+    margin-left: 280px;
+    padding: 40px;
+    width: calc(100% - 280px);
+    min-height: 100vh;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 850px;
+    margin: 20px auto;
+    background: var(--cream-form) !important; /* Fondo crema suave solicitado */
+    padding: 45px;
+    border-radius: 35px;
+    box-shadow: 0 15px 35px rgba(71, 40, 37, 0.05);
+    border: 1px solid rgba(211, 171, 128, 0.2);
+}
+
+.form-header-centered h2 {
+    font-weight: 900;
+    color: var(--brown-dark);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 35px;
+    text-align: center;
+}
+
+/* 4. GRID Y CAMPOS (MÁS CLAROS) */
+.form-main-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.input-group label {
+    font-weight: 800;
+    color: var(--brown-dark);
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1.5px solid #e0e0e0;
+    background-color: var(--white-pure) !important; /* Campos blancos para limpieza */
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 500;
+    width: 100%;
+    transition: 0.3s ease;
+}
+
+    .input-group input:focus {
+        border-color: var(--gold-light);
+        outline: none;
+        box-shadow: 0 5px 15px rgba(211, 171, 128, 0.1);
+    }
+
+/* 5. PREVISUALIZACIÓN DEL CUPÓN (DISEÑO NUEVO Y CLARO) */
+.form-preview-uniform {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.preview-label {
+    color: var(--gold-accent);
+    font-weight: 800;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+}
+
+.preview-display {
+    width: 220px;
+    height: 220px;
+    background-color: var(--white-pure); /* Fondo blanco del círculo */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed var(--gold-light); /* Borde discontinuo elegante */
+    position: relative;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+}
+
+.ticket-container i {
+    font-size: 110px;
+    color: var(--gold-light) !important; /* Icono ahora es claro */
+    filter: none;
+}
+
+.ticket-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 900;
+    font-size: 1.7rem;
+    color: var(--brown-dark); /* Texto sobre el ticket */
+}
+
+/* 6. ACCIONES Y BOTONES */
+.form-actions-footer {
+    margin-top: 35px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding-top: 25px;
+}
+
+.btn-guardar {
+    background: var(--brown-dark);
+    color: white !important;
+    padding: 14px 45px;
+    border-radius: 50px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 8px 20px rgba(71, 40, 37, 0.15);
+}
+
+    .btn-guardar:hover {
+        background: var(--gold-accent);
+        transform: translateY(-2px);
+    }
+
+.btn-cancelar {
+    background: transparent;
+    border: none;
+    color: #999;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* 7. CARDS Y OTROS ELEMENTOS */
+.stat-card {
+    background: var(--white-pure);
+    padding: 25px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.icon-circle {
+    width: 55px;
+    height: 55px;
+    border-radius: 15px;
+    background: var(--gold-soft);
+    color: var(--brown-dark);
+    display: grid;
+    place-items: center;
+}
+
+.spinner-rd {
+    width: 45px;
+    height: 45px;
+    border: 5px solid var(--gold-soft);
+    border-top-color: var(--brown-dark);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 8. ANIMACIONES Y RESPONSIVO */
+.fade-in {
+    animation: animFadeIn 0.5s ease forwards;
+}
+
+@keyframes animFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .form-main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-preview-uniform {
+        order: -1;
+        margin-bottom: 25px;
+    }
+}

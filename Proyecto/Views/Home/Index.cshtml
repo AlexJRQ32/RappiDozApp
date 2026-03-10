@@ -1,0 +1,438 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@inject RappiDozApp.Data.ApplicationDbContext _context
+@model IEnumerable<RappiDozApp.Models.Restaurante>
+
+@{
+    ViewData["Title"] = "Inicio | RappiDoz";
+    var userId = HttpContextAccessor.HttpContext.Session.GetInt32("UsuarioId");
+
+    // VALIDACIÓN DE UBICACIÓN
+    bool tieneUbicacion = false;
+    decimal latActual = 9.9331m;
+    decimal lngActual = -84.1112m;
+
+    if (userId.HasValue)
+    {
+        var usuarioDb = _context.Usuarios.FirstOrDefault(u => u.Id == userId.Value);
+        if (usuarioDb != null && usuarioDb.Latitud.HasValue && usuarioDb.Latitud != 0)
+        {
+            tieneUbicacion = true;
+            latActual = usuarioDb.Latitud.Value;
+            lngActual = usuarioDb.Longitud.Value;
+        }
+    }
+}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<style>
+    /* --- HERO --- */
+    .hero {
+        margin-top: 55px;
+    }
+
+    /* --- EFECTO OPACO OSCURO PERO CON COLOR (TU PETICIÓN) --- */
+
+    /* 1. Oscurecemos la imagen base, pero mantenemos saturación */
+    .restaurant-card.cerrado-filtro .card-img-wrapper img {
+        filter: brightness(0.5) saturate(1); /* Brillo bajo, color vivo detrás */
+        opacity: 0.8; /* Ligera transparencia general de la imagen */
+    }
+
+    /* 2. Añadimos un velo negro transparente SOBRE la imagen */
+    .restaurant-card.cerrado-filtro .card-img-wrapper::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4); /* Velo negro al 40% */
+        z-index: 5;
+    }
+
+    .restaurant-card.cerrado-filtro {
+        cursor: not-allowed;
+        pointer-events: none;
+        background-color: #fafafa; /* Fondo ligeramente gris para la tarjeta */
+    }
+
+        /* Mantenemos el texto de info con brillo normal */
+        .restaurant-card.cerrado-filtro .info {
+            opacity: 1;
+            color: #666; /* Texto info un poco más tenue pero legible */
+        }
+
+    .overlay-cerrado {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10; /* Por encima del velo ::after */
+    }
+
+    .badge-cerrado {
+        background: #472825; /* Café corporativo */
+        color: white;
+        padding: 5px 12px;
+        border-radius: 8px;
+        font-weight: 800;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    /* --- GRID Y CARTAS PEQUEÑAS (ESCRITORIO) --- */
+    .scroll-horizontal-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        display: flex;
+        padding-bottom: 25px;
+        scrollbar-width: none;
+    }
+
+        .scroll-horizontal-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+    .grid-restaurantes-dinamico {
+        display: flex;
+        gap: 20px;
+        padding: 0 40px;
+    }
+
+    .link-restaurante-horizontal {
+        text-decoration: none !important;
+        color: inherit;
+        flex: 0 0 200px; /* Tamaño pequeño por defecto */
+    }
+
+    .restaurant-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid #f3e5d0;
+        height: 300px; /* Altura pequeña por defecto */
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .restaurant-card:hover:not(.cerrado-filtro) {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(71, 40, 37, 0.08);
+        }
+
+    .card-img-wrapper {
+        height: 140px;
+        position: relative;
+        overflow: hidden;
+        background: #eee;
+    }
+
+    .restaurant-logo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: 0.3s;
+    }
+
+    .info {
+        padding: 12px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+        .info h3 {
+            font-size: 0.95rem;
+            color: #472825;
+            font-weight: 800;
+            margin: 0 0 4px 0;
+        }
+
+    .horario-mini {
+        font-size: 0.75rem;
+        color: #888;
+        margin: 0 0 8px 0;
+    }
+
+    .meta {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #d3ab80;
+        margin: 0;
+    }
+
+    /* --- PASOS --- */
+    .como-funciona {
+        background: #fdf2e2;
+        padding: 60px 0;
+    }
+
+    .pasos {
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+    }
+
+    .paso {
+        text-align: center;
+        max-width: 300px;
+    }
+
+        .paso i {
+            font-size: 3rem;
+            color: #d3ab80;
+            margin-bottom: 15px;
+        }
+
+    /* --- RESPONSIVE: LA IMAGEN ES LA PROTAGONISTA (80% Tarjeta) --- */
+    @@media (max-width: 768px) {
+        .link-restaurante-horizontal {
+            flex: 0 0 160px; /* Mantenemos el ancho pequeño */
+        }
+
+        .restaurant-card {
+            height: 200px; /* Bajamos la altura total para que no sobre espacio blanco */
+            display: flex;
+            flex-direction: column;
+        }
+        /* --- LA IMAGEN SE COME LA TARJETA --- */
+        .card-img-wrapper {
+            height: 160px !important; /* Forzamos que la imagen sea casi toda la tarjeta */
+            border-bottom: 1px solid #f3e5d0;
+        }
+
+        .restaurant-logo {
+            height: 100%;
+            width: 100%;
+            object-fit: cover; /* Para que la imagen luzca profesional y no se estire */
+        }
+        /* --- INFORMACIÓN AL MÍNIMO --- */
+        .info {
+            height: 40px; /* Espacio mínimo para el nombre y meta */
+            padding: 4px 8px !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: white;
+        }
+
+            .info h3 {
+                font-size: 0.8rem !important;
+                margin: 0 !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            /* OCULTAR TODO LO QUE SOBRA */
+            .horario-mini, .info p:not(.meta) {
+                display: none !important;
+            }
+
+        .meta {
+            font-size: 0.65rem !important;
+            margin: 0 !important;
+            line-height: 1;
+        }
+        /* Ajuste de badge para que no estorbe */
+        .overlay-cerrado {
+            background-color: rgba(0, 0, 0, 0.2); /* Menos opacidad para ver más la imagen */
+        }
+
+        .badge-cerrado {
+            font-size: 0.55rem;
+            padding: 2px 6px;
+        }
+    }
+</style>
+
+@* HERO SECCIÓN *@
+<section class="hero">
+    <div class="hero-content">
+        <h1 style="color:white;">Entrega de comida hasta tu puerta</h1>
+        <form asp-controller="Home" asp-action="Explorar" method="get" class="search-container">
+            <div class="input-wrapper">
+                <i class="fas fa-map-marker-alt"></i>
+                <input type="text" name="buscar" placeholder="Ingresar dirección de entrega" required>
+            </div>
+            <button type="submit" class="btn-buscar">Buscar comida</button>
+        </form>
+    </div>
+</section>
+
+<main class="contenido-principal" style="background-color: #fff4e2; min-height: 100vh;">
+    <div class="zona-restringida">
+
+        @* CATEGORÍAS *@
+        <section class="categorias" style="padding: 40px 0;">
+            <h2 style="text-align: center; color: #472825; font-weight: 800; margin-bottom: 30px;">Explorar por categoría</h2>
+            <div class="grid-categorias" style="display: flex; justify-content: center; flex-wrap: wrap; gap: 15px;">
+                @foreach (var cat in new[] { (I: "hamburger", N: "Burgers"), (I: "pizza-slice", N: "Pizza"), (I: "drumstick-bite", N: "Pollo"), (I: "ice-cream", N: "Postres"), (I: "utensils", N: "Más") })
+                {
+                    <a asp-controller="Home" asp-action="Explorar" asp-route-buscar="@cat.N" class="categoria-card">
+                        <i class="fas fa-@cat.I"></i>
+                        <p style="font-size: 0.8rem;">@cat.N</p>
+                    </a>
+                }
+            </div>
+        </section>
+
+        @* RESTAURANTES *@
+        <section class="restaurantes" style="padding: 20px 0;">
+            <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 20px;">
+                <h2 style="color: #472825; font-weight: 800; margin: 0;">Restaurantes populares</h2>
+                <a asp-action="Explorar" asp-controller="Home" style="color: #d3ab80; font-weight: 700; text-decoration: none;">Ver todos</a>
+            </div>
+
+            <div class="scroll-horizontal-wrapper">
+                <div class="grid-restaurantes-dinamico">
+                    @if (Model != null)
+                    {
+                        @foreach (var restaurante in Model)
+                        {
+                            <a asp-controller="Restaurante" asp-action="Menu" asp-route-id="@restaurante.Id" class="link-restaurante-horizontal">
+                                <div class="restaurant-card @(restaurante.EstaAbierto ? "" : "cerrado-filtro")">
+                                    <div class="card-img-wrapper">
+                                        <img src="data:@(restaurante.ContentType ?? "image/png");base64,@Convert.ToBase64String(restaurante.LogoBinario ?? new byte[0])" class="restaurant-logo">
+                                        @if (!restaurante.EstaAbierto)
+                                        {
+                                            <div class="overlay-cerrado"><span class="badge-cerrado">CERRADO</span></div>
+                                        }
+                                    </div>
+                                    <div class="info">
+                                        <h3>@restaurante.NombreComercial</h3>
+                                        <p class="horario-mini"><i class="fa-regular fa-clock"></i> @restaurante.HoraApertura.ToString(@"hh\:mm") - @restaurante.HoraCierre.ToString(@"hh\:mm")</p>
+                                        <p class="meta">⭐ 4.8 • 20 min</p>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    }
+                </div>
+            </div>
+        </section>
+
+        @* MAPA *@
+        <section id="seccion-mapa" style="padding: 40px 20px;">
+            <div style="max-width: 900px; margin: 0 auto; background: white; padding: 25px; border-radius: 30px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                <h2 style="color: #472825; font-weight: 800; margin-bottom: 20px;">¿A dónde enviamos hoy?</h2>
+                <div id="map" style="height: 350px; width: 100%; border-radius: 20px; z-index: 1;"></div>
+
+                @if (userId == null)
+                {
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); border-radius: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px);">
+                        <i class="fas fa-lock" style="font-size: 3rem; color: #472825; margin-bottom: 15px;"></i>
+                        <h3 style="color: #472825; font-weight: 800;">Inicia sesión para guardar ubicación</h3>
+                        <a asp-controller="Acceso" asp-action="Login" style="background:#472825; color:white; padding:12px 30px; border-radius:15px; text-decoration:none; font-weight:bold; margin-top:10px;">INICIAR SESIÓN</a>
+                    </div>
+                }
+                else
+                {
+                    <form id="formUbicacion" asp-controller="Usuario" asp-action="GuardarUbicacion" method="post" style="margin-top: 20px;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" id="Latitud" name="Latitud" value="@latActual.ToString(System.Globalization.CultureInfo.InvariantCulture)" />
+                        <input type="hidden" id="Longitud" name="Longitud" value="@lngActual.ToString(System.Globalization.CultureInfo.InvariantCulture)" />
+                        <button type="submit" id="btn-confirmar-mapa" style="background:#472825; color:white; border:none; width:100%; padding:15px; border-radius:15px; font-weight:800; cursor:pointer;">
+                            <i class="fas fa-check-circle me-2"></i> @(tieneUbicacion ? "ACTUALIZAR UBICACIÓN" : "CONFIRMAR UBICACIÓN")
+                        </button>
+                    </form>
+                }
+            </div>
+        </section>
+
+        @* PASOS *@
+        <section class="como-funciona">
+            <h2 style="text-align: center; color: #472825; font-weight: 800; margin-bottom: 40px;">¿Cómo funciona?</h2>
+            <div class="pasos">
+                <div class="paso">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Ingresa dirección</h3>
+                    <p>Encuentra restaurantes cerca de ti.</p>
+                </div>
+                <div class="paso">
+                    <i class="fas fa-utensils"></i>
+                    <h3>Elige tu comida</h3>
+                    <p>Explora menús y selecciona tus favoritos.</p>
+                </div>
+                <div class="paso">
+                    <i class="fas fa-motorcycle"></i>
+                    <h3>Recibe pedido</h3>
+                    <p>Entrega rápida hasta tu puerta.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+@section Scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // 1. INICIALIZACIÓN DEL MAPA
+            const latIni = parseFloat("@latActual.ToString(System.Globalization.CultureInfo.InvariantCulture)");
+            const lngIni = parseFloat("@lngActual.ToString(System.Globalization.CultureInfo.InvariantCulture)");
+
+            const map = L.map('map').setView([latIni, lngIni], 15);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
+
+            const marker = L.marker([latIni, lngIni], { draggable: true }).addTo(map);
+
+            // 2. EVENTOS DEL MARCADOR
+            marker.on('dragend', function (e) {
+                const pos = e.target.getLatLng();
+                document.getElementById("Latitud").value = pos.lat;
+                document.getElementById("Longitud").value = pos.lng;
+            });
+
+            map.on('click', function (e) {
+                marker.setLatLng(e.latlng);
+                document.getElementById("Latitud").value = e.latlng.lat;
+                document.getElementById("Longitud").value = e.latlng.lng;
+            });
+
+            // 3. ENVÍO POR AJAX (GUARDAR UBICACIÓN)
+            const formUbi = document.getElementById('formUbicacion');
+            if (formUbi) {
+                formUbi.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Ubicación guardada!',
+                                text: 'Ahora verás restaurantes más cerca de ti.',
+                                confirmButtonColor: '#472825'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Error', text: data.message || 'No se pudo guardar.' });
+                        }
+                    })
+                    .catch(err => console.error("Error en Fetch:", err));
+                });
+            }
+        });
+    </script>
+}
