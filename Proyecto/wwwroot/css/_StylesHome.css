@@ -225,3 +225,74 @@
         font-size: 1.2rem;
     }
 }
+
+/* Map card utility used in Home/Index to contain Leaflet map */
+.map-card {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    padding: 25px;
+    border-radius: 30px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    overflow: hidden; /* crucial to clip map tiles to rounded corners */
+}
+
+.map-card #map {
+    border-radius: 20px;
+}
+
+/* Stronger rule for the "CERRADO" badge to ensure spacing in all load orders */
+.overlay-cerrado .badge-cerrado,
+.restaurant-card .overlay-cerrado .badge-cerrado {
+    letter-spacing: 1.2px !important;
+    padding: 6px 14px !important;
+    font-size: 0.75rem !important;
+    transform: translateY(-3px) !important;
+}
+
+
+/* Movimientos / Pedidos responsive fixes */
+.movimientos-container .movimientos-card details summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap; /* keep badge and price on one line */
+}
+
+/* Ensure left column can shrink (ellipsis) and right column (badge + price) does not wrap */
+.movimientos-container .movimientos-card details summary > div:first-child {
+    flex: 1 1 auto;
+    min-width: 0; /* allow truncation */
+}
+
+.movimientos-container .movimientos-card details summary > div:first-child p,
+.movimientos-container .movimientos-card details summary > div:first-child .titulo-resumen {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.movimientos-container .movimientos-card details summary > div:last-child {
+    flex: 0 0 auto; /* keep price and badge together */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.movimientos-container .movimientos-card details summary > div:last-child span {
+    display: inline-block;
+    white-space: nowrap; /* prevent badge from breaking into multiple lines */
+    padding: 6px 14px;
+    border-radius: 12px;
+}
+
+@media (max-width: 420px) {
+    /* Very small screens: keep structure but slightly reduce paddings to avoid overflow */
+    .movimientos-container .movimientos-card details summary > div:last-child span {
+        padding: 5px 8px;
+        font-size: 0.72rem;
+    }
+}

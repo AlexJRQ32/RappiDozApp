@@ -27,232 +27,81 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
 <style>
-    /* --- HERO --- */
-    .hero {
-        margin-top: 55px;
-    }
+/* --- HERO --- */
+.hero { margin-top: 55px; }
 
-    /* --- EFECTO OPACO OSCURO PERO CON COLOR (TU PETICIÓN) --- */
+/* EFECTO OPACO OSCURO PERO CON COLOR */
+.restaurant-card.cerrado-filtro .card-img-wrapper img { filter: brightness(0.5) saturate(1); opacity: 0.8; }
+.restaurant-card.cerrado-filtro .card-img-wrapper::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); z-index: 5; }
+.restaurant-card.cerrado-filtro { cursor: not-allowed; pointer-events: none; background-color: #fafafa; }
+.restaurant-card.cerrado-filtro .info { opacity: 1; color: #666; }
 
-    /* 1. Oscurecemos la imagen base, pero mantenemos saturación */
-    .restaurant-card.cerrado-filtro .card-img-wrapper img {
-        filter: brightness(0.5) saturate(1); /* Brillo bajo, color vivo detrás */
-        opacity: 0.8; /* Ligera transparencia general de la imagen */
-    }
+.overlay-cerrado { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 10; }
+.badge-cerrado {
+    background: #472825;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px; /* separa un poco las letras */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    transform: translateY(-3px); /* elevar ligeramente sobre la imagen */
+}
 
-    /* 2. Añadimos un velo negro transparente SOBRE la imagen */
-    .restaurant-card.cerrado-filtro .card-img-wrapper::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.4); /* Velo negro al 40% */
-        z-index: 5;
-    }
+/* GRID Y CARTAS PEQUEÑAS (ESCRITORIO) */
+.scroll-horizontal-wrapper { width: 100%; overflow-x: auto; display: flex; padding-bottom: 25px; scrollbar-width: none; }
+.scroll-horizontal-wrapper::-webkit-scrollbar { display: none; }
+.grid-restaurantes-dinamico { display: flex; gap: 20px; padding: 0 40px; }
+.link-restaurante-horizontal { text-decoration: none !important; color: inherit; flex: 0 0 200px; }
+.restaurant-card { background: white; border-radius: 20px; overflow: hidden; border: 1px solid #f3e5d0; height: 300px; display: flex; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.restaurant-card:hover:not(.cerrado-filtro) { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(71, 40, 37, 0.08); }
+.card-img-wrapper { height: 160px; position: relative; overflow: hidden; background: #eee; }
+.restaurant-logo { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
+.info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.info h3 { font-size: 0.95rem; color: #472825; font-weight: 800; margin: 0 0 4px 0; }
+.horario-mini { font-size: 0.75rem; color: #888; margin: 0 0 8px 0; }
+.meta { font-size: 0.8rem; font-weight: 700; color: #d3ab80; margin: 0; }
 
-    .restaurant-card.cerrado-filtro {
-        cursor: not-allowed;
-        pointer-events: none;
-        background-color: #fafafa; /* Fondo ligeramente gris para la tarjeta */
-    }
+/* PASOS */
+.como-funciona { background: #fdf2e2; padding: 60px 0; }
+.pasos { display: flex; justify-content: center; gap: 60px; }
+.paso { text-align: center; max-width: 300px; }
+.paso i { font-size: 3rem; color: #d3ab80; margin-bottom: 15px; }
 
-        /* Mantenemos el texto de info con brillo normal */
-        .restaurant-card.cerrado-filtro .info {
-            opacity: 1;
-            color: #666; /* Texto info un poco más tenue pero legible */
-        }
+/* RESPONSIVE */
+@@media (max-width: 768px) {
+    .link-restaurante-horizontal { flex: 0 0 160px; }
+    .restaurant-card { height: 210px; display: flex; flex-direction: column; }
+    .card-img-wrapper { height: 150px !important; border-bottom: 1px solid #f3e5d0; }
+    .restaurant-logo { height: 100%; width: 100%; object-fit: cover; }
+    .info { height: 50px; padding: 4px 8px !important; display: flex; flex-direction: column; justify-content: center; background: white; }
+    .info h3 { font-size: 0.8rem !important; margin: 0 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .horario-mini, .info p:not(.meta) { display: none !important; }
+    .meta { font-size: 0.65rem !important; margin: 7px 0 0 0 !important; line-height: 1; }
+    .overlay-cerrado { background-color: rgba(0,0,0,0.2); }
+    .badge-cerrado { font-size: 0.55rem; padding: 2px 6px; }
+}
 
-    .overlay-cerrado {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10; /* Por encima del velo ::after */
-    }
-
-    .badge-cerrado {
-        background: #472825; /* Café corporativo */
-        color: white;
-        padding: 5px 12px;
-        border-radius: 8px;
-        font-weight: 800;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-
-    /* --- GRID Y CARTAS PEQUEÑAS (ESCRITORIO) --- */
-    .scroll-horizontal-wrapper {
-        width: 100%;
-        overflow-x: auto;
-        display: flex;
-        padding-bottom: 25px;
-        scrollbar-width: none;
-    }
-
-        .scroll-horizontal-wrapper::-webkit-scrollbar {
-            display: none;
-        }
-
-    .grid-restaurantes-dinamico {
-        display: flex;
-        gap: 20px;
-        padding: 0 40px;
-    }
-
-    .link-restaurante-horizontal {
-        text-decoration: none !important;
-        color: inherit;
-        flex: 0 0 200px; /* Tamaño pequeño por defecto */
-    }
-
-    .restaurant-card {
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
-        border: 1px solid #f3e5d0;
-        height: 300px; /* Altura pequeña por defecto */
-        display: flex;
-        flex-direction: column;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-        .restaurant-card:hover:not(.cerrado-filtro) {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 20px rgba(71, 40, 37, 0.08);
-        }
-
-    .card-img-wrapper {
-        height: 140px;
-        position: relative;
-        overflow: hidden;
-        background: #eee;
-    }
-
-    .restaurant-logo {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: 0.3s;
-    }
-
-    .info {
-        padding: 12px;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-        .info h3 {
-            font-size: 0.95rem;
-            color: #472825;
-            font-weight: 800;
-            margin: 0 0 4px 0;
-        }
-
-    .horario-mini {
-        font-size: 0.75rem;
-        color: #888;
-        margin: 0 0 8px 0;
-    }
-
-    .meta {
-        font-size: 0.8rem;
-        font-weight: 700;
-        color: #d3ab80;
-        margin: 0;
-    }
-
-    /* --- PASOS --- */
-    .como-funciona {
-        background: #fdf2e2;
-        padding: 60px 0;
-    }
-
-    .pasos {
-        display: flex;
-        justify-content: center;
-        gap: 60px;
-    }
-
-    .paso {
-        text-align: center;
-        max-width: 300px;
-    }
-
-        .paso i {
-            font-size: 3rem;
-            color: #d3ab80;
-            margin-bottom: 15px;
-        }
-
-    /* --- RESPONSIVE: LA IMAGEN ES LA PROTAGONISTA (80% Tarjeta) --- */
-    @@media (max-width: 768px) {
-        .link-restaurante-horizontal {
-            flex: 0 0 160px; /* Mantenemos el ancho pequeño */
-        }
-
-        .restaurant-card {
-            height: 200px; /* Bajamos la altura total para que no sobre espacio blanco */
-            display: flex;
-            flex-direction: column;
-        }
-        /* --- LA IMAGEN SE COME LA TARJETA --- */
-        .card-img-wrapper {
-            height: 160px !important; /* Forzamos que la imagen sea casi toda la tarjeta */
-            border-bottom: 1px solid #f3e5d0;
-        }
-
-        .restaurant-logo {
-            height: 100%;
-            width: 100%;
-            object-fit: cover; /* Para que la imagen luzca profesional y no se estire */
-        }
-        /* --- INFORMACIÓN AL MÍNIMO --- */
-        .info {
-            height: 40px; /* Espacio mínimo para el nombre y meta */
-            padding: 4px 8px !important;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background: white;
-        }
-
-            .info h3 {
-                font-size: 0.8rem !important;
-                margin: 0 !important;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            /* OCULTAR TODO LO QUE SOBRA */
-            .horario-mini, .info p:not(.meta) {
-                display: none !important;
-            }
-
-        .meta {
-            font-size: 0.65rem !important;
-            margin: 0 !important;
-            line-height: 1;
-        }
-        /* Ajuste de badge para que no estorbe */
-        .overlay-cerrado {
-            background-color: rgba(0, 0, 0, 0.2); /* Menos opacidad para ver más la imagen */
-        }
-
-        .badge-cerrado {
-            font-size: 0.55rem;
-            padding: 2px 6px;
-        }
-    }
+/* Utility classes to replace inline styles used in the view */
+.hero-content h1 { color: white; }
+.contenido-principal { background-color: #fff4e2; min-height: 100vh; }
+.categorias { padding: 40px 0; }
+.grid-categorias { display:flex; justify-content:center; flex-wrap:wrap; gap:15px; }
+.categoria-card p { font-size: 0.8rem; }
+.restaurantes { padding: 20px 0; }
+.restaurantes .container-header { max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding:0 20px; }
+.restaurantes .container-header h2 { color:#472825; font-weight:800; margin:0; }
+.restaurantes .container-header a { color:#d3ab80; font-weight:700; text-decoration:none; }
+.seccion-mapa { padding: 40px 20px; }
+.map-card { max-width:900px; margin:0 auto; background:white; padding:25px; border-radius:30px; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.05); }
+.map-card #map { height:350px; width:100%; border-radius:20px; z-index:1; }
+.locked-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.7); border-radius:30px; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000; backdrop-filter: blur(4px); }
+.locked-overlay i { font-size:3rem; color:#472825; margin-bottom:15px; }
+.locked-overlay h3 { color:#472825; font-weight:800; }
+.locked-overlay a { background:#472825; color:white; padding:12px 30px; border-radius:15px; text-decoration:none; font-weight:bold; margin-top:10px; }
+.btn-confirmar-mapa { margin-top:20px; }
 </style>
 
 @* HERO SECCIÓN *@
@@ -323,9 +172,9 @@
 
         @* MAPA *@
         <section id="seccion-mapa" style="padding: 40px 20px;">
-            <div style="max-width: 900px; margin: 0 auto; background: white; padding: 25px; border-radius: 30px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+            <div class="map-card">
                 <h2 style="color: #472825; font-weight: 800; margin-bottom: 20px;">¿A dónde enviamos hoy?</h2>
-                <div id="map" style="height: 350px; width: 100%; border-radius: 20px; z-index: 1;"></div>
+                <div id="map" style="height: 350px; width: 100%;"></div>
 
                 @if (userId == null)
                 {

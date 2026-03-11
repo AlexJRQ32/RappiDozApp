@@ -7,7 +7,7 @@ using RappiDozApp.Models;
 using System.Net;
 using System.Net.Mail;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc.Rendering; // <--- Necesario para SelectList
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace RappiDozApp.Controllers
 {
@@ -20,7 +20,31 @@ namespace RappiDozApp.Controllers
             _context = context;
         }
 
-        // --- LOGIN ---
+        #region MÉTODOS DE SESIÓN
+        // --- MÉTODO PRIVADO PARA LOGUEAR AUTOMÁTICAMENTE ---
+        // Se encarga de llenar todos los campos necesarios en la sesión
+        private void EstablecerSesion(Usuario usuario)
+        {
+            HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
+            HttpContext.Session.SetString("NombreUsuario", usuario.NombreCompleto);
+            HttpContext.Session.SetString("RolUsuario", usuario.Rol?.NombreRol ?? "Cliente");
+            HttpContext.Session.SetString("EmailUsuario", usuario.Email);
+
+            // Intentamos obtener el ID del restaurante si el usuario ya tiene uno asociado
+            var primerRestaurante = usuario.Restaurantes?.FirstOrDefault();
+            if (primerRestaurante != null)
+            {
+                HttpContext.Session.SetInt32("IdRestaurante", primerRestaurante.Id);
+            }
+
+            if (usuario.FotoBinaria != null)
+            {
+                HttpContext.Session.SetString("FotoUsuario", Convert.ToBase64String(usuario.FotoBinaria));
+            }
+        }
+        #endregion
+
+        #region LOGIN Y LOGOUT
         public IActionResult Login()
         {
             return View("~/Views/Login/login.cshtml");
@@ -36,32 +60,14 @@ namespace RappiDozApp.Controllers
                 return View("~/Views/Login/login.cshtml");
             }
 
-            var correoLimpio = correo.Trim().ToLower();
-            var passLimpia = password.Trim();
-
             var usuario = await _context.Usuarios
                 .Include(u => u.Rol)
                 .Include(u => u.Restaurantes)
-                .FirstOrDefaultAsync(u => u.Email.ToLower() == correoLimpio && u.PasswordHash == passLimpia);
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == correo.Trim().ToLower() && u.PasswordHash == password.Trim());
 
             if (usuario != null)
             {
-                HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
-                HttpContext.Session.SetString("NombreUsuario", usuario.NombreCompleto);
-                HttpContext.Session.SetString("RolUsuario", usuario.Rol?.NombreRol ?? "Cliente");
-                HttpContext.Session.SetString("EmailUsuario", usuario.Email);
-
-                var primerRestaurante = usuario.Restaurantes.FirstOrDefault();
-                if (primerRestaurante != null)
-                {
-                    HttpContext.Session.SetInt32("IdRestaurante", primerRestaurante.Id);
-                }
-
-                if (usuario.FotoBinaria != null)
-                {
-                    HttpContext.Session.SetString("FotoUsuario", Convert.ToBase64String(usuario.FotoBinaria));
-                }
-
+                EstablecerSesion(usuario);
                 return RedirectToAction("Index", "Home");
             }
 
@@ -69,32 +75,15 @@ namespace RappiDozApp.Controllers
             return View("~/Views/Login/login.cshtml");
         }
 
-        // --- OLVIDASTE CONTRASEÑA ---
-        public IActionResult OlvidastePassword()
+        public async Task<IActionResult> Salir()
         {
-            return View("~/Views/Login/olvidaste-contrasena.cshtml");
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
         }
+        #endregion
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OlvidastePassword(string correo)
-        {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == correo);
-
-            if (usuario != null)
-            {
-                bool enviado = EnviarEmail(usuario.Email, usuario.PasswordHash);
-                ViewBag.Mensaje = enviado ? "Se ha enviado tu contraseña actual." : "Error al enviar correo.";
-            }
-            else
-            {
-                ViewBag.Error = "El correo electrónico no esta registrado.";
-            }
-
-            return View("~/Views/Login/olvidaste-contrasena.cshtml");
-        }
-
-        // --- SELECTOR ---
+        #region FLUJO DE REGISTRO Y ROLES
+        // Muestra la vista para elegir entre Cliente o Restaurante
         public IActionResult Selector(int usuarioId)
         {
             ViewBag.UsuarioId = usuarioId;
@@ -104,28 +93,33 @@ namespace RappiDozApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AsignarRol(int usuarioId, int rolId)
         {
-            var usuario = await _context.Usuarios.FindAsync(usuarioId);
+            var usuario = await _context.Usuarios.Include(u => u.Rol).FirstOrDefaultAsync(u => u.Id == usuarioId);
             if (usuario == null) return NotFound();
 
             usuario.RolId = rolId;
             await _context.SaveChangesAsync();
 
-            if (rolId == 2) // Asumiendo que 2 es Restaurante
+            // Si el rol es Restaurante (ID 2), lo mandamos a llenar la info del local
+            if (rolId == 2)
             {
                 return RedirectToAction("RegistroRestaurante", "Acceso", new { id = usuarioId });
             }
 
+            // SI ES CLIENTE: Lo logueamos automáticamente y enviamos al Home
+            // Recargamos el usuario para asegurar que el include del Rol traiga el nombre nuevo
+            var usuarioFinal = await _context.Usuarios
+                .Include(u => u.Rol)
+                .FirstOrDefaultAsync(u => u.Id == usuarioId);
+
+            EstablecerSesion(usuarioFinal);
             return RedirectToAction("Index", "Home");
         }
 
-        // --- REGISTRO INFO RESTAURANTE (GET) ---
+        // GET: Vista para registrar los datos del Restaurante
         public async Task<IActionResult> RegistroRestaurante(int id)
         {
             ViewBag.UsuarioId = id;
-
-            // CARGAMOS LAS CATEGORÍAS PARA EL SELECT
             ViewBag.Categorias = new SelectList(await _context.Categorias.ToListAsync(), "Id", "Nombre");
-
             return View("~/Views/Login/restaurante-info.cshtml");
         }
 
@@ -133,7 +127,7 @@ namespace RappiDozApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GuardarRestaurante(Restaurante restaurante)
         {
-            // Removemos validaciones de navegación para que no den error
+            // Limpiamos validaciones de objetos relacionados para evitar que el ModelState sea inválido
             ModelState.Remove("Usuario");
             ModelState.Remove("Productos");
             ModelState.Remove("Categoria");
@@ -143,90 +137,99 @@ namespace RappiDozApp.Controllers
                 _context.Restaurantes.Add(restaurante);
                 await _context.SaveChangesAsync();
 
-                TempData["MensajeExito"] = "¡Negocio registrado con exito!";
-                return RedirectToAction("Login", "Acceso");
+                // LOGUEO AUTOMÁTICO: Una vez creado el restaurante, iniciamos sesión para el dueño
+                var usuarioConRol = await _context.Usuarios
+                    .Include(u => u.Rol)
+                    .Include(u => u.Restaurantes)
+                    .FirstOrDefaultAsync(u => u.Id == restaurante.UsuarioId);
+
+                if (usuarioConRol != null)
+                {
+                    EstablecerSesion(usuarioConRol);
+                }
+
+                TempData["MensajeExito"] = "¡Negocio registrado con éxito!";
+                return RedirectToAction("Index", "Home");
             }
 
-            // Si hay error, recargamos las categorías antes de volver a la vista
+            // Si falla, recargamos la vista con los errores
             ViewBag.UsuarioId = restaurante.UsuarioId;
             ViewBag.Categorias = new SelectList(await _context.Categorias.ToListAsync(), "Id", "Nombre", restaurante.CategoriaId);
-            ViewBag.Error = "Por favor, verifique los datos ingresados.";
-
             return View("~/Views/Login/restaurante-info.cshtml", restaurante);
         }
+        #endregion
 
-        public async Task<IActionResult> Salir()
+        #region DASHBOARD Y RECUPERACIÓN
+        public async Task<IActionResult> Dashboard()
         {
-            HttpContext.Session.Clear();
-            return RedirectToAction("Index", "Home");
+            int? userId = HttpContext.Session.GetInt32("UsuarioId");
+            string? rol = HttpContext.Session.GetString("RolUsuario");
+
+            if (userId == null) return RedirectToAction("Login", "Acceso");
+
+            ViewBag.ListaUsuarios = new List<Usuario>();
+            ViewBag.ListaRestaurantes = new List<Restaurante>();
+            ViewBag.RolUsuario = rol;
+
+            if (rol == "Administrador")
+            {
+                ViewBag.ListaUsuarios = await _context.Usuarios.Include(u => u.Rol).OrderByDescending(u => u.Id).ToListAsync();
+                ViewBag.ListaRestaurantes = await _context.Restaurantes.Include(r => r.Usuario).Include(r => r.Categoria).ToListAsync();
+            }
+            else if (rol == "Restaurante")
+            {
+                ViewBag.ListaRestaurantes = await _context.Restaurantes.Include(r => r.Categoria).Where(r => r.UsuarioId == userId).ToListAsync();
+            }
+
+            return View("~/Views/Dashboard/index.cshtml");
+        }
+
+        public IActionResult OlvidastePassword() => View("~/Views/Login/olvidaste-contrasena.cshtml");
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> OlvidastePassword(string correo)
+        {
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == correo);
+            if (usuario != null)
+            {
+                bool enviado = EnviarEmail(usuario.Email, usuario.PasswordHash);
+                ViewBag.Mensaje = enviado ? "Se ha enviado tu contraseña actual." : "Error al enviar correo.";
+            }
+            else
+            {
+                ViewBag.Error = "El correo electrónico no está registrado.";
+            }
+            return View("~/Views/Login/olvidaste-contrasena.cshtml");
         }
 
         private bool EnviarEmail(string correoDestino, string passwordRecuperada)
         {
             try
             {
+                // Configurar con tus credenciales reales
                 string correoEmisor = "tu-correo@gmail.com";
-                string claveAplicacion = "tu-clave-de-aplicacion";
+                string claveAplicacion = "tu-clave";
 
                 MailMessage mail = new MailMessage();
                 mail.To.Add(correoDestino);
                 mail.From = new MailAddress(correoEmisor, "Soporte Rappi'Doz");
-                mail.Subject = "Recuperación de Contraseña - Rappi'Doz";
+                mail.Subject = "Recuperación de Contraseña";
                 mail.Body = $"Tu contraseña actual es: {passwordRecuperada}";
                 mail.IsBodyHtml = true;
 
-                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
-                smtp.EnableSsl = true;
-                smtp.UseDefaultCredentials = false;
-                smtp.Credentials = new NetworkCredential(correoEmisor, claveAplicacion);
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)
+                {
+                    EnableSsl = true,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(correoEmisor, claveAplicacion)
+                };
 
                 smtp.Send(mail);
                 return true;
             }
-            catch (Exception)
-            {
-                return false;
-            }
+            catch { return false; }
         }
-
-        public async Task<IActionResult> Dashboard()
-        {
-            // 1. Verificación de sesión
-            int? userId = HttpContext.Session.GetInt32("UsuarioId");
-            string? rol = HttpContext.Session.GetString("RolUsuario");
-
-            if (userId == null) return RedirectToAction("Login", "Acceso");
-
-            // 2. Inicialización de seguridad (Evita el error de pantalla roja)
-            ViewBag.ListaUsuarios = new List<Usuario>();
-            ViewBag.ListaRestaurantes = new List<Restaurante>();
-            ViewBag.RolUsuario = rol;
-
-            // 3. Lógica según el Rol exacto
-            if (rol == "Administrador")
-            {
-                // El Admin ve TODO el sistema
-                ViewBag.ListaUsuarios = await _context.Usuarios
-                    .Include(u => u.Rol)
-                    .OrderByDescending(u => u.Id)
-                    .ToListAsync();
-
-                ViewBag.ListaRestaurantes = await _context.Restaurantes
-                    .Include(r => r.Usuario)
-                    .Include(r => r.Categoria)
-                    .ToListAsync();
-            }
-            else if (rol == "Restaurante") // <-- Cambiado de "Dueño" a "Restaurante"
-            {
-                // El usuario tipo Restaurante solo ve sus propios locales
-                ViewBag.ListaRestaurantes = await _context.Restaurantes
-                    .Include(r => r.Categoria)
-                    .Where(r => r.UsuarioId == userId)
-                    .ToListAsync();
-            }
-
-            return View("~/Views/Dashboard/index.cshtml");
-        }
+        #endregion
     }
 }
-

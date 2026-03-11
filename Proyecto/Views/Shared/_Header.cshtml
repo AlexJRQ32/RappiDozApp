@@ -219,6 +219,16 @@
         {
             <a asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house"></i> Inicio</a>
             <a asp-controller="Home" asp-action="Explorar"><i class="fa-solid fa-magnifying-glass"></i> Búsqueda</a>
+            @* --- BOTÓN DE UBICACIÓN INTEGRADO --- *@
+            <a href="javascript:void(0);" onclick="window.abrirMapa()">
+                <i class="fa-solid fa-location-dot"></i>
+                @* Si el usuario no tiene ubicación, mostramos un aviso visual opcional *@
+                @if (!tieneUbicacion)
+                {
+                    <span style="font-size: 0.7rem; color: #ff4d4d; margin-left: -5px; vertical-align: top;">!</span>
+                }
+                Ubicación
+            </a>
 
             <div class="cart-container">
                 @if (tieneUbicacion)
@@ -331,7 +341,7 @@
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#472825',
-            confirmButtonText: 'Configurar Perfil',
+            confirmButtonText: 'Ir al Mapa',
             background: '#fff4e2',
             color: '#472825',
             didOpen: () => {
@@ -343,7 +353,7 @@
             },
         }).then((result) => {
             if (result.isConfirmed) {
-                abrirPerfil();
+                abrirMapa();
             }
         });
     }

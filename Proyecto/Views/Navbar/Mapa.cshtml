@@ -1,0 +1,120 @@
+﻿@model RappiDozApp.Models.Usuario
+
+@{
+    var lat = Model.Latitud?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "9.9333";
+    var lng = Model.Longitud?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-84.0833";
+}
+
+<style>
+    .modal-full-height {
+        display: flex;
+        flex-direction: column;
+        max-height: 90vh; /* Se adapta a la pantalla del móvil */
+    }
+
+    #mapa-final {
+        min-height: 300px;
+        height: 50vh; /* Altura dinámica basada en el viewport */
+        width: 100%;
+        background: #f8f9fa;
+        z-index: 1;
+    }
+
+    /* Mejora del botón al pasar el mouse */
+    #btnConfirmarFinal:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.2);
+        box-shadow: 0 10px 20px rgba(71, 40, 37, 0.3) !important;
+    }
+
+    /* Ajustes para móviles pequeños */
+    @@media (max-width: 576px) {
+        #mapa-final {
+            height: 40vh;
+        }
+
+        .modal-content {
+            border-radius: 25px 25px 0 0 !important;
+        }
+        /* Estilo "Drawer" en móvil */
+    }
+</style>
+
+<div class="modal-content modal-full-height" style="border-radius: 35px; border: none; overflow: hidden; background: #fff;">
+    <div class="modal-header border-0 p-4 pb-2">
+        <div class="w-100 text-center">
+            <div style="width: 50px; height: 5px; background: #e0e0e0; border-radius: 10px; margin: 0 auto 15px;"></div>
+            <h4 class="fw-800 mb-0" style="color: #472825; font-weight: 900; letter-spacing: -0.5px;">Confirma tu dirección</h4>
+            <p class="text-muted small mb-0">Arrastra el pin hasta tu ubicación exacta</p>
+        </div>
+        <button type="button" class="btn-close position-absolute end-0 top-0 m-4 shadow-none" data-bs-dismiss="modal"></button>
+    </div>
+
+    <div class="modal-body p-3 flex-grow-1">
+        <div class="position-relative h-100" style="border-radius: 25px; overflow: hidden; border: 1px solid #f0f0f0;">
+            <div id="mapa-final" data-lat="@lat" data-lng="@lng"></div>
+
+            <div class="position-absolute bottom-0 start-50 translate-middle-x mb-3" style="z-index: 1000; pointer-events: none; width: 90%;">
+                <div class="bg-white text-dark shadow-sm p-2 px-3 border text-center rounded-pill" style="font-size: 0.75rem; opacity: 0.95;">
+                    <i class="fas fa-map-marker-alt text-danger me-1"></i> Mueve el mapa para ajustar el pin
+                </div>
+            </div>
+        </div>
+
+        @Html.AntiForgeryToken()
+        <input type="hidden" id="lat-hidden" value="@lat">
+        <input type="hidden" id="lng-hidden" value="@lng">
+    </div>
+
+    <div class="modal-footer border-0 p-4 pt-2">
+        <button type="button" id="btnConfirmarFinal" class="btn btn-dark w-100 rounded-pill py-3 fw-bold shadow-lg"
+                style="background: #472825; border:none; transition: all 0.3s ease;">
+            Confirmar esta ubicación
+        </button>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var mapFinal, markerFinal;
+        var latIni = parseFloat($('#mapa-final').data('lat'));
+        var lngIni = parseFloat($('#mapa-final').data('lng'));
+
+        // ESTO ES LO QUE LE DA "PODER": Espera a que el modal se abra para cargar el mapa
+        // Evita el error de mapas grises o mal centrados
+        $('#tuModalID').on('shown.bs.modal', function () {
+            if (!mapFinal) {
+                mapFinal = L.map('mapa-final', {
+                    zoomControl: false // Quitamos botones feos para un look más limpio
+                }).setView([latIni, lngIni], 16);
+
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; RappiDoz'
+                }).addTo(mapFinal);
+
+                // Pin personalizado con el color de tu marca (#472825)
+                var iconRappi = L.icon({
+                    iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 40]
+                });
+
+                markerFinal = L.marker([latIni, lngIni], {
+                    draggable: true,
+                    icon: iconRappi
+                }).addTo(mapFinal);
+
+                markerFinal.on('dragend', function (e) {
+                    var pos = markerFinal.getLatLng();
+                    $('#lat-hidden').val(pos.lat);
+                    $('#lng-hidden').val(pos.lng);
+                });
+            } else {
+                mapFinal.invalidateSize(); // Ajusta el mapa si la ventana cambió
+            }
+        });
+    });
+</script>

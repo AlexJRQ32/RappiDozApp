@@ -5,22 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Rappi'Doz</title>
 
-    @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
+    @* 1. CSS LIBRARIES (Prioridad de Estilos) *@
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    @* 2. TUS ESTILOS ORIGINALES *@
     <link rel="stylesheet" href="~/css/styles.css" />
     <link href="~/css/site.css" rel="stylesheet" />
     <link href="~/css/_StylesCRUDs.css" rel="stylesheet" />
     <link href="~/css/_StylesHome.css" rel="stylesheet" />
     <link href="~/css/_StylesNavbar.css" rel="stylesheet" />
     <link href="~/css/_StylesPedido.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/_StylesShared.css" rel="stylesheet" />
 </head>
 <body>
     @await Html.PartialAsync("_PageTransition")
-    
+
     @await Html.PartialAsync("_Header")
 
- 
     @RenderBody()
 
     <div class="modal fade" id="modalGeneral" tabindex="-1" aria-hidden="true" style="z-index: 11000;">
@@ -29,23 +32,23 @@
             </div>
         </div>
     </div>
-    
 
     @await Html.PartialAsync("_Footer")
 
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @* 3. SCRIPTS (Primero librerías, luego tu lógica) *@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <script src="~/js/cupones.js" asp-append-version="true"></script>
     <script src="~/js/rating.js" asp-append-version="true"></script>
+
     <script>
         // ==========================================
         // 1. GESTIÓN DE PERFIL (IMAGEN Y ENVÍO)
         // ==========================================
 
-        // Vista previa de la imagen al seleccionarla
         $(document).on('change', '#fotoInput', function() {
             const file = this.files[0];
             if (file) {
@@ -57,7 +60,6 @@
             }
         });
 
-        // Guardar cambios del perfil por AJAX
         $(document).on('submit', '#formPerfilUsuario', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
@@ -70,15 +72,11 @@
                 contentType: false,
                 success: function(res) {
                     if(res.success) {
-                        // Actualización visual inmediata en el Navbar
                         $("#navNombreUsuario").text($("#NombreCompleto").val());
                         if ($("#navFotoUsuario").length) {
                             $("#navFotoUsuario").attr('src', $('#previewPerfil').attr('src'));
                         }
-
-                        // Cerrar modal
                         bootstrap.Modal.getInstance(document.getElementById('modalGeneral')).hide();
-
                         Swal.fire({
                             icon: 'success',
                             title: '¡Actualizado!',
@@ -86,7 +84,7 @@
                             timer: 1500,
                             showConfirmButton: false
                         }).then(() => {
-                            window.location.reload(); // Sincroniza sesión del servidor
+                            window.location.reload();
                         });
                     } else {
                         Swal.fire('Error', res.message, 'error');
@@ -143,6 +141,116 @@
             fetch('/Usuario/Perfil').then(r => r.text()).then(html => { contenedor.innerHTML = html; });
         };
 
+        window.abrirMapa = function() {
+            const modalEl = document.getElementById('modalGeneral');
+            const contenedor = document.getElementById('bodyModalGeneral');
+            const modalBootstrap = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+            contenedor.innerHTML = `
+                <div class="text-center p-5" style="background: white; border-radius: 30px;">
+                    <div class="spinner-border text-warning"></div>
+                    <p class="mt-2 fw-bold">Preparando ubicación...</p>
+                </div>`;
+
+            modalBootstrap.show();
+
+            modalEl.addEventListener('shown.bs.modal', function () {
+                fetch('/Usuario/Mapa')
+                    .then(r => r.text())
+                    .then(html => {
+                        contenedor.innerHTML = html;
+                        setTimeout(() => {
+                            inicializarMapaEfectivo();
+                        }, 100);
+                    });
+            }, { once: true });
+        };
+
+        function inicializarMapaEfectivo() {
+            const el = document.getElementById('mapa-final');
+            if (!el) return;
+
+            const lat = parseFloat(el.getAttribute('data-lat'));
+            const lng = parseFloat(el.getAttribute('data-lng'));
+
+            const map = L.map('mapa-final', {
+                zoomControl: false
+            }).setView([lat, lng], 17);
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            const goldIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41]
+            });
+
+            const marker = L.marker([lat, lng], { icon: goldIcon, draggable: true }).addTo(map);
+
+            const sync = (la, ln) => {
+                document.getElementById('lat-hidden').value = la.toFixed(6);
+                document.getElementById('lng-hidden').value = ln.toFixed(6);
+            };
+
+            map.on('click', e => {
+                marker.setLatLng(e.latlng);
+                sync(e.latlng.lat, e.latlng.lng);
+            });
+
+            marker.on('dragend', () => {
+                sync(marker.getLatLng().lat, marker.getLatLng().lng);
+            });
+
+            setTimeout(() => { map.invalidateSize(); }, 200);
+        }
+
+        $(document).on('click', '#btnConfirmarFinal', async function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const btn = $(this);
+            const data = {
+                Latitud: $('#lat-hidden').val(),
+                Longitud: $('#lng-hidden').val(),
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+            };
+
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
+
+            try {
+                const res = await $.post('/Usuario/GuardarUbicacion', data);
+
+                if (res.success) {
+                    await Swal.fire({
+                        title: '¡Ubicación Actualizada!',
+                        text: 'Tu punto de entrega se guardó correctamente.',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        background: '#fff4e2',
+                        color: '#472825',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            const modalEl = document.getElementById('modalGeneral');
+                            const modalBootstrap = bootstrap.Modal.getInstance(modalEl);
+                            if(modalBootstrap) modalBootstrap.hide();
+                        }
+                    });
+                    window.location.href = window.location.href;
+                } else {
+                    btn.prop('disabled', false).text('Confirmar Ubicación');
+                    Swal.fire('Error', res.message, 'error');
+                }
+            } catch (err) {
+                btn.prop('disabled', false).text('Confirmar Ubicación');
+            }
+            return false;
+        });
+
         window.abrirCalificar = function() {
             const modalEl = document.getElementById('modalGeneral');
             const contenedor = document.getElementById('bodyModalGeneral');
@@ -152,7 +260,6 @@
             fetch('/Valoracion/Crear').then(r => r.text()).then(html => { contenedor.innerHTML = html; });
         };
     </script>
-
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

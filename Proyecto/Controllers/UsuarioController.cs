@@ -33,6 +33,19 @@ namespace RappiDozApp.Controllers
             return PartialView("~/Views/CRUDs/users-form.cshtml", usuario);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Mapa()
+        {
+            int? userId = HttpContext.Session.GetInt32("UsuarioId");
+            if (userId == null) return Unauthorized();
+
+            var usuario = await _context.Usuarios.FindAsync(userId);
+            if (usuario == null) return NotFound();
+
+            // Importante: La ruta debe coincidir exactamente con donde tienes el archivo .cshtml
+            return PartialView("~/Views/Navbar/Mapa.cshtml", usuario);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GuardarPerfil(Usuario model, IFormFile? fotoArchivo, string? nuevaPassword)
