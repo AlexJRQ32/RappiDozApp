@@ -22,19 +22,21 @@ namespace RappiDozApp.Controllers
             int? userId = HttpContext.Session.GetInt32("UsuarioId");
             bool tieneUbicacion = false;
 
-            if (userId != null)
+            if (userId.HasValue)
             {
-                // Buscamos al usuario en la base de datos
-                var usuario = await _context.Usuarios.FindAsync(userId);
-                // Si movió el marcador (no es 0 ni el centro por defecto), tiene ubicación
-                if (usuario != null && usuario.Latitud != 0 && usuario.Latitud != 9.9281m)
-                {
-                    tieneUbicacion = true;
-                }
+                // 1. Buscamos si el usuario tiene AL MENOS UNA ubicación guardada
+                // en la nueva tabla de UbicacionUsuario
+                tieneUbicacion = await _context.UbicacionUsuario
+                    .AnyAsync(u => u.IdUsuario == userId.Value);
             }
 
-            ViewBag.TieneUbicacion = tieneUbicacion; // Esto lo lee el HTML para bloquear botones
-            var restaurantes = await _context.Restaurantes.Include(r => r.Categoria).ToListAsync();
+            // 2. Pasamos el dato a la View (para bloquear el botón de "Comprar" si no tiene dirección)
+            ViewBag.TieneUbicacion = tieneUbicacion;
+
+            // 3. Cargamos los restaurantes
+            var restaurantes = await _context.Restaurantes.ToListAsync();
+
+            // Ordenamos: Abiertos primero
             return View(restaurantes.OrderByDescending(r => r.EstaAbierto).ToList());
         }
 

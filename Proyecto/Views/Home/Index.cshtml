@@ -1,4 +1,5 @@
 @using Microsoft.AspNetCore.Http
+@using System.Globalization
 @inject IHttpContextAccessor HttpContextAccessor
 @inject RappiDozApp.Data.ApplicationDbContext _context
 @model IEnumerable<RappiDozApp.Models.Restaurante>
@@ -7,19 +8,33 @@
     ViewData["Title"] = "Inicio | RappiDoz";
     var userId = HttpContextAccessor.HttpContext.Session.GetInt32("UsuarioId");
 
-    // VALIDACIÓN DE UBICACIÓN
+    // VALORES POR DEFECTO (San José)
     bool tieneUbicacion = false;
-    decimal latActual = 9.9331m;
-    decimal lngActual = -84.1112m;
+    double latActual = 9.9331; 
+    double lngActual = -84.1112;
 
     if (userId.HasValue)
     {
-        var usuarioDb = _context.Usuarios.FirstOrDefault(u => u.Id == userId.Value);
-        if (usuarioDb != null && usuarioDb.Latitud.HasValue && usuarioDb.Latitud != 0)
+        try 
         {
-            tieneUbicacion = true;
-            latActual = usuarioDb.Latitud.Value;
-            lngActual = usuarioDb.Longitud.Value;
+            // Buscamos la última ubicación guardada
+            var ultimaUbi = _context.UbicacionUsuario
+                .Where(u => u.IdUsuario == userId.Value)
+                .OrderByDescending(u => u.IdUbicacion) // Asegúrate que el nombre sea Id o IdUbicacion según tu clase
+                .FirstOrDefault();
+
+            if (ultimaUbi != null)
+            {
+                tieneUbicacion = true;
+                // USAMOS CONVERT PARA EVITAR EL ERROR DE CAST (Double vs Single)
+                latActual = Convert.ToDouble(ultimaUbi.Latitud);
+                lngActual = Convert.ToDouble(ultimaUbi.Longitud);
+            }
+        }
+        catch (Exception) 
+        {
+            // Si hay error de casteo o base de datos, mantenemos los valores por defecto
+            tieneUbicacion = false;
         }
     }
 }
@@ -27,52 +42,111 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
 <style>
-/* --- HERO --- */
-.hero { margin-top: 55px; }
+    /* --- HERO --- */
+    .hero { margin-top: 55px; }
 
-/* EFECTO OPACO OSCURO PERO CON COLOR */
-.restaurant-card.cerrado-filtro .card-img-wrapper img { filter: brightness(0.5) saturate(1); opacity: 0.8; }
-.restaurant-card.cerrado-filtro .card-img-wrapper::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); z-index: 5; }
-.restaurant-card.cerrado-filtro { cursor: not-allowed; pointer-events: none; background-color: #fafafa; }
-.restaurant-card.cerrado-filtro .info { opacity: 1; color: #666; }
+    /* ESTILOS DE CARTAS */
+    .restaurant-card.cerrado-filtro .card-img-wrapper img { filter: brightness(0.5) saturate(1); opacity: 0.8; }
+    .restaurant-card.cerrado-filtro .card-img-wrapper::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); z-index: 5; }
+    .restaurant-card.cerrado-filtro { cursor: not-allowed; pointer-events: none; background-color: #fafafa; }
+    
+    .badge-cerrado {
+        background: #472825; color: white; padding: 6px 14px; border-radius: 8px;
+        font-weight: 800; font-size: 0.75rem; text-transform: uppercase;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
 
-.overlay-cerrado { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 10; }
-.badge-cerrado {
-    background: #472825;
-    color: white;
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-weight: 800;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 1.2px; /* separa un poco las letras */
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    transform: translateY(-3px); /* elevar ligeramente sobre la imagen */
+    /* GRID Y SCROLL */
+    .scroll-horizontal-wrapper { width: 100%; overflow-x: auto; display: flex; padding-bottom: 25px; scrollbar-width: none; }
+    .scroll-horizontal-wrapper::-webkit-scrollbar { display: none; }
+    .grid-restaurantes-dinamico { display: flex; gap: 20px; padding: 0 40px; }
+    .link-restaurante-horizontal { text-decoration: none !important; color: inherit; flex: 0 0 200px; }
+    
+    .restaurant-card { 
+        background: white; border-radius: 20px; overflow: hidden; border: 1px solid #f3e5d0; 
+        height: 300px; display: flex; flex-direction: column; transition: 0.3s; 
+    }
+    .restaurant-card:hover:not(.cerrado-filtro) { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(71, 40, 37, 0.08); }
+
+    .card-img-wrapper { height: 160px; position: relative; overflow: hidden; background: #eee; }
+    .restaurant-logo { width: 100%; height: 100%; object-fit: cover; }
+    .info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .info h3 { font-size: 0.95rem; color: #472825; font-weight: 800; margin: 0; }
+    .meta { font-size: 0.8rem; font-weight: 700; color: #d3ab80; }
+
+/* PASOS - DISEÑO MEJORADO */
+.como-funciona { 
+    background: #fdf2e2; 
+    padding: 80px 0; 
+    margin-top: 60px;
+    border-radius: 50px 50px 0 0; /* Suaviza la transición con la sección anterior */
 }
 
-/* GRID Y CARTAS PEQUEÑAS (ESCRITORIO) */
-.scroll-horizontal-wrapper { width: 100%; overflow-x: auto; display: flex; padding-bottom: 25px; scrollbar-width: none; }
-.scroll-horizontal-wrapper::-webkit-scrollbar { display: none; }
-.grid-restaurantes-dinamico { display: flex; gap: 20px; padding: 0 40px; }
-.link-restaurante-horizontal { text-decoration: none !important; color: inherit; flex: 0 0 200px; }
-.restaurant-card { background: white; border-radius: 20px; overflow: hidden; border: 1px solid #f3e5d0; height: 300px; display: flex; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s ease; }
-.restaurant-card:hover:not(.cerrado-filtro) { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(71, 40, 37, 0.08); }
-.card-img-wrapper { height: 160px; position: relative; overflow: hidden; background: #eee; }
-.restaurant-logo { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
-.info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-.info h3 { font-size: 0.95rem; color: #472825; font-weight: 800; margin: 0 0 4px 0; }
-.horario-mini { font-size: 0.75rem; color: #888; margin: 0 0 8px 0; }
-.meta { font-size: 0.8rem; font-weight: 700; color: #d3ab80; margin: 0; }
+.pasos { 
+    display: flex; 
+    justify-content: center; 
+    gap: 40px; 
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-/* PASOS */
-.como-funciona { background: #fdf2e2; padding: 60px 0; }
-.pasos { display: flex; justify-content: center; gap: 60px; }
-.paso { text-align: center; max-width: 300px; }
-.paso i { font-size: 3rem; color: #d3ab80; margin-bottom: 15px; }
+.paso { 
+    text-align: center; 
+    flex: 1;
+    min-width: 250px;
+    max-width: 320px;
+    padding: 30px 20px;
+    background: rgba(255, 255, 255, 0.4); /* Un toque de transparencia blanca */
+    border-radius: 30px;
+    transition: all 0.4s ease;
+}
 
-/* RESPONSIVE */
+.paso:hover {
+    background: #ffffff;
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(71, 40, 37, 0.05);
+}
+
+.paso i { 
+    font-size: 3.5rem; 
+    color: #d3ab80; 
+    margin-bottom: 20px;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.paso:hover i {
+    transform: scale(1.1) rotate(5deg);
+    color: #472825; /* Cambia al color principal al pasar el mouse */
+}
+
+.paso h3 {
+    color: #472825;
+    font-weight: 800;
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+
+.paso p {
+    color: #7a6e6c;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+}
+/* SECCIÓN MAPA MEJORADA */
+    .map-card { max-width:900px; margin:0 auto; background:white; padding:25px; border-radius:30px; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.05); }
+    #map { height:350px; width:100%; border-radius:20px; z-index:1; border: 2px solid #f3e5d0; }
+    
+    .input-nombre-ubi {
+        width: 100%; padding: 12px; border-radius: 12px; border: 2px solid #f3e5d0;
+        margin-bottom: 15px; outline: none; transition: 0.3s;
+    }
+    .input-nombre-ubi:focus { border-color: #d3ab80; }
+
+    /* RESPONSIVE */
 @@media (max-width: 768px) {
-    .link-restaurante-horizontal { flex: 0 0 160px; }
+        .link-restaurante-horizontal { flex: 0 0 160px; }
     .restaurant-card { height: 210px; display: flex; flex-direction: column; }
     .card-img-wrapper { height: 150px !important; border-bottom: 1px solid #f3e5d0; }
     .restaurant-logo { height: 100%; width: 100%; object-fit: cover; }
@@ -129,7 +203,7 @@
                 {
                     <a asp-controller="Home" asp-action="Explorar" asp-route-buscar="@cat.N" class="categoria-card">
                         <i class="fas fa-@cat.I"></i>
-                        <p style="font-size: 0.8rem;">@cat.N</p>
+                        <p>@cat.N</p>
                     </a>
                 }
             </div>
@@ -154,12 +228,14 @@
                                         <img src="data:@(restaurante.ContentType ?? "image/png");base64,@Convert.ToBase64String(restaurante.LogoBinario ?? new byte[0])" class="restaurant-logo">
                                         @if (!restaurante.EstaAbierto)
                                         {
-                                            <div class="overlay-cerrado"><span class="badge-cerrado">CERRADO</span></div>
+                                            <div style="position: absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; z-index:10;">
+                                                <span class="badge-cerrado">CERRADO</span>
+                                            </div>
                                         }
                                     </div>
                                     <div class="info">
                                         <h3>@restaurante.NombreComercial</h3>
-                                        <p class="horario-mini"><i class="fa-regular fa-clock"></i> @restaurante.HoraApertura.ToString(@"hh\:mm") - @restaurante.HoraCierre.ToString(@"hh\:mm")</p>
+                                        <p style="font-size:0.75rem; color:#888;"><i class="fa-regular fa-clock"></i> @restaurante.HoraApertura.ToString(@"hh\:mm") - @restaurante.HoraCierre.ToString(@"hh\:mm")</p>
                                         <p class="meta">⭐ 4.8 • 20 min</p>
                                     </div>
                                 </div>
@@ -170,17 +246,18 @@
             </div>
         </section>
 
-        @* MAPA *@
+        @* SECCIÓN MAPA ACTUALIZADA *@
         <section id="seccion-mapa" style="padding: 40px 20px;">
             <div class="map-card">
-                <h2 style="color: #472825; font-weight: 800; margin-bottom: 20px;">¿A dónde enviamos hoy?</h2>
-                <div id="map" style="height: 350px; width: 100%;"></div>
+                <h2 style="color: #472825; font-weight: 800; margin-bottom: 20px; text-align: center;">¿A dónde enviamos hoy?</h2>
+                
+                <div id="map"></div>
 
                 @if (userId == null)
                 {
                     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); border-radius: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px);">
                         <i class="fas fa-lock" style="font-size: 3rem; color: #472825; margin-bottom: 15px;"></i>
-                        <h3 style="color: #472825; font-weight: 800;">Inicia sesión para guardar ubicación</h3>
+                        <h3 style="color: #472825; font-weight: 800;">Inicia sesión para guardar ubicaciones</h3>
                         <a asp-controller="Acceso" asp-action="Login" style="background:#472825; color:white; padding:12px 30px; border-radius:15px; text-decoration:none; font-weight:bold; margin-top:10px;">INICIAR SESIÓN</a>
                     </div>
                 }
@@ -188,10 +265,17 @@
                 {
                     <form id="formUbicacion" asp-controller="Usuario" asp-action="GuardarUbicacion" method="post" style="margin-top: 20px;">
                         @Html.AntiForgeryToken()
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display:block; margin-bottom:5px; font-weight:bold; color:#472825;">Etiqueta tu dirección:</label>
+                            <input type="text" name="nombreUbicacion" class="input-nombre-ubi" placeholder="Ej: Casa, Trabajo, Gimnasio..." required>
+                        </div>
+
                         <input type="hidden" id="Latitud" name="Latitud" value="@latActual.ToString(System.Globalization.CultureInfo.InvariantCulture)" />
                         <input type="hidden" id="Longitud" name="Longitud" value="@lngActual.ToString(System.Globalization.CultureInfo.InvariantCulture)" />
-                        <button type="submit" id="btn-confirmar-mapa" style="background:#472825; color:white; border:none; width:100%; padding:15px; border-radius:15px; font-weight:800; cursor:pointer;">
-                            <i class="fas fa-check-circle me-2"></i> @(tieneUbicacion ? "ACTUALIZAR UBICACIÓN" : "CONFIRMAR UBICACIÓN")
+                        
+                        <button type="submit" id="btn-confirmar-mapa" style="background:#472825; color:white; border:none; width:100%; padding:15px; border-radius:15px; font-weight:800; cursor:pointer; transition: 0.3s;">
+                            <i class="fas fa-map-pin me-2"></i> GUARDAR ESTA DIRECCIÓN
                         </button>
                     </form>
                 }
@@ -200,22 +284,23 @@
 
         @* PASOS *@
         <section class="como-funciona">
-            <h2 style="text-align: center; color: #472825; font-weight: 800; margin-bottom: 40px;">¿Cómo funciona?</h2>
             <div class="pasos">
                 <div class="paso">
                     <i class="fas fa-map-marker-alt"></i>
                     <h3>Ingresa dirección</h3>
-                    <p>Encuentra restaurantes cerca de ti.</p>
+                    <p>Dinos dónde estás para mostrarte los restaurantes con cobertura en tu zona.</p>
                 </div>
+        
                 <div class="paso">
                     <i class="fas fa-utensils"></i>
                     <h3>Elige tu comida</h3>
-                    <p>Explora menús y selecciona tus favoritos.</p>
+                    <p>Navega por los menús de tus comercios favoritos y arma tu pedido ideal.</p>
                 </div>
+        
                 <div class="paso">
                     <i class="fas fa-motorcycle"></i>
-                    <h3>Recibe pedido</h3>
-                    <p>Entrega rápida hasta tu puerta.</p>
+                    <h3>Recibe rápido</h3>
+                    <p>¡Y listo! Nuestros repartidores vuelan para entregarte tu antojo calientito.</p>
                 </div>
             </div>
         </section>
@@ -233,21 +318,26 @@
             const lngIni = parseFloat("@lngActual.ToString(System.Globalization.CultureInfo.InvariantCulture)");
 
             const map = L.map('map').setView([latIni, lngIni], 15);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
 
             const marker = L.marker([latIni, lngIni], { draggable: true }).addTo(map);
 
             // 2. EVENTOS DEL MARCADOR
+            function actualizarInputs(lat, lng) {
+                document.getElementById("Latitud").value = lat;
+                document.getElementById("Longitud").value = lng;
+            }
+
             marker.on('dragend', function (e) {
                 const pos = e.target.getLatLng();
-                document.getElementById("Latitud").value = pos.lat;
-                document.getElementById("Longitud").value = pos.lng;
+                actualizarInputs(pos.lat, pos.lng);
             });
 
             map.on('click', function (e) {
                 marker.setLatLng(e.latlng);
-                document.getElementById("Latitud").value = e.latlng.lat;
-                document.getElementById("Longitud").value = e.latlng.lng;
+                actualizarInputs(e.latlng.lat, e.latlng.lng);
             });
 
             // 3. ENVÍO POR AJAX (GUARDAR UBICACIÓN)
@@ -255,6 +345,11 @@
             if (formUbi) {
                 formUbi.addEventListener('submit', function (e) {
                     e.preventDefault();
+                    
+                    const btn = document.getElementById('btn-confirmar-mapa');
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
                     const formData = new FormData(this);
 
                     fetch(this.action, {
@@ -269,17 +364,22 @@
                         if (data.success) {
                             Swal.fire({
                                 icon: 'success',
-                                title: '¡Ubicación guardada!',
-                                text: 'Ahora verás restaurantes más cerca de ti.',
+                                title: '¡Dirección Guardada!',
+                                text: data.message,
                                 confirmButtonColor: '#472825'
                             }).then(() => {
                                 window.location.reload();
                             });
                         } else {
-                            Swal.fire({ icon: 'error', title: 'Error', text: data.message || 'No se pudo guardar.' });
+                            Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-map-pin me-2"></i> GUARDAR ESTA DIRECCIÓN';
                         }
                     })
-                    .catch(err => console.error("Error en Fetch:", err));
+                    .catch(err => {
+                        console.error("Error:", err);
+                        btn.disabled = false;
+                    });
                 });
             }
         });

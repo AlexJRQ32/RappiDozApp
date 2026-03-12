@@ -1,245 +1,116 @@
-﻿@* Rappi'Doz Loader - Restaurado con Fix de Parpadeo *@
+﻿@* Rappi'Doz Loader - Transición Única Continua *@
+<div id="page-loader" class="page-loader">
+  <div class="clouds-container">
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+  </div>
 
-<div id="page-loader" class="page-loader" style="display: none;">
-    <div class="loader-content">
-        <div class="burger-arena">
-            <div class="burger" id="burger-main">
-                <div class="ingredient bun-top"></div>
-                <div class="ingredient lettuce"></div>
-                <div class="ingredient cheese"></div>
-                <div class="ingredient meat"></div>
-                <div class="ingredient bun-bottom"></div>
-                <div class="bite-fancy b1"></div>
-                <div class="bite-fancy b2"></div>
-                <div class="bite-fancy b3"></div>
-            </div>
-            <div class="crumb" id="final-crumb"></div>
+  <div class="loader-wrapper">
+    <div class="loader">
+      <span class="top-fazers"><span></span><span></span><span></span><span></span></span>
+      <div class="rider-body">
+        <div class="torso-base">
+          <div class="jetpack"></div>
+          <div class="rider-face"></div>
         </div>
-        <h2 class="loader-logo">Rappi'Doz</h2>
-        <div class="loading-text">PREPARANDO TU ANTOJO<span>.</span><span>.</span><span>.</span></div>
+      </div>
     </div>
+    <div class="longfazers"><span></span><span></span><span></span><span></span></div>
+    <div class="loader-brand">
+      <h2 class="brand-title">Rappi'Doz</h2>
+      <p class="brand-slogan">¡VOLANDO POR TU ANTOJO!</p>
+    </div>
+  </div>
 </div>
 
 <style>
-    :root {
-        --fondo-beige: #fff4e2;
-        --cafe-marca: #472825;
-        --dorado: #d3ab80;
-    }
+  :root { --rd-cafe: #472825; --rd-dorado: #d3ab80; --rd-beige: #fff4e2; }
 
-    .page-loader {
-        position: fixed;
-        top: -15px; /* Restaurado */
-        left: 0;
-        width: 100vw;
-        height: 115vh; /* Restaurado */
-        background-color: var(--fondo-beige);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 100000;
-        transition: transform 0.85s cubic-bezier(0.8, 0, 0.1, 1);
-        backface-visibility: hidden;
-        transform: translateY(0) translateZ(0);
-        will-change: transform;
-        outline: 1px solid transparent;
-    }
+  .page-loader {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: var(--rd-beige);
+    z-index: 100000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Por defecto oculto arriba para que no estorbe al entrar directo */
+    transform: translateY(-100%);
+    transition: transform 0.6s cubic-bezier(0.8, 0, 0.2, 1);
+  }
 
-    .is-active {
-        display: flex !important;
-    }
+  /* Estado cuando el loader debe estar visible cubriendo todo */
+  .loader-active { transform: translateY(0) !important; }
 
-    .page-loader.is-loaded {
-        transform: translateY(-115%) translateZ(0);
-    }
+  /* Estilos del personaje (Soldado) */
+  .loader-wrapper { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 10; }
+  .loader { position: relative; width: 160px; height: 60px; animation: speeder 0.4s linear infinite; }
+  .torso-base { position: absolute; width: 0; height: 0; border-top: 6px solid transparent; border-right: 100px solid #000; border-bottom: 6px solid transparent; left: 0; top: 25px; }
+  .jetpack { height: 22px; width: 22px; border-radius: 50%; background: #000; position: absolute; right: -110px; top: -16px; }
+  .jetpack::after { content: ""; position: absolute; width: 0; height: 0; border-top: 0 solid transparent; border-right: 55px solid #000; border-bottom: 16px solid transparent; top: 0; right: 12px; }
+  .rider-face { position: absolute; height: 12px; width: 20px; background: #000; border-radius: 20px 20px 0 0; transform: rotate(-40deg); right: -121px; top: -14px; }
+  .rider-face::after { content: ""; height: 12px; width: 12px; background: #000; right: 4px; top: 7px; position: absolute; transform: rotate(40deg); border-radius: 0 0 0 2px; }
+  
+  .loader-brand { text-align: center; margin-top: 40px; }
+  .brand-title { color: var(--rd-cafe); font-weight: 900; font-size: 2.8rem; margin: 0; }
+  .brand-slogan { color: var(--rd-dorado); font-weight: bold; letter-spacing: 2px; font-size: 0.9rem; margin: 5px 0 0 0; }
 
-    /* --- Tus estilos originales de la burger --- */
-    .burger-arena {
-        position: relative;
-        width: 160px;
-        height: 100px;
-        margin: 0 auto 25px;
-    }
-
-    .ingredient {
-        width: 100%;
-        border-radius: 12px;
-        position: absolute;
-        opacity: 0;
-        transform: translateY(-80px);
-        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .bun-top {
-        height: 35px;
-        background: #e28e43;
-        top: 0;
-        border-radius: 60px 60px 12px 12px;
-        z-index: 5;
-    }
-
-    .lettuce {
-        height: 10px;
-        background: #87c55d;
-        top: 38px;
-        z-index: 4;
-    }
-
-    .cheese {
-        height: 8px;
-        background: #f1c40f;
-        top: 46px;
-        z-index: 3;
-        width: 95%;
-        left: 2.5%;
-    }
-
-    .meat {
-        height: 22px;
-        background: #704028;
-        top: 52px;
-        z-index: 2;
-    }
-
-    .bun-bottom {
-        height: 20px;
-        background: #e28e43;
-        top: 72px;
-        border-radius: 6px 6px 30px 30px;
-        z-index: 1;
-    }
-
-    .animate-drop {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .bite-fancy {
-        position: absolute;
-        background: var(--fondo-beige);
-        border-radius: 50%;
-        opacity: 0;
-        z-index: 20;
-        transform: scale(0);
-        transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .b1 {
-        width: 125px;
-        height: 125px;
-        top: -30px;
-        right: -50px;
-    }
-
-    .b2 {
-        width: 115px;
-        height: 115px;
-        bottom: -40px;
-        left: -30px;
-    }
-
-    .b3 {
-        width: 140px;
-        height: 140px;
-        top: -20px;
-        left: 20px;
-    }
-
-    .animate-bite-fancy {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    .crumb {
-        position: absolute;
-        width: 7px;
-        height: 5px;
-        background: #e28e43;
-        border-radius: 45%;
-        bottom: 15px;
-        right: 40px;
-        opacity: 0;
-        z-index: 25;
-    }
-
-    .loader-logo {
-        color: var(--cafe-marca);
-        font-weight: 900;
-        font-size: 2.5rem;
-        text-align: center;
-        margin: 0;
-    }
-
-    .loading-text {
-        color: var(--dorado);
-        font-size: 0.85rem;
-        font-weight: bold;
-        letter-spacing: 3px;
-        text-align: center;
-    }
+  /* Nubes y efectos */
+  .clouds-container { position: absolute; width: 100%; height: 100%; overflow: hidden; }
+  .cloud { position: absolute; background: #fff; border-radius: 50px; opacity: 0.5; animation: moveClouds 3s linear infinite; }
+  .c1 { width: 120px; height: 40px; top: 20%; left: 110%; animation-duration: 6s; }
+  .c2 { width: 160px; height: 50px; top: 50%; left: 110%; animation-duration: 4s; }
+  .c3 { width: 90px; height: 35px; top: 80%; left: 110%; animation-duration: 7s; }
+  @@keyframes moveClouds { from { left: 110%; } to { left: -200px; } }
+  @@keyframes speeder { 0% { transform: translate(2px, 1px) rotate(0deg); } 50% { transform: translate(-1px, 3px) rotate(-1deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
+  .top-fazers > span { height: 5px; width: 35px; background: #000; position: absolute; top: 5px; left: 60px; border-radius: 2px 10px 1px 0; }
+  .longfazers span { position: absolute; height: 2px; width: 20%; background: #000; opacity: 0.1; }
 </style>
 
 <script>
-    (function() {
-        const currentBaseUrl = window.location.origin + window.location.pathname;
-        const lastBaseUrl = sessionStorage.getItem('lastBaseUrl');
+  (function() {
+    const loader = document.getElementById('page-loader');
 
-        // Si es la misma URL (refresco), no mostramos nada
-        if (lastBaseUrl === currentBaseUrl) return;
+    // 1. COMPROBACIÓN DE ENTRADA: 
+    // Si venimos de un clic interno, el loader debe nacer visible (abajo)
+    if (sessionStorage.getItem('showLoader') === 'true') {
+        loader.style.transition = 'none'; // Sin animación al aparecer para que no parpadee
+        loader.classList.add('loader-active');
+        sessionStorage.removeItem('showLoader'); // Limpiamos la marca
+        
+        // Forzamos el redibujado y devolvemos la animación para que al irse sí sea suave
+        setTimeout(() => {
+            loader.style.transition = 'transform 0.6s cubic-bezier(0.8, 0, 0.2, 1)';
+            loader.classList.remove('loader-active');
+        }, 500);
+    }
 
-        // Mostramos el loader de inmediato para evitar el parpadeo blanco
-        document.getElementById('page-loader').classList.add('is-active');
+    // 2. DETECTOR DE CLIC (SALIDA):
+    document.addEventListener("click", function(e) {
+      const link = e.target.closest('a');
+      if (!link) return;
 
-        window.addEventListener("load", function() {
-            const loader = document.getElementById('page-loader');
-            const ingredients = document.querySelectorAll('.ingredient');
+      const href = link.getAttribute('href');
+      const target = link.getAttribute('target');
 
-            // 1. Activamos todas las animaciones al mismo tiempo (vía CSS)
-            ingredients.forEach(ing => ing.classList.add('animate-drop'));
+      if (!href || href.startsWith('#') || href.includes("javascript") || target === "_blank") {
+        return; 
+      }
 
-            // 2. Registramos la visita
-            sessionStorage.setItem('lastBaseUrl', currentBaseUrl);
-
-            // 3. Ocultamos el loader inmediatamente (o con un mini delay de 100ms para suavidad)
-            setTimeout(() => {
-                loader.classList.add('is-loaded');
-            }, 100);
-        });
-    })();
-
-    // Lógica para mostrarlo al hacer click en links (Navegación saliente)
-    document.addEventListener("DOMContentLoaded", function() {
-        const loader = document.getElementById('page-loader');
-
-        document.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', (e) => {
-                const href = link.getAttribute('href');
-                const onclick = link.getAttribute('onclick') || "";
-
-                if (!href || href.startsWith('#') || href.includes("javascript:void(0)") ||
-                    link.hasAttribute('data-bs-toggle') || href.toLowerCase().includes("eliminar")) {
-                    return;
-                }
-
-                loader.classList.remove('is-loaded');
-                loader.classList.add('is-active');
-            });
-        });
-
-        // Lógica para formularios
-        document.querySelectorAll('form').forEach(form => {
-            form.addEventListener('submit', (e) => {
-                const action = (form.getAttribute('action') || "").toLowerCase();
-                const id = form.getAttribute('id') || "";
-
-                if (action.includes("agregar") || action.includes("actualizarcantidad") ||
-                    id === "formPerfilUsuario" || id === "formCalificar") {
-                    return;
-                }
-
-                loader.classList.remove('is-loaded');
-                loader.classList.add('is-active');
-            });
-        });
+      // Marcamos que la siguiente página DEBE mostrar el loader
+      sessionStorage.setItem('showLoader', 'true');
+      
+      // Bajamos el loader inmediatamente
+      loader.classList.add('loader-active');
     });
+
+    // 3. SEGURIDAD: Si por alguna razón la carga falla, ocultar el loader tras 5 seg
+    window.addEventListener("load", function() {
+        if (!sessionStorage.getItem('showLoader')) {
+            loader.classList.remove('loader-active');
+        }
+    });
+  })();
 </script>

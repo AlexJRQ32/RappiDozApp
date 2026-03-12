@@ -1,120 +1,203 @@
-﻿@model RappiDozApp.Models.Usuario
-
+﻿@model RappiDozApp.Models.UbicacionUsuario
 @{
-    var lat = Model.Latitud?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "9.9333";
-    var lng = Model.Longitud?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-84.0833";
+    Layout = null;
+    // Forzamos formato de punto para coordenadas (JS no entiende comas decimales)
+    var lat = Model?.Latitud.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "9.9333";
+    var lng = Model?.Longitud.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-84.0833";
 }
 
 <style>
-    .modal-full-height {
-        display: flex;
-        flex-direction: column;
-        max-height: 90vh; /* Se adapta a la pantalla del móvil */
+    .modal-content-custom {
+        background: #ffffff !important;
+        border-radius: 30px;
+        color: #472825;
+        font-family: 'Segoe UI', Roboto, sans-serif;
     }
 
     #mapa-final {
-        min-height: 300px;
-        height: 50vh; /* Altura dinámica basada en el viewport */
+        height: 380px;
         width: 100%;
         background: #f8f9fa;
-        z-index: 1;
+        border-radius: 20px;
+        border: 2px solid #f0e6d6;
+        z-index: 5;
     }
 
-    /* Mejora del botón al pasar el mouse */
-    #btnConfirmarFinal:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.2);
-        box-shadow: 0 10px 20px rgba(71, 40, 37, 0.3) !important;
+    .input-rappi {
+        border-radius: 15px !important;
+        border: 2px solid #f0f0f0 !important;
+        padding: 12px 20px !important;
+        font-weight: 600;
+        transition: all 0.3s ease;
     }
 
-    /* Ajustes para móviles pequeños */
-    @@media (max-width: 576px) {
-        #mapa-final {
-            height: 40vh;
+        .input-rappi:focus {
+            border-color: #d3ab80 !important;
+            box-shadow: 0 0 0 0.2rem rgba(211, 171, 128, 0.25);
         }
 
-        .modal-content {
-            border-radius: 25px 25px 0 0 !important;
+    .btn-rappi-confirm {
+        background: #472825 !important;
+        color: white !important;
+        border: none;
+        border-radius: 15px;
+        padding: 16px;
+        font-weight: 800;
+        font-size: 1rem;
+        letter-spacing: 1px;
+        transition: 0.3s;
+    }
+
+        .btn-rappi-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(71, 40, 37, 0.2);
+            background: #5a332f !important;
         }
-        /* Estilo "Drawer" en móvil */
+
+    .label-custom {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #96786f;
+        margin-bottom: 8px;
+        margin-left: 5px;
     }
 </style>
 
-<div class="modal-content modal-full-height" style="border-radius: 35px; border: none; overflow: hidden; background: #fff;">
-    <div class="modal-header border-0 p-4 pb-2">
-        <div class="w-100 text-center">
-            <div style="width: 50px; height: 5px; background: #e0e0e0; border-radius: 10px; margin: 0 auto 15px;"></div>
-            <h4 class="fw-800 mb-0" style="color: #472825; font-weight: 900; letter-spacing: -0.5px;">Confirma tu dirección</h4>
-            <p class="text-muted small mb-0">Arrastra el pin hasta tu ubicación exacta</p>
+<div class="p-4 modal-content-custom">
+    <div class="text-center mb-4">
+        <div style="width: 50px; height: 5px; background: #e0e0e0; border-radius: 10px; margin: 0 auto 15px;"></div>
+        <h4 class="fw-bold" style="color: #472825;">Ubica tu entrega</h4>
+        <p class="text-muted small">Mueve el pin dorado exactamente sobre tu casa</p>
+    </div>
+
+    <div class="position-relative mb-4">
+        <div id="mapa-final" data-lat="@lat" data-lng="@lng"></div>
+        <div style="position: absolute; bottom: 10px; right: 10px; z-index: 1000; background: rgba(255,255,255,0.8); padding: 5px 10px; border-radius: 10px; font-size: 10px; font-weight: bold;">
+            Leaflet | RappiDoz Maps
         </div>
-        <button type="button" class="btn-close position-absolute end-0 top-0 m-4 shadow-none" data-bs-dismiss="modal"></button>
     </div>
 
-    <div class="modal-body p-3 flex-grow-1">
-        <div class="position-relative h-100" style="border-radius: 25px; overflow: hidden; border: 1px solid #f0f0f0;">
-            <div id="mapa-final" data-lat="@lat" data-lng="@lng"></div>
-
-            <div class="position-absolute bottom-0 start-50 translate-middle-x mb-3" style="z-index: 1000; pointer-events: none; width: 90%;">
-                <div class="bg-white text-dark shadow-sm p-2 px-3 border text-center rounded-pill" style="font-size: 0.75rem; opacity: 0.95;">
-                    <i class="fas fa-map-marker-alt text-danger me-1"></i> Mueve el mapa para ajustar el pin
-                </div>
-            </div>
-        </div>
-
-        @Html.AntiForgeryToken()
-        <input type="hidden" id="lat-hidden" value="@lat">
-        <input type="hidden" id="lng-hidden" value="@lng">
+    <div class="mb-3">
+        <label class="label-custom"><i class="fas fa-tag"></i> ¿CÓMO LLAMARÁS A ESTA DIRECCIÓN?</label>
+        <input type="text" id="nombre-ubicacion" class="form-control input-rappi"
+               placeholder="Ej: Mi Casa, Oficina, Casa de mamá..." required autocomplete="off">
     </div>
 
-    <div class="modal-footer border-0 p-4 pt-2">
-        <button type="button" id="btnConfirmarFinal" class="btn btn-dark w-100 rounded-pill py-3 fw-bold shadow-lg"
-                style="background: #472825; border:none; transition: all 0.3s ease;">
-            Confirmar esta ubicación
-        </button>
-    </div>
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="lat-hidden" value="@lat">
+    <input type="hidden" id="lng-hidden" value="@lng">
+
+    <button type="button" id="btnConfirmarFinal" class="btn btn-rappi-confirm w-100 mt-2">
+        <i class="fas fa-check-circle me-2"></i> CONFIRMAR Y GUARDAR
+    </button>
 </div>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <script>
-    $(document).ready(function () {
-        var mapFinal, markerFinal;
-        var latIni = parseFloat($('#mapa-final').data('lat'));
-        var lngIni = parseFloat($('#mapa-final').data('lng'));
+    (function() {
+        var mapFinal = null;
+        var markerFinal = null;
 
-        // ESTO ES LO QUE LE DA "PODER": Espera a que el modal se abra para cargar el mapa
-        // Evita el error de mapas grises o mal centrados
-        $('#tuModalID').on('shown.bs.modal', function () {
-            if (!mapFinal) {
-                mapFinal = L.map('mapa-final', {
-                    zoomControl: false // Quitamos botones feos para un look más limpio
-                }).setView([latIni, lngIni], 16);
+        function initMap() {
+            var $el = $('#mapa-final');
+            if ($el.length === 0 || mapFinal !== null) return;
 
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; RappiDoz'
-                }).addTo(mapFinal);
+            var lat = parseFloat($el.attr('data-lat'));
+            var lng = parseFloat($el.attr('data-lng'));
 
-                // Pin personalizado con el color de tu marca (#472825)
-                var iconRappi = L.icon({
-                    iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-                    iconSize: [40, 40],
-                    iconAnchor: [20, 40]
-                });
+            // Inicializar mapa
+            mapFinal = L.map('mapa-final', {
+                zoomControl: true,
+                attributionControl: false
+            }).setView([lat, lng], 16);
 
-                markerFinal = L.marker([latIni, lngIni], {
-                    draggable: true,
-                    icon: iconRappi
-                }).addTo(mapFinal);
+            // Capa de mapa elegante (CartoDB Voyager)
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                maxZoom: 19
+            }).addTo(mapFinal);
 
-                markerFinal.on('dragend', function (e) {
-                    var pos = markerFinal.getLatLng();
-                    $('#lat-hidden').val(pos.lat);
-                    $('#lng-hidden').val(pos.lng);
-                });
-            } else {
-                mapFinal.invalidateSize(); // Ajusta el mapa si la ventana cambió
-            }
+            // Icono personalizado estilo Rappi
+            var iconRappi = L.icon({
+                iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+                iconSize: [46, 46],
+                iconAnchor: [23, 46],
+                popupAnchor: [0, -40]
+            });
+
+            // Marcador arrastrable
+            markerFinal = L.marker([lat, lng], {
+                draggable: true,
+                icon: iconRappi
+            }).addTo(mapFinal);
+
+            // Actualizar inputs al terminar de arrastrar
+            markerFinal.on('dragend', function(e) {
+                var pos = markerFinal.getLatLng();
+                // Forzamos el uso de punto decimal para evitar problemas de cultura regional
+                $('#lat-hidden').val(pos.lat.toFixed(10));
+                $('#lng-hidden').val(pos.lng.toFixed(10));
+            });
+
+            // Arreglar bug de grisado en modales de Bootstrap
+            setTimeout(function() {
+                mapFinal.invalidateSize();
+            }, 400);
+        }
+
+        // Lógica de apertura del modal
+        if ($('#modalGeneral').hasClass('show')) {
+            initMap();
+        }
+        $(document).on('shown.bs.modal', '#modalGeneral', function() {
+            initMap();
         });
-    });
+
+        // Evento de Guardado AJAX
+        $(document).off('click', '#btnConfirmarFinal').on('click', '#btnConfirmarFinal', function() {
+            var nombre = $('#nombre-ubicacion').val();
+            
+            if (!nombre || nombre.trim() === "") {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Falta un detalle',
+                    text: 'Por favor, escribe un nombre para tu dirección.',
+                    confirmButtonColor: '#472825'
+                });
+                return;
+            }
+
+            var btn = $(this);
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
+
+            var data = {
+                Latitud: $('#lat-hidden').val(),
+                Longitud: $('#lng-hidden').val(),
+                nombreUbicacion: nombre,
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+            };
+
+            $.post('/Usuario/GuardarUbicacion', data)
+                .done(function(res) {
+                    if (res.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Ubicación lista!',
+                            text: res.message,
+                            showConfirmButton: false,
+                            timer: 1800,
+                            background: '#fff4e2'
+                        }).then(() => {
+                            // RECARGA EL CARRITO AUTOMÁTICAMENTE
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire('Error', res.message, 'error');
+                        btn.prop('disabled', false).text('CONFIRMAR Y GUARDAR');
+                    }
+                })
+                .fail(function() {
+                    Swal.fire('Error', 'No se pudo conectar con el servidor. Verifica tu conexión.', 'error');
+                    btn.prop('disabled', false).text('CONFIRMAR Y GUARDAR');
+                });
+        });
+    })();
 </script>

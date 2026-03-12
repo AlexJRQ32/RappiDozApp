@@ -142,113 +142,116 @@
         };
 
         window.abrirMapa = function() {
-            const modalEl = document.getElementById('modalGeneral');
-            const contenedor = document.getElementById('bodyModalGeneral');
-            const modalBootstrap = bootstrap.Modal.getOrCreateInstance(modalEl);
+        const modalEl = document.getElementById('modalGeneral');
+        const contenedor = document.getElementById('bodyModalGeneral');
+        const modalBootstrap = bootstrap.Modal.getOrCreateInstance(modalEl);
 
-            contenedor.innerHTML = `
-                <div class="text-center p-5" style="background: white; border-radius: 30px;">
-                    <div class="spinner-border text-warning"></div>
-                    <p class="mt-2 fw-bold">Preparando ubicación...</p>
-                </div>`;
+        // 1. Mostramos el modal con un mensaje de "Cargando"
+        contenedor.innerHTML = `
+        <div class="text-center p-5 bg-white" style="border-radius:30px;">
+        <div class="spinner-border text-warning"></div>
+        <p class="mt-2 fw-bold">Buscando servidor...</p>
+        </div>`;
+        modalBootstrap.show();
 
-            modalBootstrap.show();
-
-            modalEl.addEventListener('shown.bs.modal', function () {
-                fetch('/Usuario/Mapa')
-                    .then(r => r.text())
-                    .then(html => {
-                        contenedor.innerHTML = html;
-                        setTimeout(() => {
-                            inicializarMapaEfectivo();
-                        }, 100);
-                    });
-            }, { once: true });
+        // 2. Intentamos traer la vista
+        console.log("Intentando cargar: /Usuario/Mapa");
+    
+        fetch('/Usuario/Mapa')
+        .then(response => {
+        if (!response.ok) {
+        // SI SALE ESTA ALERTA: La ruta está mal o el controlador dio error
+        throw new Error("Error del servidor: " + response.status);
+        }
+        return response.text();
+        })
+        .then(html => {
+        console.log("Vista recibida correctamente");
+        contenedor.innerHTML = html;
+            
+        // Forzamos el renderizado del mapa
+        setTimeout(() => {
+        if (typeof inicializarMapaEfectivo === 'function') {
+        inicializarMapaEfectivo();
+        }
+        }, 500);
+        })
+        .catch(error => {
+        // SI SALE ESTA ALERTA: Hay un problema de red o la URL no existe
+        console.error(error);
+        contenedor.innerHTML = `
+        <div class="alert alert-danger m-3">
+        <strong>Error al cargar:</strong> ${error.message} <br>
+        Verifica que /Usuario/Mapa sea la ruta correcta.
+        </div>`;
+        });
         };
 
         function inicializarMapaEfectivo() {
-            const el = document.getElementById('mapa-final');
-            if (!el) return;
+        const el = document.getElementById('mapa-final');
+        if (!el) return;
 
-            const lat = parseFloat(el.getAttribute('data-lat'));
-            const lng = parseFloat(el.getAttribute('data-lng'));
+        const lat = parseFloat(el.getAttribute('data-lat'));
+        const lng = parseFloat(el.getAttribute('data-lng'));
 
-            const map = L.map('mapa-final', {
-                zoomControl: false
-            }).setView([lat, lng], 17);
+        const map = L.map('mapa-final', { zoomControl: false }).setView([lat, lng], 17);
 
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                attribution: '© OpenStreetMap'
-            }).addTo(map);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '© RappiDoz'
+        }).addTo(map);
 
-            const goldIcon = L.icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41]
-            });
+        const goldIcon = L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41]
+        });
 
-            const marker = L.marker([lat, lng], { icon: goldIcon, draggable: true }).addTo(map);
+        const marker = L.marker([lat, lng], { icon: goldIcon, draggable: true }).addTo(map);
 
-            const sync = (la, ln) => {
-                document.getElementById('lat-hidden').value = la.toFixed(6);
-                document.getElementById('lng-hidden').value = ln.toFixed(6);
-            };
+        // Sincronizar coordenadas a inputs ocultos
+        const sync = (la, ln) => {
+        document.getElementById('lat-hidden').value = la;
+        document.getElementById('lng-hidden').value = ln;
+        };
 
-            map.on('click', e => {
-                marker.setLatLng(e.latlng);
-                sync(e.latlng.lat, e.latlng.lng);
-            });
+        marker.on('dragend', () => { sync(marker.getLatLng().lat, marker.getLatLng().lng); });
+        map.on('click', e => { marker.setLatLng(e.latlng); sync(e.latlng.lat, e.latlng.lng); });
 
-            marker.on('dragend', () => {
-                sync(marker.getLatLng().lat, marker.getLatLng().lng);
-            });
-
-            setTimeout(() => { map.invalidateSize(); }, 200);
+        map.invalidateSize();
         }
 
-        $(document).on('click', '#btnConfirmarFinal', async function (e) {
-            e.preventDefault();
-            e.stopPropagation();
+        // --- LÓGICA DE GUARDADO (Para la nueva tabla) ---
+        $(document).on('click', '#btnConfirmarFinal', async function(e) {
+        const btn = $(this);
+        const nombre = $('#nombre-ubicacion').val();
 
-            const btn = $(this);
-            const data = {
-                Latitud: $('#lat-hidden').val(),
-                Longitud: $('#lng-hidden').val(),
-                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
-            };
+        if (!nombre || nombre.trim() === "") {
+        Swal.fire('Atención', 'Por favor, asigna un nombre a tu dirección.', 'warning');
+        return;
+        }
 
-            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
+        const data = {
+        Latitud: $('#lat-hidden').val(),
+        Longitud: $('#lng-hidden').val(),
+        NombreUbicacion: nombre,
+        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+        };
 
-            try {
-                const res = await $.post('/Usuario/GuardarUbicacion', data);
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
 
-                if (res.success) {
-                    await Swal.fire({
-                        title: '¡Ubicación Actualizada!',
-                        text: 'Tu punto de entrega se guardó correctamente.',
-                        icon: 'success',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        background: '#fff4e2',
-                        color: '#472825',
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            const modalEl = document.getElementById('modalGeneral');
-                            const modalBootstrap = bootstrap.Modal.getInstance(modalEl);
-                            if(modalBootstrap) modalBootstrap.hide();
-                        }
-                    });
-                    window.location.href = window.location.href;
-                } else {
-                    btn.prop('disabled', false).text('Confirmar Ubicación');
-                    Swal.fire('Error', res.message, 'error');
-                }
-            } catch (err) {
-                btn.prop('disabled', false).text('Confirmar Ubicación');
-            }
-            return false;
+        try {
+        const res = await $.post('/Usuario/GuardarUbicacion', data);
+        if (res.success) {
+        Swal.fire({ icon: 'success', title: '¡Guardado!', showConfirmButton: false, timer: 1500 });
+        window.location.reload();
+        } else {
+        Swal.fire('Error', res.message, 'error');
+        btn.prop('disabled', false).text('GUARDAR DIRECCIÓN');
+        }
+        } catch (err) {
+        btn.prop('disabled', false).text('GUARDAR DIRECCIÓN');
+        }
         });
 
         window.abrirCalificar = function() {

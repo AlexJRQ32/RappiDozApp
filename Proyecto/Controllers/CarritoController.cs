@@ -27,6 +27,14 @@ namespace RappiDozApp.Controllers
 
             var usuario = await _context.Usuarios.FindAsync(userId);
 
+            // CARGAR UBICACIONES: Esto permite que el select en la vista tenga datos
+            var ubicaciones = await _context.UbicacionUsuario
+                .Where(u => u.IdUsuario == userId.Value)
+                .OrderByDescending(u => u.IdUbicacion)
+                .ToListAsync();
+
+            ViewBag.Ubicaciones = ubicaciones;
+
             // 1. Billetera
             ViewBag.CuponesApartados = _context.CuponesApartados
                 .Where(c => c.UsuarioEmail == usuario.Email).ToList();
@@ -35,25 +43,43 @@ namespace RappiDozApp.Controllers
             var lista = ObtenerCarritoDeSesion();
             decimal subtotal = lista.Sum(x => x.Precio * x.Cantidad);
 
-            // 3. RECUPERAR DATOS (Asegúrate que estos nombres coincidan con AplicarCupon)
-            string codigoCupon = HttpContext.Session.GetString("CuponAplicado"); // <-- ANTES DECÍA "CuponActivo"
+            // 3. Recuperar cupón
+            string codigoCupon = HttpContext.Session.GetString("CuponAplicado");
             decimal descuentoMonetario = 0;
 
             if (!string.IsNullOrEmpty(codigoCupon))
             {
                 decimal.TryParse(HttpContext.Session.GetString("DescuentoValor"), out decimal valor);
                 bool esPorc = HttpContext.Session.GetString("EsPorcentaje") == "true";
-
                 descuentoMonetario = esPorc ? (subtotal * (valor / 100)) : valor;
             }
 
-            // 4. Pasar a la Vista
             ViewBag.Subtotal = subtotal;
             ViewBag.Descuento = descuentoMonetario;
-            ViewBag.CodigoAplicado = codigoCupon; // Esto activará el borde verde en la tarjeta
+            ViewBag.CodigoAplicado = codigoCupon;
 
             return View("~/Views/Navbar/carrito.cshtml", lista);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> EliminarUbicacion(int id)
+        {
+            int? userId = HttpContext.Session.GetInt32("UsuarioId");
+            if (userId == null) return Json(new { success = false, message = "Sesión expirada" });
+
+            var ubicacion = await _context.UbicacionUsuario
+                .FirstOrDefaultAsync(u => u.IdUbicacion == id && u.IdUsuario == userId);
+
+            if (ubicacion != null)
+            {
+                _context.UbicacionUsuario.Remove(ubicacion);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false, message = "No se encontró la ubicación" });
+        }
+
         // --- AGREGAR PRODUCTO (Asegúrate de enviar 'imagen' desde la vista) ---
         [HttpPost]
         public IActionResult Agregar(int productoId, string nombre, decimal precio, string imagen)

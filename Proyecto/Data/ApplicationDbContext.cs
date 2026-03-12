@@ -20,6 +20,7 @@ namespace RappiDozApp.Data
         public DbSet<DetallePedido> DetallePedidos { get; set; }
         public DbSet<Valoracion> Valoraciones { get; set; }
         public DbSet<CuponApartado> CuponesApartados { get; set; }
+        public DbSet<UbicacionUsuario> UbicacionUsuario { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,8 +33,8 @@ namespace RappiDozApp.Data
             modelBuilder.Entity<DetallePedido>().Property(d => d.PrecioHistorico).HasPrecision(18, 2);
 
             // Precisión para Coordenadas del Mapa
-            modelBuilder.Entity<Usuario>().Property(u => u.Latitud).HasPrecision(18, 10);
-            modelBuilder.Entity<Usuario>().Property(u => u.Longitud).HasPrecision(18, 10);
+            modelBuilder.Entity<UbicacionUsuario>().Property(u => u.Latitud).HasPrecision(18, 10);
+            modelBuilder.Entity<UbicacionUsuario>().Property(u => u.Longitud).HasPrecision(18, 10);
             modelBuilder.Entity<Pedido>().Property(p => p.EntregaLatitud).HasPrecision(18, 10);
             modelBuilder.Entity<Pedido>().Property(p => p.EntregaLongitud).HasPrecision(18, 10);
         }

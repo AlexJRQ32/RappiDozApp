@@ -169,14 +169,15 @@ body {
 /* --- LINKS Y CHECKBOX --- */
 .container {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     align-items: center;
     font-size: 14px;
     margin: 10px 0 30px;
     padding: 0 15px;
+
 }
 
-#forgot-password, #register {
+#forgot-password {
     color: white;
     text-decoration: none;
     transition: 0.3s;

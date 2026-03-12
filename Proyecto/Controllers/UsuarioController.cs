@@ -39,12 +39,25 @@ namespace RappiDozApp.Controllers
             int? userId = HttpContext.Session.GetInt32("UsuarioId");
             if (userId == null) return Unauthorized();
 
-            var usuario = await _context.Usuarios.FindAsync(userId);
-            if (usuario == null) return NotFound();
+            var ultimaUbicacion = await _context.UbicacionUsuario
+                .Where(u => u.IdUsuario == userId)
+                .OrderByDescending(u => u.IdUbicacion)
+                .FirstOrDefaultAsync();
 
-            // Importante: La ruta debe coincidir exactamente con donde tienes el archivo .cshtml
-            return PartialView("~/Views/Navbar/Mapa.cshtml", usuario);
+            if (ultimaUbicacion == null)
+            {
+                ultimaUbicacion = new UbicacionUsuario
+                {
+                    IdUsuario = userId.Value,
+                    Latitud = 9.9333m, // La 'm' es para decimal
+                    Longitud = -84.0833m,
+                    NombreUbicacion = "Nueva Ubicación"
+                };
+            }
+
+            return PartialView("~/Views/Navbar/Mapa.cshtml", ultimaUbicacion);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -223,34 +236,42 @@ namespace RappiDozApp.Controllers
         // ================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> GuardarUbicacion(string Latitud, string Longitud)
+        public async Task<IActionResult> GuardarUbicacion(string Latitud, string Longitud, string nombreUbicacion = "Mi Ubicación")
         {
             int? userId = HttpContext.Session.GetInt32("UsuarioId");
             if (userId == null) return Json(new { success = false, message = "Sesión expirada" });
 
-            // Usamos InvariantCulture para que el punto decimal siempre se entienda correctamente
-            // sin importar si el servidor está en español o inglés.
-            bool latOk = decimal.TryParse(Latitud, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal lat);
-            bool lngOk = decimal.TryParse(Longitud, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal lng);
+            // Conversión segura de string (punto decimal JS) a decimal C#
+            bool latOk = decimal.TryParse(Latitud, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out decimal lat);
+            bool lngOk = decimal.TryParse(Longitud, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out decimal lng);
 
             if (latOk && lngOk)
             {
-                var usuario = await _context.Usuarios.FindAsync(userId);
-                if (usuario != null)
+                try
                 {
-                    usuario.Latitud = lat;
-                    usuario.Longitud = lng;
+                    var nuevaUbicacion = new UbicacionUsuario
+                    {
+                        IdUsuario = userId.Value,
+                        NombreUbicacion = nombreUbicacion,
+                        Latitud = lat,
+                        Longitud = lng
+                    };
 
+                    _context.UbicacionUsuario.Add(nuevaUbicacion);
                     await _context.SaveChangesAsync();
 
-                    // Guardamos en sesión como string con PUNTO para que el JS del mapa lo lea directo
+                    // Guardar en sesión para persistencia rápida si es necesario
                     HttpContext.Session.SetString("Latitud", lat.ToString(CultureInfo.InvariantCulture));
                     HttpContext.Session.SetString("Longitud", lng.ToString(CultureInfo.InvariantCulture));
 
-                    return Json(new { success = true, message = "Ubicación guardada" });
+                    return Json(new { success = true, message = $"¡Dirección '{nombreUbicacion}' guardada!" });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = "Error de DB: " + ex.Message });
                 }
             }
-            return Json(new { success = false, message = "Error en formato de coordenadas" });
+            return Json(new { success = false, message = "Formato de coordenadas inválido" });
         }
 
         [HttpGet]
@@ -278,5 +299,7 @@ namespace RappiDozApp.Controllers
             // 3. Retornar la vista específica de movimientos
             return View("~/Views/Navbar/movimientos.cshtml", historial);
         }
+
+        
     }
 }

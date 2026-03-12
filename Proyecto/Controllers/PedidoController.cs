@@ -21,38 +21,43 @@ namespace RappiDozApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Seguimiento(int id)
         {
-            // 1. Verificación de seguridad de sesión
             var usuarioSesionId = HttpContext.Session.GetInt32("UsuarioId");
             if (usuarioSesionId == null) return RedirectToAction("Login", "Acceso");
 
-            // 2. Cargar datos del pedido y del usuario
-            var usuarioLogueado = await _context.Usuarios.FindAsync(usuarioSesionId);
             var pedido = await _context.Pedidos.FindAsync(id);
+            if (pedido == null) return NotFound();
 
-            if (pedido == null || usuarioLogueado == null) return NotFound();
+            // 3. Obtener la ubicación de entrega (Usando decimal ahora)
+            var ubicacionEntrega = await _context.UbicacionUsuario
+                .Where(u => u.IdUsuario == usuarioSesionId)
+                .OrderByDescending(u => u.IdUbicacion)
+                .FirstOrDefaultAsync();
 
-            // 3. LÓGICA DE SIMULACIÓN (Disparador de la moto)
-            // Si el pedido está 'Pendiente' o 'Preparando', lo pasamos a 'En Camino'
-            // Esto asegura que el JavaScript reciba la señal de iniciar la ruta.
+            if (ubicacionEntrega == null)
+            {
+                // Usamos 'm' para indicar que son decimales
+                ubicacionEntrega = new UbicacionUsuario { Latitud = 9.9333m, Longitud = -84.0833m };
+            }
+
+            // 4. LÓGICA DE SIMULACIÓN
             if (pedido.Estado == "Pendiente" || pedido.Estado == "Preparando")
             {
                 pedido.Estado = "En Camino";
                 await _context.SaveChangesAsync();
             }
 
-            // 4. FORMATEO DE COORDENADAS (Crucial para JavaScript)
-            // Forzamos el uso de punto decimal (.) para evitar que '9,93' rompa el JS.
+            // 5. FORMATEO (Cambiamos double por decimal)
             var cultura = CultureInfo.InvariantCulture;
 
-            // Destino: Lo que el usuario marcó en el mapa del Index
-            double latDest = (double)(usuarioLogueado.Latitud ?? 9.9333m);
-            double lngDest = (double)(usuarioLogueado.Longitud ?? -84.0833m);
+            // Usamos decimal para evitar el InvalidCastException
+            decimal latDest = ubicacionEntrega.Latitud;
+            decimal lngDest = ubicacionEntrega.Longitud;
 
-            // Origen: Punto fijo (Restaurante/Central en Tibás)
-            double latOrig = 9.9600;
-            double lngOrig = -84.0800;
+            // Origen: Restaurante (También en decimal)
+            decimal latOrig = 9.9600m;
+            decimal lngOrig = -84.0800m;
 
-            // Enviamos todo al ViewBag como string formateado
+            // Al convertir a String con InvariantCulture, JavaScript recibirá "9.9600" correctamente
             ViewBag.UsuarioLat = latDest.ToString(cultura);
             ViewBag.UsuarioLng = lngDest.ToString(cultura);
             ViewBag.RepartidorLat = latOrig.ToString(cultura);
@@ -60,7 +65,6 @@ namespace RappiDozApp.Controllers
 
             ViewBag.PedidoId = pedido.Id;
             ViewBag.EstadoActual = pedido.Estado;
-            ViewBag.NombreCliente = usuarioLogueado.NombreCompleto;
 
             return View("~/Views/Pedido/seguimiento.cshtml");
         }

@@ -523,30 +523,35 @@ main, section, .form-section, .carrito-section {
 @media (max-width: 768px) {
     .menu-toggle {
         display: block;
+        z-index: 2001;
     }
 
+    /* Forzamos que inicie oculto */
     .sesion {
-        display: none;
+        display: none !important; /* <--- Cambio crítico */
         flex-direction: column;
         position: absolute;
-        top: 60px;
+        top: 80px; /* Alineado con el height de tu navbar */
         left: 0;
         width: 100%;
-        background-color: rgba(71, 40, 37, 0.98); /* Más opaco */
-        padding: 30px;
+        background-color: #472825; /* Tu color deep-dark sólido */
+        padding: 20px;
         z-index: 1000;
         border-radius: 0 0 20px 20px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
 
+        /* Solo cuando tiene la clase active se muestra */
         .sesion.active {
-            display: flex;
+            display: flex !important; /* <--- Cambio crítico */
         }
 
         .sesion a {
-            margin: 12px 0;
+            margin: 10px 0;
             width: 100%;
             justify-content: center;
-            font-size: 17px;
+            padding: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
     /* Sub-dropdown en móvil */

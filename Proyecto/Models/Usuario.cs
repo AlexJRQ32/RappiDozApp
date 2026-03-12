@@ -7,8 +7,8 @@
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public string? Telefono { get; set; }
-        public decimal? Latitud { get; set; }
-        public decimal? Longitud { get; set; }
+
+        public virtual ICollection<UbicacionUsuario> Ubicaciones { get; set; } = new List<UbicacionUsuario>();
         public byte[]? FotoBinaria { get; set; } // Aquí se guarda la imagen real
         public string? ContentType { get; set; }  // Aquí guardamos si es .jpg, .png, etc.
         public int RolId { get; set; }

@@ -8,10 +8,9 @@
     decimal envioYTarifa = subtotal > 0 ? 2000 : 0;
     decimal total = (subtotal + envioYTarifa) - descuento;
     var cuponesBilletera = ViewBag.CuponesApartados as List<RappiDozApp.Models.CuponApartado>;
+    var ubicaciones = ViewBag.Ubicaciones as List<RappiDozApp.Models.UbicacionUsuario>;
     string codigoAplicado = ViewBag.CodigoAplicado as string;
 }
-
-<!-- Styles moved to ~/css/_StylesNavbar.css -->
 
 <div class="super-contenedor-carrito">
     <div class="carrito-bordeado">
@@ -67,8 +66,50 @@
             <aside>
                 <div style="background: white; padding: 25px; border-radius: 30px; border: 1px solid #d3ab80; position: sticky; top: 120px;">
 
+                    @* SECCIÓN DE DIRECCIÓN DE ENVÍO CON ELIMINAR *@
+                    <div style="margin-bottom: 20px; padding: 15px; background: #fffdfa; border: 2px solid #f0e6d6; border-radius: 20px;">
+                        <p style="font-size: 0.8rem; font-weight: 900; color: #472825; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-map-marker-alt" style="color: #d3ab80;"></i> DIRECCIÓN DE ENVÍO
+                        </p>
+
+                        @if (ubicaciones != null && ubicaciones.Any())
+                        {
+                            <div style="display: flex; gap: 8px;">
+                                <select id="selectUbicacionPedido" class="form-select"
+                                        style="border-radius: 12px; border: 2px solid #d3ab80; font-size: 0.85rem; font-weight: 700; color: #472825; background-color: white; flex-grow: 1;">
+                                    <option value="">-- ¿A dónde lo llevamos? --</option>
+                                    @foreach (var ubi in ubicaciones)
+                                    {
+                                        <option value="@ubi.IdUbicacion">📍 @ubi.NombreUbicacion</option>
+                                    }
+                                </select>
+                                
+                                <button type="button" onclick="borrarUbicacionSeleccionada()"
+                                        style="background: #fff; border: 2px solid #ffcccc; color: #e74c3c; border-radius: 12px; padding: 0 12px; transition: 0.3s;">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                            
+                            <div style="text-align: right; margin-top: 8px;">
+                                <a href="javascript:void(0)" onclick="abrirMapa()" style="color: #96786f; font-size: 0.7rem; font-weight: 800; text-decoration: none;">
+                                    <i class="fas fa-plus-circle"></i> Agregar otra
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="text-align: center; padding: 5px;">
+                                <p style="font-size: 0.75rem; color: #96786f; margin-bottom: 8px;">No tienes direcciones guardadas.</p>
+                                <button type="button" onclick="abrirMapa()"
+                                        style="background: #d3ab80; color: white; border: none; font-size: 0.7rem; font-weight: 800; border-radius: 10px; padding: 8px 15px; cursor: pointer; width: 100%;">
+                                    CONFIGURAR DIRECCIÓN
+                                </button>
+                            </div>
+                        }
+                    </div>
+
                     @* SECCIÓN DE CUPONES *@
-                    <div class="seccion-cupones-superior">
+                    <div class="seccion-cupones-superior" style="margin-bottom: 20px;">
                         <p style="font-size: 0.8rem; font-weight: 900; color: #472825; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
                             <i class="fas fa-ticket-alt" style="color: #d3ab80;"></i> TUS CUPONES (Toca uno)
                         </p>
@@ -111,7 +152,7 @@
                     </div>
 
                     @* RESUMEN *@
-                    <div style="font-size: 0.95rem; color: #472825;">
+                    <div style="font-size: 0.95rem; color: #472825; border-top: 1px solid #eee; padding-top: 15px;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                             <span>Subtotal</span> <b>₡@subtotal.ToString("N0")</b>
                         </div>
@@ -134,7 +175,9 @@
                     {
                         <form id="formCheckout" asp-action="ConfirmarPedido" method="post" style="margin-top: 20px;">
                             @Html.AntiForgeryToken()
-                            <button type="submit" style="width: 100%; background: #472825; color: white; border: none; padding: 18px; border-radius: 15px; font-weight: 900; font-size: 1.1rem; cursor: pointer;">
+                            <input type="hidden" name="UbicacionId" id="UbicacionIdFinal" />
+                            
+                            <button type="submit" style="width: 100%; background: #472825; color: white; border: none; padding: 18px; border-radius: 15px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s;" onmouseover="this.style.background='#5a332f'" onmouseout="this.style.background='#472825'">
                                 FINALIZAR COMPRA
                             </button>
                         </form>
@@ -148,25 +191,80 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     window.onload = function() {
-        const error = document.getElementById('errorMsg').value;
-        const success = document.getElementById('successMsg').value;
-        if (error) Swal.fire({ icon: 'warning', title: 'Aviso', text: error, confirmButtonColor: '#472825', background: '#fff4e2' });
-        if (success) Swal.fire({ icon: 'success', title: 'Aplicado', text: success, timer: 1500, showConfirmButton: false, background: '#fff4e2' });
+    const error = document.getElementById('errorMsg').value;
+    const success = document.getElementById('successMsg').value;
+    if (error) Swal.fire({ icon: 'warning', title: 'Aviso', text: error, confirmButtonColor: '#472825', background: '#fff4e2' });
+    if (success) Swal.fire({ icon: 'success', title: 'Aplicado', text: success, timer: 1500, showConfirmButton: false, background: '#fff4e2' });
     };
 
     function aplicar(codigo) {
-        document.getElementById('valCupon').value = codigo;
-        document.getElementById('formCuponHidden').submit();
+    document.getElementById('valCupon').value = codigo;
+    document.getElementById('formCuponHidden').submit();
     }
 
-    document.getElementById('formCheckout')?.addEventListener('submit', function() {
-        Swal.fire({
-            title: 'Confirmando...',
-            text: 'Estamos enviando tu pedido a la cocina',
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            background: '#fff4e2',
-            willOpen: () => { Swal.showLoading(); }
-        });
+    // FUNCIÓN PARA ELIMINAR UBICACIÓN
+    function borrarUbicacionSeleccionada() {
+    const id = document.getElementById('selectUbicacionPedido').value;
+    if (!id) {
+    Swal.fire({ icon: 'info', title: 'Selecciona una', text: 'Primero elige la dirección que quieres borrar.', confirmButtonColor: '#472825' });
+    return;
+    }
+
+    Swal.fire({
+    title: '¿Eliminar dirección?',
+    text: "No podrás deshacer esto.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#472825',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    background: '#fff4e2'
+    }).then((result) => {
+    if (result.isConfirmed) {
+    // Llamada AJAX al controlador
+    fetch('/Carrito/EliminarUbicacion/' + id, {
+    method: 'POST',
+    headers: { 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value }
+    }).then(response => {
+    if (response.ok) {
+    Swal.fire({ icon: 'success', title: 'Borrado', showConfirmButton: false, timer: 1000 }).then(() => {
+    location.reload();
+    });
+    }
+    });
+    }
+    });
+    }
+
+    // VALIDACIÓN AL FINALIZAR COMPRA
+    document.getElementById('formCheckout')?.addEventListener('submit', function(e) {
+    const comboUbi = document.getElementById('selectUbicacionPedido');
+    const ubicacionId = comboUbi ? comboUbi.value : "";
+
+    if (!ubicacionId) {
+    e.preventDefault();
+    Swal.fire({
+    icon: 'warning',
+    title: 'Falta Dirección',
+    text: 'Por favor, selecciona a dónde debemos enviar tu pedido.',
+    confirmButtonColor: '#472825',
+    background: '#fff4e2'
+    });
+    // Resaltar el combo para el usuario
+    if (comboUbi) comboUbi.style.borderColor = "#e74c3c";
+    return;
+    }
+
+    document.getElementById('UbicacionIdFinal').value = ubicacionId;
+
+    Swal.fire({
+    title: 'Confirmando...',
+    text: 'Estamos enviando tu pedido a la cocina',
+    allowOutsideClick: false,
+    showConfirmButton: false,
+    background: '#fff4e2',
+    willOpen: () => { Swal.showLoading(); }
+    });
     });
 </script>

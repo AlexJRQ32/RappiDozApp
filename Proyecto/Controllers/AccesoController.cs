@@ -184,6 +184,7 @@ namespace RappiDozApp.Controllers
             return View("~/Views/Dashboard/index.cshtml");
         }
 
+        [HttpGet]
         public IActionResult OlvidastePassword() => View("~/Views/Login/olvidaste-contrasena.cshtml");
 
         [HttpPost]
