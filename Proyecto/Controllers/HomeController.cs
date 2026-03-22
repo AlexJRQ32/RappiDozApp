@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RappiDozApp.Data;
 using RappiDozApp.Models;
@@ -24,13 +24,13 @@ namespace RappiDozApp.Controllers
 
             if (userId.HasValue)
             {
-                // 1. Buscamos si el usuario tiene AL MENOS UNA ubicación guardada
+                // 1. Buscamos si el usuario tiene AL MENOS UNA ubicaciÃ³n guardada
                 // en la nueva tabla de UbicacionUsuario
                 tieneUbicacion = await _context.UbicacionUsuario
                     .AnyAsync(u => u.IdUsuario == userId.Value);
             }
 
-            // 2. Pasamos el dato a la View (para bloquear el botón de "Comprar" si no tiene dirección)
+            // 2. Pasamos el dato a la View (para bloquear el botÃ³n de "Comprar" si no tiene direcciÃ³n)
             ViewBag.TieneUbicacion = tieneUbicacion;
 
             // 3. Cargamos los restaurantes
@@ -43,13 +43,13 @@ namespace RappiDozApp.Controllers
         // GET: Home/Explorar
         public async Task<IActionResult> Explorar(string buscar)
         {
-            // 1. Cargamos la base incluyendo Categoría y Productos (Menú)
+            // 1. Cargamos la base incluyendo CategorÃ­a y Productos (MenÃº)
             var consulta = _context.Restaurantes
                 .Include(r => r.Categoria)
                 .Include(r => r.Productos)
                 .AsQueryable();
 
-            // 2. Filtramos con lógica 360° (Nombre, Categoría, Menú y Ubicación)
+            // 2. Filtramos con lÃ³gica 360Â° (Nombre, CategorÃ­a, MenÃº y UbicaciÃ³n)
             if (!string.IsNullOrEmpty(buscar))
             {
                 string b = buscar.ToLower().Trim();
@@ -58,13 +58,13 @@ namespace RappiDozApp.Controllers
                     // 1. Coincidencia en nombre del restaurante
                     r.NombreComercial.ToLower().Contains(b) ||
 
-                    // 2. Coincidencia en el nombre de la categoría
+                    // 2. Coincidencia en el nombre de la categorÃ­a
                     (r.Categoria != null && r.Categoria.Nombre.ToLower().Contains(b)) ||
 
-                    // 3. Coincidencia en UBICACIÓN / DIRECCIÓN (Zona, calle, ciudad)
+                    // 3. Coincidencia en UBICACIÃ“N / DIRECCIÃ“N (Zona, calle, ciudad)
                     r.Direccion.ToLower().Contains(b) ||
 
-                    // 4. Coincidencia en cualquier producto del menú
+                    // 4. Coincidencia en cualquier producto del menÃº
                     r.Productos.Any(p => p.Nombre.ToLower().Contains(b) || p.Descripcion.ToLower().Contains(b))
                 );
             }
@@ -78,19 +78,19 @@ namespace RappiDozApp.Controllers
                 .ToList();
 
             // 4. Retorno a tu vista personalizada
-            return View("~/Views/Navbar/busqueda.cshtml", listaOrdenada);
+            return View("~/Views/Home/busqueda.cshtml", listaOrdenada);
         }
 
         public IActionResult Privacy()
         {
-            // Ruta estándar: Views/Home/Privacy.cshtml
+            // Ruta estÃ¡ndar: Views/Home/Privacy.cshtml
             return View("~/Views/Home/Privacy.cshtml");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            // Ruta estándar: Views/Shared/Error.cshtml
+            // Ruta estÃ¡ndar: Views/Shared/Error.cshtml
             return View("~/Views/Shared/Error.cshtml", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }

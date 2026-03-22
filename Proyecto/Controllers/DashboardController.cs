@@ -23,7 +23,7 @@ namespace RappiDozApp.Controllers
             var rol = HttpContext.Session.GetString("RolUsuario");
             var userId = HttpContext.Session.GetInt32("UsuarioId");
 
-            if (userId == null) return RedirectToAction("Login", "Acceso");
+            if (userId == null) return RedirectToAction("Login", "Accesos");
 
             ViewBag.TotalRestaurantes = await _context.Restaurantes
                 .CountAsync(r => rol == "Administrador" || r.UsuarioId == userId);
@@ -38,7 +38,7 @@ namespace RappiDozApp.Controllers
             int? userId = HttpContext.Session.GetInt32("UsuarioId");
             string? rol = HttpContext.Session.GetString("RolUsuario");
 
-            if (userId == null) return RedirectToAction("Login", "Acceso");
+            if (userId == null) return RedirectToAction("Login", "Accesos");
 
             ViewBag.ListaUsuarios = new List<Usuario>();
             ViewBag.ListaRestaurantes = new List<Restaurante>();
@@ -49,7 +49,7 @@ namespace RappiDozApp.Controllers
                 ViewBag.ListaUsuarios = await _context.Usuarios.Include(u => u.Rol).OrderByDescending(u => u.Id).ToListAsync();
                 ViewBag.ListaRestaurantes = await _context.Restaurantes.Include(r => r.Usuario).Include(r => r.Categoria).ToListAsync();
             }
-            else if (rol == "Restaurante")
+            else if (rol == "Restaurantes")
             {
                 ViewBag.ListaRestaurantes = await _context.Restaurantes.Include(r => r.Categoria).Where(r => r.UsuarioId == userId).ToListAsync();
             }
@@ -158,7 +158,7 @@ namespace RappiDozApp.Controllers
                 // ==========================================
                 // ENTIDAD: RESTAURANTE (SEDES)
                 // ==========================================
-                if (entidad == "Restaurante")
+                if (entidad == "Restaurantes")
                 {
                     // Aquí cargamos las Categorías porque aquí es donde se eligen
                     var cats = await _context.Categorias.ToListAsync();
@@ -172,7 +172,7 @@ namespace RappiDozApp.Controllers
                     {
                         var dueños = await _context.Usuarios
                             .Include(u => u.Rol)
-                            .Where(u => u.Rol != null && u.Rol.NombreRol == "Restaurante")
+                            .Where(u => u.Rol != null && u.Rol.NombreRol == "Restaurantes")
                             .ToListAsync();
                         ViewBag.Usuarios = dueños.Select(d => new SelectListItem
                         {
@@ -191,7 +191,7 @@ namespace RappiDozApp.Controllers
                 // ==========================================
                 // ENTIDAD: USUARIO
                 // ==========================================
-                if (entidad == "Usuario")
+                if (entidad == "Usuarios")
                 {
                     var roles = await _context.Roles.ToListAsync();
                     ViewBag.Roles = roles.Select(r => new SelectListItem
@@ -210,7 +210,7 @@ namespace RappiDozApp.Controllers
                 // ==========================================
                 // ENTIDAD: CUPON
                 // ==========================================
-                if (entidad == "Cupon")
+                if (entidad == "Cupones")
                 {
                     // 1. Cargamos las categorías para que aparezcan en el dropdown del cupón
                     var cats = await _context.Categorias.ToListAsync();
@@ -264,3 +264,4 @@ namespace RappiDozApp.Controllers
         }
     }
 }
+

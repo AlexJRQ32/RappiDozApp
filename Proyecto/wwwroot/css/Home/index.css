@@ -205,8 +205,8 @@ section {
 
 /* Botón Ver Menú */
 .btn-menu {
-    background: #ece4da;
-    color: #ece4da;
+    background: var(--accent-main);
+    color: var(--bg-main);
     padding: 14px 28px;
     border-radius: 15px;
     text-decoration: none;
@@ -217,7 +217,8 @@ section {
 }
 
     .btn-menu:hover {
-        background: #d3ab80;
+        background: var(--text-main);
+        color: var(--bg-main);
         transform: scale(1.05);
     }
 
@@ -293,7 +294,7 @@ section {
 
 .seccion-header h2 {
     font-size: 2rem;
-    color: #2c3e50;
+    color: var(--text-main);
     margin-bottom: 30px;
     font-weight: 800;
 }
@@ -340,7 +341,7 @@ section {
 .item-detalles h3 {
     margin: 0;
     font-size: 1.2rem;
-    color: #2c3e50;
+    color: var(--text-main);
 }
 
 .categoria-tag {
@@ -373,7 +374,7 @@ section {
     display: flex;
     justify-content: space-between;
     margin-bottom: 15px;
-    color: #7f8c8d;
+    color: var(--text-muted);
 }
 
 .resumen-total {
@@ -384,7 +385,7 @@ section {
     border-top: 2px solid #28262c;
     font-size: 1.5rem;
     font-weight: 800;
-    color: #2c3e50;
+    color: var(--text-main);
 }
 
 .btn-finalizar {
@@ -438,7 +439,7 @@ section {
 .badge-status { font-size: 0.65rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; }
 .badge-status.open { background: #1a302a; color: #27ae60; }
 .badge-status.closed { background: #3a1a1a; color: #e74c3c; }
-.btn-menu-slim { background: #ece4da; color: #1e1c22 !important; padding: 8px 18px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: 0.3s; #1e1c22-space: nowrap; }
+.btn-menu-slim { background: var(--accent-main); color: var(--bg-main) !important; padding: 8px 18px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: 0.3s; white-space: nowrap; }
 .btn-menu-slim.disabled { background: #9a8e82; opacity: 0.7; }
 
 @media (max-width: 768px) {
@@ -460,7 +461,7 @@ section {
 .search-form { display:flex; align-items:center; background:#1e1c22; padding:6px; border-radius:15px; border:2px solid #d3ab80; }
 .search-form i { color:#d3ab80; margin:0 10px; }
 .search-form input { flex-grow:1; border:none; outline:none; font-size:1rem; color:#ece4da; background:transparent; }
-.search-form button { background:#ece4da; color:#1e1c22; border:none; padding:10px 20px; border-radius:12px; font-weight:700; cursor:pointer; }
+.search-form button { background:var(--accent-main); color:var(--bg-main); border:none; padding:10px 20px; border-radius:12px; font-weight:700; cursor:pointer; }
 .results-section { padding: 0 15px 60px; max-width:900px; margin:0 auto; }
 .results-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #d3ab80; padding-bottom:8px; }
 .results-empty { text-align:center; padding:40px 20px; background:#1e1c22; border-radius:20px; border:1px dashed #d3ab80; }
@@ -516,7 +517,7 @@ section {
     font-weight: 800;
     min-width: 25px;
     text-align: center;
-    color: #2c3e50;
+    color: var(--text-main);
     font-size: 1.1rem;
 }
 
@@ -688,7 +689,7 @@ h2 {
 
 .btn-action-custom {
     background-color: var(--primary-dark, #ece4da);
-    color: var(--text-main);
+    color: var(--bg-main);
     border: none;
     padding: 12px 35px;
     border-radius: 100px;
@@ -703,7 +704,7 @@ h2 {
 
 /* ===== 2. SECCIÓN CATEGORÍAS FLUIDAS (Scroll-X) ===== */
 .categories-fluid {
-    background-color: var(--text-main);
+    background-color: var(--white);
     margin-top: 20px;
     border-radius: 30px;
     box-shadow: var(--shadow-soft);
@@ -812,8 +813,9 @@ h2 {
     position: absolute;
     top: 15px;
     right: 15px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(30, 28, 34, 0.92);
     color: var(--text-main);
+    border: 1px solid #3a3530;
     padding: 5px 12px;
     border-radius: 50px;
     font-weight: 700;
@@ -952,7 +954,7 @@ h2 {
     display: block;
     width: 100%;
     background: #ece4da;
-    color: #ece4da;
+    color: var(--bg-main);
     text-align: center;
     padding: 20px;
     border-radius: 15px;
@@ -965,6 +967,7 @@ h2 {
 
     .btn-next:hover {
         background: #d3ab80;
+        color: var(--bg-main);
         transform: translateY(-3px);
     }
 
@@ -1014,7 +1017,7 @@ h2 {
 .scroll-cupones::-webkit-scrollbar { height: 6px; }
 .scroll-cupones::-webkit-scrollbar-thumb { background: #d3ab80; border-radius: 10px; }
 .card-cupon { flex: 0 0 140px; background: var(--white); border: 2px solid #d3ab80; border-radius: 15px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.3s ease; position: relative; }
-.card-cupon:hover { background: #ece4da; border-color: #ece4da; transform: translateY(-4px); }
+.card-cupon:hover { background: var(--accent-main); border-color: var(--accent-main); transform: translateY(-4px); }
 .card-cupon:hover span, .card-cupon:hover b { color: #1e1c22 !important; }
 .card-cupon.cupon-activo { border-color: #27ae60 !important; background: #1a302a !important; transform: scale(1.05); box-shadow: 0 5px 15px rgba(39, 174, 96, 0.2); }
 .card-cupon.cupon-activo b { color: #27ae60 !important; }
@@ -1048,7 +1051,7 @@ summary {
     justify-content: space-between;
     align-items: center;
     list-style: none;
-    background-color: #fff;
+    background-color: var(--white);
 }
 
 /* Textos principales del resumen (Más visibles) */
@@ -1067,10 +1070,10 @@ summary {
 
 /* --- EL CONTENEDOR DE LA FACTURA --- */
 .factura-box {
-    background-color: #ece4da;
+    background-color: var(--white);
     margin: 20px 40px 40px 40px; /* Mucho más margen lateral y funcional */
     padding: 40px;
-    border: 2px solid #ece4da; /* Borde sólido oscuro para que resalte */
+    border: 2px solid #3a3530; /* Borde sólido oscuro para que resalte */
     border-radius: 15px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.05);
 }
@@ -1082,10 +1085,10 @@ summary {
 }
 
     .ticket-table th {
-        border-bottom: 2px solid #ece4da;
+        border-bottom: 2px solid #3a3530;
         padding: 15px 10px;
         text-align: left;
-        color: #ece4da;
+        color: var(--text-main);
         font-weight: 900;
         text-transform: uppercase;
         font-size: 0.9rem;
@@ -1094,7 +1097,7 @@ summary {
     .ticket-table td {
         padding: 18px 10px;
         border-bottom: 1px solid #3a3530;
-        color: #2c1816; /* Casi negro para máxima lectura */
+        color: var(--text-main);
         font-size: 1.1rem;
     }
 
@@ -1127,8 +1130,8 @@ summary {
 }
 
 .status-badge {
-    background: #ece4da;
-    color: #ece4da;
+    background: var(--accent-main);
+    color: var(--bg-main);
     padding: 8px 18px;
     border-radius: 50px;
     font-size: 0.85rem;
@@ -1213,7 +1216,7 @@ summary {
     .input-group select:focus,
     .input-group textarea:focus {
         border-color: var(--medium-green);
-        background-color: var(--text-main);
+        background-color: var(--white);
     }
 
 .input-row {
@@ -1222,7 +1225,7 @@ summary {
     gap: 20px;
 }
 
-Vista Previa
+/* Vista Previa */
 .form-preview {
     display: flex;
     flex-direction: column;
@@ -1235,7 +1238,7 @@ Vista Previa
     font-size: 14px;
 }
 
-Botones Inferiores
+/* Botones Inferiores */
 .form-actions-footer {
     display: flex;
     justify-content: flex-end;
@@ -1246,7 +1249,7 @@ Botones Inferiores
 
 .btn-guardar {
     background-color: var(--text-main);
-    color: var(--text-main);
+    color: var(--bg-main);
     padding: 15px 40px;
     border: none;
     border-radius: 50px;
@@ -1279,17 +1282,17 @@ Botones Inferiores
     text-align: center;
     margin-bottom: 30px;
     display: flex;
-    Asegura que la imagen se centre correctamente justify-content: center;
+    justify-content: center;
     align-items: center;
 }
 
     .form-group-foto img {
         width: 120px;
-        Ajusta el tamaño que desees, por ejemplo 120px o 150px height: 120px;
-        IMPORTANTE: El alto debe ser igual al ancho para un círculo perfecto border-radius: 50%;
-        Esto crea el efecto redondo object-fit: cover;
-        Evita que la imagen se deforme o estire dentro del círculo border: 4px solid var(--soft-green);
-        Añade el borde característico margin-bottom: 15px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--soft-green);
+        margin-bottom: 15px;
     }
 
 

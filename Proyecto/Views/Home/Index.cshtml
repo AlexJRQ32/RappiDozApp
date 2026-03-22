@@ -1,4 +1,4 @@
-@using Microsoft.AspNetCore.Http
+﻿@using Microsoft.AspNetCore.Http
 @using System.Globalization
 @inject IHttpContextAccessor HttpContextAccessor
 @inject RappiDozApp.Data.ApplicationDbContext _context
@@ -48,12 +48,13 @@
     /* ESTILOS DE CARTAS */
     .restaurant-card.cerrado-filtro .card-img-wrapper img { filter: brightness(0.5) saturate(1); opacity: 0.8; }
     .restaurant-card.cerrado-filtro .card-img-wrapper::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); z-index: 5; }
-    .restaurant-card.cerrado-filtro { cursor: not-allowed; pointer-events: none; background-color: #fafafa; }
-    
+    .restaurant-card.cerrado-filtro { cursor: not-allowed; pointer-events: none; background-color: var(--bg-main); }
+
     .badge-cerrado {
-        background: #472825; color: white; padding: 6px 14px; border-radius: 8px;
+        background: #3a1a1a; color: #c53030; padding: 6px 14px; border-radius: 8px;
         font-weight: 800; font-size: 0.75rem; text-transform: uppercase;
         box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        border: 1px solid #feb2b2;
     }
 
     /* GRID Y SCROLL */
@@ -63,20 +64,20 @@
     .link-restaurante-horizontal { text-decoration: none !important; color: inherit; flex: 0 0 200px; }
     
     .restaurant-card { 
-        background: white; border-radius: 20px; overflow: hidden; border: 1px solid #f3e5d0; 
+        background: var(--white); border-radius: 20px; overflow: hidden; border: 1px solid #3a3530; 
         height: 300px; display: flex; flex-direction: column; transition: 0.3s; 
     }
-    .restaurant-card:hover:not(.cerrado-filtro) { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(71, 40, 37, 0.08); }
+    .restaurant-card:hover:not(.cerrado-filtro) { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); }
 
-    .card-img-wrapper { height: 160px; position: relative; overflow: hidden; background: #eee; }
+    .card-img-wrapper { height: 160px; position: relative; overflow: hidden; background: var(--bg-main); }
     .restaurant-logo { width: 100%; height: 100%; object-fit: cover; }
-    .info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-    .info h3 { font-size: 0.95rem; color: #472825; font-weight: 800; margin: 0; }
-    .meta { font-size: 0.8rem; font-weight: 700; color: #d3ab80; }
+    .info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: var(--white); }
+    .info h3 { font-size: 0.95rem; color: var(--text-main); font-weight: 800; margin: 0; }
+    .meta { font-size: 0.8rem; font-weight: 700; color: var(--accent-main); }
 
 /* PASOS - DISEÑO MEJORADO */
 .como-funciona { 
-    background: #fdf2e2; 
+    background: var(--accent-soft); 
     padding: 80px 0; 
     margin-top: 60px;
     border-radius: 50px 50px 0 0; /* Suaviza la transición con la sección anterior */
@@ -97,20 +98,21 @@
     min-width: 250px;
     max-width: 320px;
     padding: 30px 20px;
-    background: rgba(255, 255, 255, 0.4); /* Un toque de transparencia blanca */
+    background: var(--white);
+    border: 1px solid #3a3530;
     border-radius: 30px;
     transition: all 0.4s ease;
 }
 
 .paso:hover {
-    background: #ffffff;
+    background: var(--bg-main);
     transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(71, 40, 37, 0.05);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
 .paso i { 
     font-size: 3.5rem; 
-    color: #d3ab80; 
+    color: var(--accent-main); 
     margin-bottom: 20px;
     display: inline-block;
     transition: transform 0.3s ease;
@@ -118,63 +120,64 @@
 
 .paso:hover i {
     transform: scale(1.1) rotate(5deg);
-    color: #472825; /* Cambia al color principal al pasar el mouse */
+    color: var(--text-main); /* Cambia al color principal al pasar el mouse */
 }
 
 .paso h3 {
-    color: #472825;
+    color: var(--text-main);
     font-weight: 800;
     font-size: 1.25rem;
     margin-bottom: 10px;
 }
 
 .paso p {
-    color: #7a6e6c;
+    color: var(--text-muted);
     font-size: 0.95rem;
     line-height: 1.5;
     margin: 0;
 }
 /* SECCIÓN MAPA MEJORADA */
-    .map-card { max-width:900px; margin:0 auto; background:white; padding:25px; border-radius:30px; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.05); }
-    #map { height:350px; width:100%; border-radius:20px; z-index:1; border: 2px solid #f3e5d0; }
-    
+    .map-card { max-width:900px; margin:0 auto; background:var(--white); padding:25px; border-radius:30px; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.3); border: 1px solid #3a3530;}
+    #map { height:350px; width:100%; border-radius:20px; z-index:1; border: 2px solid #3a3530; }
+
     .input-nombre-ubi {
-        width: 100%; padding: 12px; border-radius: 12px; border: 2px solid #f3e5d0;
+        width: 100%; padding: 12px; border-radius: 12px; border: 2px solid #3a3530;
+        background: var(--bg-main); color: var(--text-main);
         margin-bottom: 15px; outline: none; transition: 0.3s;
     }
-    .input-nombre-ubi:focus { border-color: #d3ab80; }
+    .input-nombre-ubi:focus { border-color: var(--accent-main); }
 
     /* RESPONSIVE */
 @@media (max-width: 768px) {
         .link-restaurante-horizontal { flex: 0 0 160px; }
     .restaurant-card { height: 210px; display: flex; flex-direction: column; }
-    .card-img-wrapper { height: 150px !important; border-bottom: 1px solid #f3e5d0; }
+    .card-img-wrapper { height: 150px !important; border-bottom: 1px solid #3a3530; }
     .restaurant-logo { height: 100%; width: 100%; object-fit: cover; }
-    .info { height: 50px; padding: 4px 8px !important; display: flex; flex-direction: column; justify-content: center; background: white; }
-    .info h3 { font-size: 0.8rem !important; margin: 0 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .info { height: 50px; padding: 4px 8px !important; display: flex; flex-direction: column; justify-content: center; background: var(--white); }
+    .info h3 { font-size: 0.8rem !important; margin: 0 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
     .horario-mini, .info p:not(.meta) { display: none !important; }
-    .meta { font-size: 0.65rem !important; margin: 7px 0 0 0 !important; line-height: 1; }
-    .overlay-cerrado { background-color: rgba(0,0,0,0.2); }
+    .meta { font-size: 0.65rem !important; margin: 7px 0 0 0 !important; line-height: 1; color: var(--accent-main); }
+    .overlay-cerrado { background-color: rgba(0,0,0,0.6); }
     .badge-cerrado { font-size: 0.55rem; padding: 2px 6px; }
 }
 
 /* Utility classes to replace inline styles used in the view */
-.hero-content h1 { color: white; }
-.contenido-principal { background-color: #fff4e2; min-height: 100vh; }
+.hero-content h1 { color: var(--text-main); }
+.contenido-principal { background-color: var(--bg-main); min-height: 100vh; }
 .categorias { padding: 40px 0; }
 .grid-categorias { display:flex; justify-content:center; flex-wrap:wrap; gap:15px; }
 .categoria-card p { font-size: 0.8rem; }
 .restaurantes { padding: 20px 0; }
 .restaurantes .container-header { max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding:0 20px; }
-.restaurantes .container-header h2 { color:#472825; font-weight:800; margin:0; }
-.restaurantes .container-header a { color:#d3ab80; font-weight:700; text-decoration:none; }
+.restaurantes .container-header h2 { color:var(--text-main); font-weight:800; margin:0; }
+.restaurantes .container-header a { color:var(--accent-main); font-weight:700; text-decoration:none; }
 .seccion-mapa { padding: 40px 20px; }
-.map-card { max-width:900px; margin:0 auto; background:white; padding:25px; border-radius:30px; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.05); }
+.map-card { max-width:900px; margin:0 auto; background:var(--white); padding:25px; border-radius:30px; position:relative; box-shadow:var(--shadow-soft); border: 1px solid #3a3530; }
 .map-card #map { height:350px; width:100%; border-radius:20px; z-index:1; }
-.locked-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.7); border-radius:30px; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000; backdrop-filter: blur(4px); }
-.locked-overlay i { font-size:3rem; color:#472825; margin-bottom:15px; }
-.locked-overlay h3 { color:#472825; font-weight:800; }
-.locked-overlay a { background:#472825; color:white; padding:12px 30px; border-radius:15px; text-decoration:none; font-weight:bold; margin-top:10px; }
+.locked-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(20,18,22,0.85); border-radius:30px; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000; backdrop-filter: blur(4px); }
+.locked-overlay i { font-size:3rem; color:var(--text-main); margin-bottom:15px; }
+.locked-overlay h3 { color:var(--text-main); font-weight:800; }
+.locked-overlay a { background:var(--accent-main); color:var(--bg-main); padding:12px 30px; border-radius:15px; text-decoration:none; font-weight:bold; margin-top:10px; }
 .btn-confirmar-mapa { margin-top:20px; }
 </style>
 
@@ -192,18 +195,18 @@
     </div>
 </section>
 
-<main class="contenido-principal" style="background-color: #fff4e2; min-height: 100vh;">
+<main class="contenido-principal" style="background-color: var(--bg-main); min-height: 100vh;">
     <div class="zona-restringida">
 
         @* CATEGORÍAS *@
         <section class="categorias" style="padding: 40px 0;">
-            <h2 style="text-align: center; color: #472825; font-weight: 800; margin-bottom: 30px;">Explorar por categoría</h2>
+            <h2 style="text-align: center; color: var(--text-main); font-weight: 800; margin-bottom: 30px;">Explorar por categoría</h2>
             <div class="grid-categorias" style="display: flex; justify-content: center; flex-wrap: wrap; gap: 15px;">
                 @foreach (var cat in new[] { (I: "hamburger", N: "Burgers"), (I: "pizza-slice", N: "Pizza"), (I: "drumstick-bite", N: "Pollo"), (I: "ice-cream", N: "Postres"), (I: "utensils", N: "Más") })
                 {
-                    <a asp-controller="Home" asp-action="Explorar" asp-route-buscar="@cat.N" class="categoria-card">
-                        <i class="fas fa-@cat.I"></i>
-                        <p>@cat.N</p>
+                    <a asp-controller="Home" asp-action="Explorar" asp-route-buscar="@cat.N" class="categoria-card" style="text-decoration: none; text-align: center;">
+                        <i class="fas fa-@cat.I" style="font-size: 2rem; color: var(--accent-main); margin-bottom: 8px; display: block;"></i>
+                        <p style="color: var(--text-main); font-weight: 600; font-size: 0.9rem; margin: 0;">@cat.N</p>
                     </a>
                 }
             </div>
@@ -212,8 +215,8 @@
         @* RESTAURANTES *@
         <section class="restaurantes" style="padding: 20px 0;">
             <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 20px;">
-                <h2 style="color: #472825; font-weight: 800; margin: 0;">Restaurantes populares</h2>
-                <a asp-action="Explorar" asp-controller="Home" style="color: #d3ab80; font-weight: 700; text-decoration: none;">Ver todos</a>
+                <h2 style="color: var(--text-main); font-weight: 800; margin: 0;">Restaurantes populares</h2>
+                <a asp-action="Explorar" asp-controller="Home" style="color: var(--accent-main); font-weight: 700; text-decoration: none;">Ver todos</a>
             </div>
 
             <div class="scroll-horizontal-wrapper">
@@ -222,7 +225,7 @@
                     {
                         @foreach (var restaurante in Model)
                         {
-                            <a asp-controller="Restaurante" asp-action="Menu" asp-route-id="@restaurante.Id" class="link-restaurante-horizontal">
+                            <a asp-controller="Restaurantes" asp-action="Menu" asp-route-id="@restaurante.Id" class="link-restaurante-horizontal">
                                 <div class="restaurant-card @(restaurante.EstaAbierto ? "" : "cerrado-filtro")">
                                     <div class="card-img-wrapper">
                                         <img src="data:@(restaurante.ContentType ?? "image/png");base64,@Convert.ToBase64String(restaurante.LogoBinario ?? new byte[0])" class="restaurant-logo">
@@ -249,32 +252,32 @@
         @* SECCIÓN MAPA ACTUALIZADA *@
         <section id="seccion-mapa" style="padding: 40px 20px;">
             <div class="map-card">
-                <h2 style="color: #472825; font-weight: 800; margin-bottom: 20px; text-align: center;">¿A dónde enviamos hoy?</h2>
-                
+                <h2 style="color: var(--text-main); font-weight: 800; margin-bottom: 20px; text-align: center;">¿A dónde enviamos hoy?</h2>
+
                 <div id="map"></div>
 
                 @if (userId == null)
                 {
-                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); border-radius: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px);">
-                        <i class="fas fa-lock" style="font-size: 3rem; color: #472825; margin-bottom: 15px;"></i>
-                        <h3 style="color: #472825; font-weight: 800;">Inicia sesión para guardar ubicaciones</h3>
-                        <a asp-controller="Acceso" asp-action="Login" style="background:#472825; color:white; padding:12px 30px; border-radius:15px; text-decoration:none; font-weight:bold; margin-top:10px;">INICIAR SESIÓN</a>
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20,18,22,0.85); border-radius: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px);">
+                        <i class="fas fa-lock" style="font-size: 3rem; color: var(--text-main); margin-bottom: 15px;"></i>
+                        <h3 style="color: var(--text-main); font-weight: 800;">Inicia sesión para guardar ubicaciones</h3>
+                        <a asp-controller="Accesos" asp-action="Login" style="background:var(--accent-main); color:var(--bg-main); padding:12px 30px; border-radius:15px; text-decoration:none; font-weight:bold; margin-top:10px;">INICIAR SESIÓN</a>
                     </div>
                 }
                 else
                 {
-                    <form id="formUbicacion" asp-controller="Usuario" asp-action="GuardarUbicacion" method="post" style="margin-top: 20px;">
+                    <form id="formUbicacion" asp-controller="Usuarios" asp-action="GuardarUbicacion" method="post" style="margin-top: 20px;">
                         @Html.AntiForgeryToken()
-                        
+
                         <div style="margin-bottom: 15px;">
-                            <label style="display:block; margin-bottom:5px; font-weight:bold; color:#472825;">Etiqueta tu dirección:</label>
+                            <label style="display:block; margin-bottom:5px; font-weight:bold; color:var(--text-main);">Etiqueta tu dirección:</label>
                             <input type="text" name="nombreUbicacion" class="input-nombre-ubi" placeholder="Ej: Casa, Trabajo, Gimnasio..." required>
                         </div>
 
                         <input type="hidden" id="Latitud" name="Latitud" value="@latActual.ToString(System.Globalization.CultureInfo.InvariantCulture)" />
                         <input type="hidden" id="Longitud" name="Longitud" value="@lngActual.ToString(System.Globalization.CultureInfo.InvariantCulture)" />
-                        
-                        <button type="submit" id="btn-confirmar-mapa" style="background:#472825; color:white; border:none; width:100%; padding:15px; border-radius:15px; font-weight:800; cursor:pointer; transition: 0.3s;">
+
+                        <button type="submit" id="btn-confirmar-mapa" style="background:var(--accent-main); color:var(--bg-main); border:none; width:100%; padding:15px; border-radius:15px; font-weight:800; cursor:pointer; transition: 0.3s;">
                             <i class="fas fa-map-pin me-2"></i> GUARDAR ESTA DIRECCIÓN
                         </button>
                     </form>

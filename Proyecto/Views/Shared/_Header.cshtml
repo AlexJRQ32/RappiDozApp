@@ -170,7 +170,7 @@
             </a>
 
             <div class="cart-container">
-                <a asp-controller="Carrito" asp-action="Index" class="@ClaseActiva("Carrito")">
+                <a asp-controller="Carritos" asp-action="Index" class="@ClaseActiva("Carritos")">
                     <i class="fa-solid fa-cart-shopping"></i> Carrito
                 </a>
                 @if (!string.IsNullOrEmpty(carritoCount) && carritoCount != "0") {
@@ -183,8 +183,8 @@
                     <i class="fa-solid fa-ellipsis-vertical"></i> Más
                 </button>
                 <div class="dropdown-content">
-                    <a asp-controller="Usuario" asp-action="Movimientos"><i class="fa-solid fa-clock-rotate-left"></i> Mis Pedidos</a>
-                    <a asp-controller="Cupon" asp-action="Index"><i class="fa-solid fa-ticket"></i> Cupones</a>
+                    <a asp-controller="Usuarios" asp-action="Movimientos"><i class="fa-solid fa-clock-rotate-left"></i> Mis Pedidos</a>
+                    <a asp-controller="Cupones" asp-action="Index"><i class="fa-solid fa-ticket"></i> Cupones</a>
                     <a href="javascript:void(0)" onclick="abrirCalificar()">
                         <i class="fa-solid fa-star"></i> Califícanos
                     </a>
@@ -222,7 +222,7 @@
         }
         else
         {
-            <a asp-controller="Acceso" asp-action="Login" style="border: 2px solid #d3ab80; border-radius: 50px;">
+            <a asp-controller="Accesos" asp-action="Login" style="border: 2px solid #d3ab80; border-radius: 50px;">
                 <i class="fa-solid fa-circle-user"></i> Iniciar sesión
             </a>
         }

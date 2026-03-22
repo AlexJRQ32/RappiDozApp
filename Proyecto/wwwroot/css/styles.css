@@ -1,12 +1,19 @@
-/* --- VARIABLES DE PALETA TIERRA --- */
+﻿/* --- VARIABLES DE PALETA OSCURA --- */
 :root {
-    --deep-dark: #472825; /* Marrón profundo */
-    --dark-green: #96786f; /* Tierra suave */
-    --medium-green: #d3ab80; /* Dorado/Madera */
-    --soft-green: #fde4bc; /* Arena clara */
-    --light-mint: #fff4e2; /* Crema base */
-    --white: #ffffff;
-    --shadow-standard: 0 8px 30px rgba(71, 40, 37, 0.08);
+    --bg-main: #141216; /* Crema base -> Oscuro */
+    --text-main: #ece4da; /* Marrón -> Claro */
+    --text-muted: #9a8e82; /* Tierra suave -> Gris/Dorado suave */
+    --accent-main: #d3ab80; /* Dorado */
+    --accent-soft: #28262c; /* Arena clara -> Gris oscuro de fondo */
+    --white: #1e1c22; /* Blanco -> Card oscuro */
+    --crema-fondo: #141216;
+    --deep-dark: #ece4da;
+    --dark-green: #9a8e82;
+    --medium-green: #d3ab80;
+    --soft-green: #3a3530;
+    --light-mint: #141216;
+    --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.4);
+    --shadow-standard: 0 8px 30px rgba(0, 0, 0, 0.4);
 }
 
 /* --- RESET Y BASE --- */
@@ -24,7 +31,8 @@ html, body {
     padding: 0 !important;
     width: 100% !important;
     overflow-x: hidden; /* Evita que la madera cree scroll lateral */
-    background-color: #fff4e2; /* Tu color crema de fondo */
+    background-color: #141216; /* Fondo modo oscuro */
+    color: #ece4da; /* Texto claro */
 }
 
 /* Agrega esto a tu styles.css para corregir el cuerpo */
@@ -34,8 +42,9 @@ body {
     min-height: 100vh;
     margin: 0;
     padding: 0;
-    background-color: #fff4e2 !important; /* Fondo crema sólido */
+    background-color: #141216 !important; /* Fondo modo oscuro */
     background-image: none !important; /* ELIMINA cualquier imagen accidental */
+    color: #ece4da;
 }
 
 main {
@@ -53,8 +62,6 @@ main, section, .form-section, .carrito-section {
     flex-shrink: 0;
 }
 
-
-
 /* Contenedor principal del dropdown */
 .dropdown {
     position: relative;
@@ -65,7 +72,7 @@ main, section, .form-section, .carrito-section {
 .dropdown-btn {
     background: none;
     border: none;
-    color: white; /* Ajusta según tu diseño */
+    color: #ece4da;
     padding: 10px;
     font-size: 16px;
     cursor: pointer;
@@ -75,7 +82,7 @@ main, section, .form-section, .carrito-section {
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: var(--deep-dark); /* Color de fondo del menú */
+    background-color: var(--white); /* Color de fondo del menú */
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
@@ -83,20 +90,18 @@ main, section, .form-section, .carrito-section {
     right: 0; /* Alineado a la derecha */
 }
 
+/* Enlaces dentro del dropdown */
+.dropdown-content a {
+    color: #ece4da; /* Cambiado a blanco para que se vea sobre el marrón */
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
 
-
-    /* Enlaces dentro del dropdown */
-    .dropdown-content a {
-        color: var(--white); /* Cambiado a blanco para que se vea sobre el marrón */
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-    }
-
-        /* Cambio de color al pasar el mouse por los enlaces */
-        .dropdown-content a:hover {
-            background-color: var(--dark-green);
-        }
+/* Cambio de color al pasar el mouse por los enlaces */
+.dropdown-content a:hover {
+    background-color: var(--dark-green);
+}
 
 /* Mostrar el menú al pasar el mouse sobre el contenedor */
 .dropdown:hover .dropdown-content {
@@ -114,7 +119,7 @@ main, section, .form-section, .carrito-section {
     /* Cambiado de right: 100% a left: 100% */
     left: 100%;
     top: 0;
-    background-color: var(--deep-dark);
+    background-color: var(--white);
     min-width: 160px;
     /* Sombra hacia la derecha */
     box-shadow: 4px 8px 16px rgba(0,0,0,0.2);
@@ -141,7 +146,7 @@ main, section, .form-section, .carrito-section {
     align-items: center;
     padding: 0 5%;
     height: 80px; /* Altura fija ideal */
-    background: var(--deep-dark);
+    background: var(--white);
     position: fixed;
     top: 0;
     width: 100%;
@@ -162,20 +167,20 @@ main, section, .form-section, .carrito-section {
     align-items: center;
 }
 
-    .brand-img img {
-        height: 120px; /* Bajamos de 200px a 120px para que no tape el contenido del Hero */
-        width: 165px;
-        margin-top: 10px; /* Lo bajamos un poquito para que sobresalga solo por abajo */
-        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-        transition: transform 0.3s ease;
-    }
+.brand-img img {
+    height: 120px; /* Bajamos de 200px a 120px para que no tape el contenido del Hero */
+    width: 165px;
+    margin-top: 10px; /* Lo bajamos un poquito para que sobresalga solo por abajo */
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    transition: transform 0.3s ease;
+}
 
 .navbar-brand:hover .brand-img img {
     transform: scale(1.05) rotate(-3deg);
 }
 
 .rappi {
-    color: var(--white);
+    color: #ece4da;
 }
 
 .doz {
@@ -189,28 +194,28 @@ main, section, .form-section, .carrito-section {
 }
 
 
-    .sesion a {
-        text-decoration: none;
-        color: var(--white);
-        display: flex;
-        align-items: center;
-        gap: 8px; /* Un poco más de espacio */
-        margin: 0 15px;
-        font-weight: 500;
-        white-space: nowrap;
-        transition: all 0.3s ease; /* Transición fluida */
-    }
+.sesion a {
+    text-decoration: none;
+    color: #ece4da;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Un poco más de espacio */
+    margin: 0 15px;
+    font-weight: 500;
+    #1e1c22-space: nowrap;
+    transition: all 0.3s ease; /* Transición fluida */
+}
 
-        .sesion a:hover {
-            color: var(--soft-green);
-            transform: translateY(-1px);
-        }
+.sesion a:hover {
+    color: var(--soft-green);
+    transform: translateY(-1px);
+}
 
 /* --- SECCIÓN HERO --- */
 .hero {
     height: 60vh;
     /* Superposición ligeramente más suave */
-    background-image: linear-gradient(rgba(71, 40, 37, 0.3), rgba(71, 40, 37, 0.3)), url(../img/index-img.avif);
+    background-image: linear-gradient(rgba(20, 18, 22, 0.7), rgba(20, 18, 22, 0.7)), url(../img/index-img.avif);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat !important; /* Evita que la madera se repita a la derecha */
@@ -220,7 +225,7 @@ main, section, .form-section, .carrito-section {
     /* Curva sutil en la base como el custom hero */
     margin-bottom: 50px;
     border-radius: 0 0 40px 40px;
-    box-shadow: 0 10px 30px rgba(71, 40, 37, 0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
 .hero-content {
@@ -228,14 +233,14 @@ main, section, .form-section, .carrito-section {
     max-width: 100%;
 }
 
-    .hero-content h1 {
-        font-size: 52px;
-        color: white;
-        margin-bottom: 40px;
-        font-weight: 800; /* Más impacto */
-        line-height: 1.1;
-        text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
-    }
+.hero-content h1 {
+    font-size: 52px;
+    color: #ece4da;
+    margin-bottom: 40px;
+    font-weight: 800; /* Más impacto */
+    line-height: 1.1;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.4);
+}
 
 /* --- BUSCADOR (SEARCH CONTAINER) --- */
 .search-container {
@@ -245,16 +250,16 @@ main, section, .form-section, .carrito-section {
     border-radius: 100px; /* Redondeado perfecto estilo píldora */
     width: 100%;
     max-width: 600px; /* Un poco más ancho */
-    box-shadow: 0 15px 35px rgba(71, 40, 37, 0.1); /* Sombra más profunda */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3); /* Sombra más profunda */
     border: 2px solid transparent;
     transition: all 0.3s ease;
 }
 
-    /* Efecto de foco del custom search */
-    .search-container:focus-within {
-        border-color: var(--medium-green);
-        box-shadow: 0 15px 35px rgba(211, 171, 128, 0.2);
-    }
+/* Efecto de foco del custom search */
+.search-container:focus-within {
+    border-color: var(--medium-green);
+    box-shadow: 0 15px 35px rgba(211, 171, 128, 0.2);
+}
 
 .input-wrapper {
     flex: 1;
@@ -263,29 +268,29 @@ main, section, .form-section, .carrito-section {
     padding: 0 15px;
 }
 
-    .input-wrapper i {
-        color: var(--medium-green);
-        font-size: 18px;
-    }
+.input-wrapper i {
+    color: var(--medium-green);
+    font-size: 18px;
+}
 
-    .input-wrapper input {
-        border: none;
-        outline: none;
-        width: 100%;
-        padding: 12px;
-        font-size: 17px;
-        color: var(--deep-dark);
-        background: transparent;
-    }
+.input-wrapper input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 12px;
+    font-size: 17px;
+    color: #ece4da;
+    background: transparent;
+}
 
-        .input-wrapper input::placeholder {
-            color: var(--dark-green);
-            opacity: 0.7;
-        }
+.input-wrapper input::placeholder {
+    color: var(--dark-green);
+    opacity: 0.7;
+}
 
 .btn-buscar {
-    background-color: var(--deep-dark);
-    color: var(--white);
+    background-color: #d3ab80;
+    color: #141216;
     border: none;
     padding: 12px 35px;
     border-radius: 100px; /* Botón píldora */
@@ -294,10 +299,10 @@ main, section, .form-section, .carrito-section {
     transition: all 0.3s ease;
 }
 
-    .btn-buscar:hover {
-        background-color: var(--dark-green);
-        transform: scale(1.05); /* Escala suave en hover */
-    }
+.btn-buscar:hover {
+    background-color: #e8c9a0;
+    transform: scale(1.05); /* Escala suave en hover */
+}
 
 /* ===== SECCIÓN CATEGORÍAS ===== */
 .categorias {
@@ -310,12 +315,12 @@ main, section, .form-section, .carrito-section {
     z-index: 3;
 }
 
-    .categorias h2 {
-        font-size: 28px;
-        margin-bottom: 30px;
-        color: var(--deep-dark);
-        font-weight: 700;
-    }
+.categorias h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #ece4da;
+    font-weight: 700;
+}
 
 .grid-categorias {
     display: grid;
@@ -338,31 +343,31 @@ main, section, .form-section, .carrito-section {
     height: 150px;
 }
 
-    .categoria-card i {
-        font-size: 35px; /* Iconos más grandes */
-        color: var(--medium-green);
-        margin-bottom: 12px;
-    }
+.categoria-card i {
+    font-size: 35px; /* Iconos más grandes */
+    color: var(--medium-green);
+    margin-bottom: 12px;
+}
 
-    .categoria-card p {
-        font-weight: 600;
-        color: var(--deep-dark);
-        font-size: 15px;
-    }
+.categoria-card p {
+    font-weight: 600;
+    color: #ece4da;
+    font-size: 15px;
+}
 
-    .categoria-card:hover {
-        transform: translateY(-8px); /* Más movimiento */
-        background: var(--accent-gold, #d3ab80); /* Cambia al dorado */
-        color: var(--white);
-        border-color: var(--accent-gold);
-        box-shadow: 0 12px 25px rgba(211, 171, 128, 0.2);
-    }
+.categoria-card:hover {
+    transform: translateY(-8px); /* Más movimiento */
+    background: #d3ab80;
+    color: #141216;
+    border-color: #d3ab80;
+    box-shadow: 0 12px 25px rgba(211, 171, 128, 0.2);
+}
 
-        /* Efecto hover en el icono y texto de la tarjeta */
-        .categoria-card:hover i,
-        .categoria-card:hover p {
-            color: var(--white);
-        }
+/* Efecto hover en el icono y texto de la tarjeta */
+.categoria-card:hover i,
+.categoria-card:hover p {
+    color: #141216;
+}
 
 /* ===== SECCIÓN RESTAURANTES ===== */
 .restaurantes {
@@ -371,12 +376,12 @@ main, section, .form-section, .carrito-section {
     background: var(--light-mint);
 }
 
-    .restaurantes h2 {
-        font-size: 28px;
-        margin-bottom: 30px;
-        color: var(--deep-dark);
-        font-weight: 700;
-    }
+.restaurantes h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #ece4da;
+    font-weight: 700;
+}
 
 .grid-restaurantes {
     display: grid;
@@ -394,37 +399,37 @@ main, section, .form-section, .carrito-section {
     border: 1px solid transparent;
 }
 
-    .restaurant-card img {
-        width: 100%;
-        height: 180px; /* O el tamaño que prefieras */
-        object-fit: cover; /* Esto hace que la imagen se recorte para llenar el espacio sin deformarse */
-        border-bottom: 1px solid #eee;
-    }
+.restaurant-card img {
+    width: 100%;
+    height: 180px; /* O el tamaño que prefieras */
+    object-fit: cover; /* Esto hace que la imagen se recorte para llenar el espacio sin deformarse */
+    border-bottom: 1px solid #3a3530;
+}
 
-    .restaurant-card .info {
-        padding: 22px; /* Más padding */
-    }
+.restaurant-card .info {
+    padding: 22px; /* Más padding */
+}
 
-    .restaurant-card h3 {
-        font-size: 20px;
-        margin-bottom: 8px;
-        color: var(--deep-dark);
-    }
+.restaurant-card h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: #ece4da;
+}
 
-    .restaurant-card p {
-        font-size: 14px;
-        color: var(--dark-green);
-        background: var(--light-mint); /* Fondo sutil para info */
-        padding: 5px 10px;
-        border-radius: 50px;
-        display: inline-block;
-    }
+.restaurant-card p {
+    font-size: 14px;
+    color: #9a8e82;
+    background: var(--light-mint); /* Fondo sutil para info */
+    padding: 5px 10px;
+    border-radius: 50px;
+    display: inline-block;
+}
 
-    .restaurant-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 40px rgba(71, 40, 37, 0.12);
-        border-color: var(--soft-green);
-    }
+.restaurant-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+    border-color: var(--medium-green);
+}
 
 /* ===== SECCIÓN CÓMO FUNCIONA ===== */
 .como-funciona {
@@ -433,12 +438,12 @@ main, section, .form-section, .carrito-section {
     text-align: center;
 }
 
-    .como-funciona h2 {
-        font-size: 28px;
-        margin-bottom: 50px;
-        color: var(--deep-dark);
-        font-weight: 700;
-    }
+.como-funciona h2 {
+    font-size: 28px;
+    margin-bottom: 50px;
+    color: #ece4da;
+    font-weight: 700;
+}
 
 .pasos {
     display: flex;
@@ -454,36 +459,37 @@ main, section, .form-section, .carrito-section {
     
 }
 
-    .paso i {
-        font-size: 45px;
-        color: var(--medium-green);
-        margin-bottom: 20px;
-    }
+.paso i {
+    font-size: 45px;
+    color: var(--medium-green);
+    margin-bottom: 20px;
+}
 
-    .paso h3 {
-        margin-bottom: 10px;
-        color: var(--deep-dark);
-        font-size: 19px;
-    }
+.paso h3 {
+    margin-bottom: 10px;
+    color: #ece4da;
+    font-size: 19px;
+}
 
-    .paso p {
-        font-size: 14px;
-        color: var(--dark-green);
-        line-height: 1.5;
-    }
+.paso p {
+    font-size: 14px;
+    color: var(--dark-green);
+    line-height: 1.5;
+}
 
 /* ===== CTA FINAL ===== */
 .cta-final {
     width: 100% !important; /* Ocupa todo el ancho horizontal */
     clear: both; /* Rompe cualquier alineación lateral previa */
-    background-color: #472825 !important; /* Tu café oscuro */
-    color: white;
+    background-color: #1e1c22 !important; /* Estilo oscuro puro */
+    color: #ece4da;
     margin-top: 100px;
     padding: 60px 20px;
     text-align: center;
     border-radius: 40px 40px 0 0;
     position: relative;
     z-index: 10;
+    border-top: 2px solid #d3ab80;
 }
 
 .cta-final h2 {
@@ -492,16 +498,16 @@ main, section, .form-section, .carrito-section {
     font-weight: 800;
 }
 
-    /* Reutilizamos el botón píldora */
+/* Reutilizamos el botón píldora */
 .cta-final .btn-buscar {
-    background: var(--white);
-    color: var(--deep-dark);
+    background: #d3ab80;
+    color: #141216;
     font-size: 17px;
 }
 
 .cta-final .btn-buscar:hover {
-    background: var(--medium-green);
-    color: var(--white);
+    background: #e8c9a0;
+    color: #141216;
 }
 
 /* --- BOTÓN RESPONSIVO (TOGGLE) --- */
@@ -509,13 +515,13 @@ main, section, .form-section, .carrito-section {
     display: none;
     background: none;
     border: none;
-    color: var(--white);
+    color: #ece4da;
     font-size: 1.5rem;
     cursor: pointer;
 }
 
 .contenido-principal, .zona-restringida {
-    background-color: #fff !important; /* Fondo crema */
+    background-color: #1e1c22 !important;
     width: 100% !important;
 }
 
@@ -534,25 +540,25 @@ main, section, .form-section, .carrito-section {
         top: 80px; /* Alineado con el height de tu navbar */
         left: 0;
         width: 100%;
-        background-color: #472825; /* Tu color deep-dark sólido */
+        background-color: #141216;
         padding: 20px;
         z-index: 1000;
         border-radius: 0 0 20px 20px;
         box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
 
-        /* Solo cuando tiene la clase active se muestra */
-        .sesion.active {
-            display: flex !important; /* <--- Cambio crítico */
-        }
+    /* Solo cuando tiene la clase active se muestra */
+    .sesion.active {
+        display: flex !important; /* <--- Cambio crítico */
+    }
 
-        .sesion a {
-            margin: 10px 0;
-            width: 100%;
-            justify-content: center;
-            padding: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
+    .sesion a {
+        margin: 10px 0;
+        width: 100%;
+        justify-content: center;
+        padding: 15px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
 
     /* Sub-dropdown en móvil */
     .sub-dropdown-content {
@@ -562,3 +568,7 @@ main, section, .form-section, .carrito-section {
         background-color: rgba(0,0,0,0.1);
     }
 }
+
+
+
+

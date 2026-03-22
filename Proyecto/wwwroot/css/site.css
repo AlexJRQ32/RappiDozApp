@@ -1,9 +1,19 @@
-/* VARIABLES RAPIDDOZ */
+﻿/* VARIABLES RAPIDDOZ */
 :root {
-    --rd-cafe: #472825;
-    --rd-dorado: #d3ab80;
-    --rd-crema: #fdf2e2;
-    --sidebar-w: 260px;
+    --bg-main: #141216; /* Crema base -> Oscuro */
+    --text-main: #ece4da; /* Marrón -> Claro */
+    --text-muted: #9a8e82; /* Tierra suave -> Gris/Dorado suave */
+    --accent-main: #d3ab80; /* Dorado */
+    --accent-soft: #28262c; /* Arena clara -> Gris oscuro de fondo */
+    --white: #1e1c22; /* Blanco -> Card oscuro */
+    --crema-fondo: #141216;
+    --deep-dark: #ece4da;
+    --dark-green: #9a8e82;
+    --medium-green: #d3ab80;
+    --soft-green: #3a3530;
+    --light-mint: #141216;
+    --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.4);
+    --shadow-standard: 0 8px 30px rgba(0, 0, 0, 0.4);
 }
 
 .dashboard-wrapper {
@@ -15,8 +25,8 @@
 /* SIDEBAR */
 .sidebar-rd {
     width: var(--sidebar-w);
-    background: white;
-    border-right: 1px solid #eee;
+    background: var(--white);
+    border-right: 1px solid #3a3530;
     display: flex;
     flex-direction: column;
     position: sticky;
@@ -57,7 +67,7 @@
 
     .nav-link-rd.active {
         background: var(--rd-cafe);
-        color: white;
+        color: #ece4da;
     }
 
     .nav-link-rd:hover:not(.active) {
@@ -73,7 +83,7 @@
 }
 
 .stat-card {
-    background: white;
+    background: var(--white);
     padding: 20px;
     border-radius: 20px;
     display: flex;
@@ -104,7 +114,7 @@
 
 /* REUTILIZANDO TU ESTILO DE CARTAS */
 .card-gestion-crud {
-    background: white;
+    background: var(--white);
     border-radius: 20px;
     margin-bottom: 15px;
     transition: 0.3s;
@@ -131,7 +141,7 @@
 
 .etiqueta-rol {
     font-size: 0.75rem;
-    background: #eee;
+    background: #3a3530;
     padding: 2px 10px;
     border-radius: 50px;
     color: #666;
@@ -144,7 +154,7 @@
 .modal-content {
     background-color: #fffdfa !important; /* El color crema de tu marca */
     border-radius: 45px !important; /* Bordes muy redondeados */
-    border: 1px solid #f3e5d0 !important; /* Borde sutil café claro */
+    border: 1px solid #f3e5d0 !important; /* Borde sutil cafÃ© claro */
     box-shadow: 0 25px 50px rgba(0,0,0,0.15) !important;
     overflow: hidden;
 }
@@ -155,9 +165,9 @@
     padding: 20px 30px !important;
 }
 
-/* 3. Estilo para el botón de cerrar (X) de todos los modales */
+/* 3. Estilo para el botÃ³n de cerrar (X) de todos los modales */
 .btn-close {
-    filter: sepia(1) saturate(5) hue-rotate(340deg); /* Lo vuelve color café/dorado */
+    filter: sepia(1) saturate(5) hue-rotate(340deg); /* Lo vuelve color cafÃ©/dorado */
     opacity: 0.8;
 }
 
@@ -171,3 +181,10 @@
     border-top: 1px solid #f1ece4 !important;
     padding: 20px !important;
 }
+
+
+
+
+
+
+

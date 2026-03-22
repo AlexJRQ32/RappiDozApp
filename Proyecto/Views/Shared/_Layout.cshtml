@@ -10,14 +10,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-    @* 2. TUS ESTILOS ORIGINALES *@
+    @* 2. ESTILOS BASE *@
     <link rel="stylesheet" href="~/css/styles.css" />
     <link href="~/css/site.css" rel="stylesheet" />
-    <link href="~/css/_StylesCRUDs.css" rel="stylesheet" />
-    <link href="~/css/_StylesHome.css" rel="stylesheet" />
-    <link href="~/css/_StylesNavbar.css" rel="stylesheet" />
-    <link href="~/css/_StylesPedido.css" rel="stylesheet" />
-    <link href="~/css/_StylesShared.css" rel="stylesheet" />
+
+    @* 3. ESTILOS POR CONTROLADOR (organizados) *@
+    <link href="~/css/Shared/header.css" rel="stylesheet" />
+    <link href="~/css/Shared/page-transition.css" rel="stylesheet" />
+    <link href="~/css/Home/index.css" rel="stylesheet" />
+    <link href="~/css/Restaurantes/restaurante.css" rel="stylesheet" />
+    <link href="~/css/Cupones/cupones.css" rel="stylesheet" />
+    <link href="~/css/Pedidos/factura.css" rel="stylesheet" />
+    <link href="~/css/Pedidos/seguimiento.css" rel="stylesheet" />
+    <link href="~/css/Carritos/carrito.css" rel="stylesheet" />
     <link rel="icon" type="image/png" href="~/img/logo-final.png" />
 </head>
 <body>
@@ -28,243 +33,25 @@
     @RenderBody()
 
     <div class="modal fade" id="modalGeneral" tabindex="-1" aria-hidden="true" style="z-index: 11000;">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content shadow-lg" id="bodyModalGeneral" style="border:none; background: transparent;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content b-0">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center pt-0 px-4 pb-4" id="modalBodyGeneral"></div>
             </div>
         </div>
     </div>
 
-    @await Html.PartialAsync("_Footer")
-
-    @* 3. SCRIPTS (Primero librerías, luego tu lógica) *@
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    @* 1. SCRIPT LIBRARIES *@
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 
-    <script src="~/js/cupones.js" asp-append-version="true"></script>
-    <script src="~/js/rating.js" asp-append-version="true"></script>
-
-    <script>
-        // ==========================================
-        // 1. GESTIÓN DE PERFIL (IMAGEN Y ENVÍO)
-        // ==========================================
-
-        $(document).on('change', '#fotoInput', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#previewPerfil').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-
-        $(document).on('submit', '#formPerfilUsuario', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-
-            $.ajax({
-                url: '/Usuario/GuardarPerfil',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(res) {
-                    if(res.success) {
-                        $("#navNombreUsuario").text($("#NombreCompleto").val());
-                        if ($("#navFotoUsuario").length) {
-                            $("#navFotoUsuario").attr('src', $('#previewPerfil').attr('src'));
-                        }
-                        bootstrap.Modal.getInstance(document.getElementById('modalGeneral')).hide();
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Actualizado!',
-                            text: res.message,
-                            timer: 1500,
-                            showConfirmButton: false
-                        }).then(() => {
-                            window.location.reload();
-                        });
-                    } else {
-                        Swal.fire('Error', res.message, 'error');
-                    }
-                }
-            });
-        });
-
-        // ==========================================
-        // 2. GESTIÓN DE VALORACIONES (ESTRELLAS)
-        // ==========================================
-
-        $(document).on('click', '#contenedorEstrellas i', function() {
-            const val = $(this).data('value');
-            $('#inputEstrellas').val(val);
-            $('#contenedorEstrellas i').each(function() {
-                $(this).toggleClass('active', $(this).data('value') <= val);
-            });
-        });
-
-        $(document).on('submit', '#formCalificar', function(e) {
-            e.preventDefault();
-            if ($('#inputEstrellas').val() == "0") {
-                Swal.fire('Atención', 'Selecciona al menos una estrella', 'warning');
-                return;
-            }
-
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function(res) {
-                    bootstrap.Modal.getInstance(document.getElementById('modalGeneral')).hide();
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Gracias!',
-                        text: 'Valoración enviada',
-                        timer: 1500
-                    }).then(() => { window.location.reload(); });
-                }
-            });
-        });
-
-        // ==========================================
-        // 3. APERTURA DE MODALES DINÁMICOS
-        // ==========================================
-
-        window.abrirPerfil = function() {
-            const modalEl = document.getElementById('modalGeneral');
-            const contenedor = document.getElementById('bodyModalGeneral');
-            bootstrap.Modal.getOrCreateInstance(modalEl).show();
-            contenedor.innerHTML = '<div class="text-center p-5" style="background:#fffdfa; border-radius:30px;"><div class="spinner-border text-warning"></div><p class="mt-2">Cargando...</p></div>';
-
-            fetch('/Usuario/Perfil').then(r => r.text()).then(html => { contenedor.innerHTML = html; });
-        };
-
-        window.abrirMapa = function() {
-        const modalEl = document.getElementById('modalGeneral');
-        const contenedor = document.getElementById('bodyModalGeneral');
-        const modalBootstrap = bootstrap.Modal.getOrCreateInstance(modalEl);
-
-        // 1. Mostramos el modal con un mensaje de "Cargando"
-        contenedor.innerHTML = `
-        <div class="text-center p-5 bg-white" style="border-radius:30px;">
-        <div class="spinner-border text-warning"></div>
-        <p class="mt-2 fw-bold">Buscando servidor...</p>
-        </div>`;
-        modalBootstrap.show();
-
-        // 2. Intentamos traer la vista
-        console.log("Intentando cargar: /Usuario/Mapa");
-    
-        fetch('/Usuario/Mapa')
-        .then(response => {
-        if (!response.ok) {
-        // SI SALE ESTA ALERTA: La ruta está mal o el controlador dio error
-        throw new Error("Error del servidor: " + response.status);
-        }
-        return response.text();
-        })
-        .then(html => {
-        console.log("Vista recibida correctamente");
-        contenedor.innerHTML = html;
-            
-        // Forzamos el renderizado del mapa
-        setTimeout(() => {
-        if (typeof inicializarMapaEfectivo === 'function') {
-        inicializarMapaEfectivo();
-        }
-        }, 500);
-        })
-        .catch(error => {
-        // SI SALE ESTA ALERTA: Hay un problema de red o la URL no existe
-        console.error(error);
-        contenedor.innerHTML = `
-        <div class="alert alert-danger m-3">
-        <strong>Error al cargar:</strong> ${error.message} <br>
-        Verifica que /Usuario/Mapa sea la ruta correcta.
-        </div>`;
-        });
-        };
-
-        function inicializarMapaEfectivo() {
-        const el = document.getElementById('mapa-final');
-        if (!el) return;
-
-        const lat = parseFloat(el.getAttribute('data-lat'));
-        const lng = parseFloat(el.getAttribute('data-lng'));
-
-        const map = L.map('mapa-final', { zoomControl: false }).setView([lat, lng], 17);
-
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '© RappiDoz'
-        }).addTo(map);
-
-        const goldIcon = L.icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41]
-        });
-
-        const marker = L.marker([lat, lng], { icon: goldIcon, draggable: true }).addTo(map);
-
-        // Sincronizar coordenadas a inputs ocultos
-        const sync = (la, ln) => {
-        document.getElementById('lat-hidden').value = la;
-        document.getElementById('lng-hidden').value = ln;
-        };
-
-        marker.on('dragend', () => { sync(marker.getLatLng().lat, marker.getLatLng().lng); });
-        map.on('click', e => { marker.setLatLng(e.latlng); sync(e.latlng.lat, e.latlng.lng); });
-
-        map.invalidateSize();
-        }
-
-        // --- LÓGICA DE GUARDADO (Para la nueva tabla) ---
-        $(document).on('click', '#btnConfirmarFinal', async function(e) {
-        const btn = $(this);
-        const nombre = $('#nombre-ubicacion').val();
-
-        if (!nombre || nombre.trim() === "") {
-        Swal.fire('Atención', 'Por favor, asigna un nombre a tu dirección.', 'warning');
-        return;
-        }
-
-        const data = {
-        Latitud: $('#lat-hidden').val(),
-        Longitud: $('#lng-hidden').val(),
-        NombreUbicacion: nombre,
-        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
-        };
-
-        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
-
-        try {
-        const res = await $.post('/Usuario/GuardarUbicacion', data);
-        if (res.success) {
-        Swal.fire({ icon: 'success', title: '¡Guardado!', showConfirmButton: false, timer: 1500 });
-        window.location.reload();
-        } else {
-        Swal.fire('Error', res.message, 'error');
-        btn.prop('disabled', false).text('GUARDAR DIRECCIÓN');
-        }
-        } catch (err) {
-        btn.prop('disabled', false).text('GUARDAR DIRECCIÓN');
-        }
-        });
-
-        window.abrirCalificar = function() {
-            const modalEl = document.getElementById('modalGeneral');
-            const contenedor = document.getElementById('bodyModalGeneral');
-            bootstrap.Modal.getOrCreateInstance(modalEl).show();
-            contenedor.innerHTML = '<div class="text-center p-5" style="background:#fffdfa; border-radius:30px;"><div class="spinner-border text-warning"></div><p class="mt-2">Cargando...</p></div>';
-
-            fetch('/Valoracion/Crear').then(r => r.text()).then(html => { contenedor.innerHTML = html; });
-        };
-    </script>
-
+    @* 2. TUS SCRIPTS ORIGINALES *@
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/page-transition.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

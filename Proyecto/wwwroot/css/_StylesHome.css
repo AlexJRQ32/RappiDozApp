@@ -17,9 +17,9 @@
     align-items: center;
     padding: 20px 30px;
     gap: 25px;
-    background: #ffffff;
+    background: var(--white);
     border-radius: 25px;
-    box-shadow: 0 10px 30px rgba(71, 40, 37, 0.04);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     border: 1px solid rgba(211, 171, 128, 0.2);
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     position: relative;
@@ -29,7 +29,7 @@
 /* Hover: Elevación y Borde Dorado */
 .card-gestion-crud:hover .card-principal {
     transform: translateY(-8px) scale(1.01);
-    box-shadow: 0 20px 45px rgba(71, 40, 37, 0.12);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.4);
     border-color: #d3ab80;
 }
 
@@ -40,8 +40,8 @@
     overflow: hidden;
     border-radius: 22px;
     flex-shrink: 0;
-    box-shadow: 0 8px 25px rgba(71, 40, 37, 0.1);
-    border: 2px solid #fff4e2;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    border: 2px solid #141216;
 }
 
     .contenedor-foto img {
@@ -63,12 +63,12 @@
     .info-basica h3 {
         margin: 0 0 5px 0;
         font-size: 1.5rem;
-        color: #472825;
+        color: #ece4da;
         font-weight: 800;
     }
 
 .descripcion-plato {
-    color: #96786f;
+    color: #9a8e82;
     font-size: 0.95rem;
     margin-bottom: 12px;
     line-height: 1.4;
@@ -76,8 +76,8 @@
 
 .badge-categoria {
     font-size: 0.75rem;
-    background: #fff4e2;
-    color: #472825;
+    background: #141216;
+    color: #ece4da;
     padding: 5px 15px;
     border-radius: 50px;
     font-weight: 800;
@@ -112,15 +112,15 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
-    background: #472825;
-    color: white;
+    background: #ece4da;
+    color: #ece4da;
     border: none;
     padding: 14px 25px;
     border-radius: 18px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    box-shadow: 0 6px 20px rgba(71, 40, 37, 0.2);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
     position: relative;
     overflow: hidden;
 }
@@ -230,7 +230,7 @@
 .map-card {
     max-width: 900px;
     margin: 0 auto;
-    background: white;
+    background: var(--white);
     padding: 25px;
     border-radius: 30px;
     position: relative;
@@ -271,7 +271,7 @@
 .movimientos-container .movimientos-card details summary > div:first-child .titulo-resumen {
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    #1e1c22-space: nowrap;
 }
 
 .movimientos-container .movimientos-card details summary > div:last-child {
@@ -284,7 +284,7 @@
 
 .movimientos-container .movimientos-card details summary > div:last-child span {
     display: inline-block;
-    white-space: nowrap; /* prevent badge from breaking into multiple lines */
+    #1e1c22-space: nowrap; /* prevent badge from breaking into multiple lines */
     padding: 6px 14px;
     border-radius: 12px;
 }
@@ -296,3 +296,10 @@
         font-size: 0.72rem;
     }
 }
+
+
+
+
+
+
+

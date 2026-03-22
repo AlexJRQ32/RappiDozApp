@@ -16,7 +16,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Acceso/Login";      // Si no está logueado, va aquí
+        options.LoginPath = "/Accesos/Login";      // Si no está logueado, va aquí
         options.AccessDeniedPath = "/Home/Index"; // Si no tiene el rol, va aquí
         options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
     });
