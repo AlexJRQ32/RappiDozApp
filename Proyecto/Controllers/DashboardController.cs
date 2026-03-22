@@ -33,6 +33,29 @@ namespace RappiDozApp.Controllers
 
             return View();
         }
+        public async Task<IActionResult> Dashboard()
+        {
+            int? userId = HttpContext.Session.GetInt32("UsuarioId");
+            string? rol = HttpContext.Session.GetString("RolUsuario");
+
+            if (userId == null) return RedirectToAction("Login", "Acceso");
+
+            ViewBag.ListaUsuarios = new List<Usuario>();
+            ViewBag.ListaRestaurantes = new List<Restaurante>();
+            ViewBag.RolUsuario = rol;
+
+            if (rol == "Administrador")
+            {
+                ViewBag.ListaUsuarios = await _context.Usuarios.Include(u => u.Rol).OrderByDescending(u => u.Id).ToListAsync();
+                ViewBag.ListaRestaurantes = await _context.Restaurantes.Include(r => r.Usuario).Include(r => r.Categoria).ToListAsync();
+            }
+            else if (rol == "Restaurante")
+            {
+                ViewBag.ListaRestaurantes = await _context.Restaurantes.Include(r => r.Categoria).Where(r => r.UsuarioId == userId).ToListAsync();
+            }
+
+            return View("~/Views/Dashboard/index.cshtml");
+        }
 
         // ================================================
         // 2. CARGA DE LISTADOS (TABLAS)

@@ -61,24 +61,7 @@ namespace RappiDozApp.Controllers
             return View("~/Views/Navbar/carrito.cshtml", lista);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> EliminarUbicacion(int id)
-        {
-            int? userId = HttpContext.Session.GetInt32("UsuarioId");
-            if (userId == null) return Json(new { success = false, message = "Sesión expirada" });
-
-            var ubicacion = await _context.UbicacionUsuario
-                .FirstOrDefaultAsync(u => u.IdUbicacion == id && u.IdUsuario == userId);
-
-            if (ubicacion != null)
-            {
-                _context.UbicacionUsuario.Remove(ubicacion);
-                await _context.SaveChangesAsync();
-                return Json(new { success = true });
-            }
-
-            return Json(new { success = false, message = "No se encontró la ubicación" });
-        }
+        
 
         // --- AGREGAR PRODUCTO (Asegúrate de enviar 'imagen' desde la vista) ---
         [HttpPost]
@@ -154,98 +137,6 @@ namespace RappiDozApp.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmarPedido()
-        {
-            // 1. Validaciones de Usuario y Carrito
-            int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
-            var emailUsuario = HttpContext.Session.GetString("EmailUsuario");
-            if (usuarioId == null || string.IsNullOrEmpty(emailUsuario)) return RedirectToAction("Login", "Acceso");
-
-            var listaCarrito = ObtenerCarritoDeSesion();
-            if (listaCarrito == null || !listaCarrito.Any())
-            {
-                TempData["MensajeError"] = "El carrito está vacío.";
-                return RedirectToAction("Index");
-            }
-
-            // 2. Cálculos de Totales y Descuento
-            decimal subtotal = listaCarrito.Sum(x => x.Precio * x.Cantidad);
-            decimal descuentoFinal = 0;
-
-            var descuentoStr = HttpContext.Session.GetString("DescuentoValor");
-            var esPorcStr = HttpContext.Session.GetString("EsPorcentaje");
-            var codigoAplicado = HttpContext.Session.GetString("CuponAplicado");
-
-            if (!string.IsNullOrEmpty(descuentoStr))
-            {
-                decimal.TryParse(descuentoStr, out decimal valorDescuento);
-                bool esPorc = esPorcStr == "true";
-                descuentoFinal = esPorc ? (subtotal * (valorDescuento / 100)) : valorDescuento;
-            }
-
-            // 3. Mapeo del Pedido
-            var nuevoPedido = new Pedido
-            {
-                UsuarioId = usuarioId.Value,
-                FechaHora = DateTime.Now,
-                Estado = "Pendiente",
-                MontoDescuento = descuentoFinal,
-                Total = (subtotal + 2000) - descuentoFinal,
-                Detalles = listaCarrito.Select(item => new DetallePedido
-                {
-                    ProductoId = item.ProductoId,
-                    Cantidad = item.Cantidad,
-                    PrecioHistorico = item.Precio
-                }).ToList()
-            };
-
-            try
-            {
-                // 4. ELIMINACIÓN DEL CUPÓN DE LA TABLA
-                if (!string.IsNullOrEmpty(codigoAplicado))
-                {
-                    var cuponAEliminar = await _context.CuponesApartados
-                        .FirstOrDefaultAsync(c => c.Codigo == codigoAplicado && c.UsuarioEmail == emailUsuario);
-
-                    if (cuponAEliminar != null)
-                    {
-                        _context.CuponesApartados.Remove(cuponAEliminar);
-                    }
-                }
-
-                // 5. Guardar Pedido y Eliminar Cupón (Transaccional)
-                _context.Pedidos.Add(nuevoPedido);
-                await _context.SaveChangesAsync();
-
-                // 6. Limpieza Total
-                LimpiarSesionPostCompra();
-
-                return RedirectToAction("Factura", new { id = nuevoPedido.Id });
-            }
-            catch (Exception ex)
-            {
-                TempData["MensajeError"] = "Error al procesar el pedido: " + ex.Message;
-                return RedirectToAction("Index");
-            }
-        }
-
-
-        [HttpGet]
-        public async Task<IActionResult> Factura(int id)
-        {
-            // Crucial: Usar .Include para que la factura tenga los nombres de los productos
-            var pedido = await _context.Pedidos
-                .Include(p => p.Detalles)
-                    .ThenInclude(d => d.Producto)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (pedido == null) return RedirectToAction("Index");
-
-            // Ajusta la ruta a tu vista de factura real
-            return View("~/Views/Navbar/factura.cshtml", pedido);
-        }
 
         // --- ACTUALIZAR CANTIDAD (Para los botones + y -) ---
         [HttpPost]
@@ -279,7 +170,7 @@ namespace RappiDozApp.Controllers
 
         // --- MÉTODOS DE AYUDA (Helpers) ---
 
-        private List<CarritoItem> ObtenerCarritoDeSesion()
+        public List<CarritoItem> ObtenerCarritoDeSesion()
         {
             var json = HttpContext.Session.GetString(SESSION_KEY);
             return string.IsNullOrEmpty(json)

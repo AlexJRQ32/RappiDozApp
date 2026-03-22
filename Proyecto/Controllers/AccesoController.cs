@@ -75,6 +75,51 @@ namespace RappiDozApp.Controllers
             return View("~/Views/Login/login.cshtml");
         }
 
+        [HttpGet]
+        public IActionResult Registrar()
+        {
+            // Esto limpia cualquier rastro de datos previos para que no se sobreescriban
+            ModelState.Clear();
+            return View("~/Views/Login/register.cshtml", new Usuario());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Registrar(Usuario usuario, string confirmarPassword)
+        {
+            // 1. Validamos que coincidan
+            if (usuario.PasswordHash != confirmarPassword)
+            {
+                ModelState.AddModelError("", "Las contraseñas no coinciden.");
+                return View("~/Views/Login/register.cshtml", usuario);
+            }
+
+            // 2. Limpiamos validaciones de navegación
+            ModelState.Remove("Rol");
+            ModelState.Remove("Restaurantes");
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    usuario.RolId = 1; // Cliente por defecto
+                    _context.Add(usuario);
+                    await _context.SaveChangesAsync();
+
+                    // 3. Guardamos sesión
+                    HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
+
+                    // 4. ¡EL AVANCE! Al terminar, el controlador te manda al Selector
+                    return RedirectToAction("Selector", "Acceso", new { usuarioId = usuario.Id });
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Error al registrar. Intenta con otro correo.");
+                }
+            }
+            return View("~/Views/Login/register.cshtml", usuario);
+        }
+
         public async Task<IActionResult> Salir()
         {
             HttpContext.Session.Clear();
@@ -159,30 +204,8 @@ namespace RappiDozApp.Controllers
         }
         #endregion
 
-        #region DASHBOARD Y RECUPERACIÓN
-        public async Task<IActionResult> Dashboard()
-        {
-            int? userId = HttpContext.Session.GetInt32("UsuarioId");
-            string? rol = HttpContext.Session.GetString("RolUsuario");
-
-            if (userId == null) return RedirectToAction("Login", "Acceso");
-
-            ViewBag.ListaUsuarios = new List<Usuario>();
-            ViewBag.ListaRestaurantes = new List<Restaurante>();
-            ViewBag.RolUsuario = rol;
-
-            if (rol == "Administrador")
-            {
-                ViewBag.ListaUsuarios = await _context.Usuarios.Include(u => u.Rol).OrderByDescending(u => u.Id).ToListAsync();
-                ViewBag.ListaRestaurantes = await _context.Restaurantes.Include(r => r.Usuario).Include(r => r.Categoria).ToListAsync();
-            }
-            else if (rol == "Restaurante")
-            {
-                ViewBag.ListaRestaurantes = await _context.Restaurantes.Include(r => r.Categoria).Where(r => r.UsuarioId == userId).ToListAsync();
-            }
-
-            return View("~/Views/Dashboard/index.cshtml");
-        }
+        #region RECUPERACIÓN DE CONTRASEÑA
+       
 
         [HttpGet]
         public IActionResult OlvidastePassword() => View("~/Views/Login/olvidaste-contrasena.cshtml");
