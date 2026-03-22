@@ -137,6 +137,16 @@ namespace RappiDozApp.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult QuitarCupon()
+        {
+            HttpContext.Session.Remove("CuponAplicado");
+            HttpContext.Session.Remove("DescuentoValor");
+            HttpContext.Session.Remove("EsPorcentaje");
+
+            TempData["MensajeExito"] = "Cupón removido correctamente.";
+            return RedirectToAction("Index");
+        }
+
 
         // --- ACTUALIZAR CANTIDAD (Para los botones + y -) ---
         [HttpPost]

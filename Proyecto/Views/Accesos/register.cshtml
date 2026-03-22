@@ -10,7 +10,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro - Rappi'Doz</title>
-    <link rel="stylesheet" href="~/css/Accesos/restaurante-info.css">
+    <link rel="stylesheet" href="~/css/Accesos/register.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     @* Necesitamos SweetAlert2 aquí también *@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -61,15 +61,15 @@
 
 
             @* Contenedor de errores oculto *@
-            <div id="error-message" style="color: #ff4d4d; text-align: center; margin-bottom: 10px; font-weight: bold; display:none;"></div>
+            <div id="error-message" class="feedback-error hidden-feedback"></div>
 
             <section>
                 <div class="container-button">
-                    <button type="submit" id="button" style="cursor: pointer; width: 100%;">Registrarse</button>
+                    <button type="submit" id="button">Registrarse</button>
                 </div>
             </section>
 
-            <div class="register" style="margin-top: 25px;">
+            <div class="register register-spaced">
                 <a asp-action="Login" asp-controller="Accesos" id="register">¿Ya tienes una cuenta? Iniciar sesión</a>
             </div>
         </form>
@@ -86,7 +86,7 @@
             const formData = new FormData(form);
 
             // Ocultar errores previos
-            errorDiv.style.display = "none";
+            errorDiv.classList.add('hidden-feedback');
 
             // 1. Validación de contraseñas (Aviso de error inmediato si no coinciden)
             if (pass !== confirmPass) {
@@ -94,8 +94,9 @@
                     icon: 'error',
                     title: 'Contraseñas diferentes',
                     text: 'Asegúrate de que ambas contraseñas sean idénticas.',
-                    confirmButtonColor: '#4a2c2a',
-                    background: '#fff4e2'
+                    confirmButtonColor: '#d3ab80',
+                    background: '#1e1c22',
+                    color: '#ece4da'
                 });
                 return;
             }
@@ -117,7 +118,8 @@
                         text: 'Bienvenido a la familia Rappi\'Doz',
                         showConfirmButton: false,
                         timer: 2000,
-                        background: '#fff4e2'
+                        background: '#1e1c22',
+                        color: '#ece4da'
                     }).then(() => {
                         window.location.href = response.url;
                     });
@@ -129,14 +131,15 @@
                 if (data) {
                     // AVISO DE ERROR: Fallo en el servidor (ej. correo duplicado)
                     errorDiv.textContent = "El correo ya está registrado o los datos son inválidos.";
-                    errorDiv.style.display = "block";
+                    errorDiv.classList.remove('hidden-feedback');
 
                     Swal.fire({
                         icon: 'warning',
                         title: 'No se pudo registrar',
                         text: 'Parece que este correo ya tiene una cuenta activa.',
-                        confirmButtonColor: '#4a2c2a',
-                        background: '#fff4e2'
+                        confirmButtonColor: '#d3ab80',
+                        background: '#1e1c22',
+                        color: '#ece4da'
                     });
                 }
             })
@@ -145,8 +148,9 @@
                     icon: 'error',
                     title: 'Error de conexión',
                     text: 'Inténtalo de nuevo en unos minutos.',
-                    confirmButtonColor: '#4a2c2a',
-                    background: '#fff4e2'
+                    confirmButtonColor: '#d3ab80',
+                    background: '#1e1c22',
+                    color: '#ece4da'
                 });
                 console.error('Error:', error);
             });

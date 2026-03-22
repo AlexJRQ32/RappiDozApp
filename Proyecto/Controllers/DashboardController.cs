@@ -158,7 +158,7 @@ namespace RappiDozApp.Controllers
                 // ==========================================
                 // ENTIDAD: RESTAURANTE (SEDES)
                 // ==========================================
-                if (entidad == "Restaurantes")
+                if (entidad == "Restaurantes" || entidad == "Restaurante")
                 {
                     // Aquí cargamos las Categorías porque aquí es donde se eligen
                     var cats = await _context.Categorias.ToListAsync();
@@ -191,7 +191,7 @@ namespace RappiDozApp.Controllers
                 // ==========================================
                 // ENTIDAD: USUARIO
                 // ==========================================
-                if (entidad == "Usuarios")
+                if (entidad == "Usuarios" || entidad == "Usuario")
                 {
                     var roles = await _context.Roles.ToListAsync();
                     ViewBag.Roles = roles.Select(r => new SelectListItem
@@ -210,7 +210,7 @@ namespace RappiDozApp.Controllers
                 // ==========================================
                 // ENTIDAD: CUPON
                 // ==========================================
-                if (entidad == "Cupones")
+                if (entidad == "Cupones" || entidad == "Cupon")
                 {
                     // 1. Cargamos las categorías para que aparezcan en el dropdown del cupón
                     var cats = await _context.Categorias.ToListAsync();

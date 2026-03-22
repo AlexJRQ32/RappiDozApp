@@ -1,141 +1,5 @@
 ﻿@model IEnumerable<RappiDozApp.Models.Producto>
 
-<style>
-    .seccion-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 2px solid #f0e1cf;
-        padding-bottom: 15px;
-        margin-bottom: 30px;
-    }
-
-    .header-izq {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .btn-circular-header {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        font-size: 1.2rem;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        background-color: var(--brown-dark);
-        color: #fff4e2;
-        border: none;
-    }
-
-        .btn-circular-header:hover {
-            transform: scale(1.1) rotate(90deg);
-            background-color: #5d3632;
-            color: white;
-        }
-
-    .card-gestion-crud {
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        margin-bottom: 15px;
-        overflow: hidden;
-    }
-
-    .card-principal {
-        display: flex;
-        align-items: center;
-        padding: 15px 25px;
-    }
-
-    .card-contenido {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        flex-grow: 1;
-    }
-
-        .card-contenido img {
-            width: 70px;
-            height: 70px;
-            border-radius: 12px;
-            object-fit: cover;
-        }
-
-    .info-basica h3 {
-        margin: 0;
-        color: #472825;
-        font-size: 1.1rem;
-    }
-
-    .btn-accion {
-        width: 38px;
-        height: 38px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: 0.3s;
-        border: none;
-        cursor: pointer;
-    }
-
-        .btn-accion.edit {
-            background: #fdf2e2;
-            color: #d3ab80;
-        }
-
-        .btn-accion.delete {
-            background: #ffebeb;
-            color: #ff4d4d;
-        }
-
-        .btn-accion:hover {
-            transform: translateY(-3px);
-        }
-
-    .toggle-detalles {
-        display: none;
-    }
-
-    .detalles-desplegables {
-        max-height: 0;
-        overflow: hidden;
-        transition: 0.4s;
-        background: #fafafa;
-    }
-
-    .toggle-detalles:checked ~ .detalles-desplegables {
-        max-height: 100px;
-        border-top: 1px solid #eee;
-    }
-
-    .btn-circular {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        border: none;
-        background: #472825;
-        color: white;
-        transition: 0.3s;
-    }
-
-        .btn-circular:hover {
-            transform: scale(1.1) rotate(90deg);
-        }
-
-    .btn-lupa {
-        color: #d3ab80;
-        font-size: 1.2rem;
-        margin-right: 15px;
-        cursor: pointer;
-    }
-</style>
-
 <div class="animate__animated animate__fadeIn">
     <div class="seccion-header">
         <div class="header-izq">
@@ -155,16 +19,16 @@
                         <img src="@(item.FotoBinaria != null ? $"data:{item.ContentType};base64,{Convert.ToBase64String(item.FotoBinaria)}" : "/img/placeholder-food.png")" alt="Foto">
                         <div class="info-basica">
                             <h3>@item.Nombre</h3>
-                            <p style="color:#d3ab80; font-weight:bold; margin:0;">₡@item.Precio.ToString("N0")</p>
+                            <p class="product-price-text">₡@item.Precio.ToString("N0")</p>
                         </div>
                     </div>
-                    <div class="acciones-der" style="display:flex; gap:10px;">
+                    <div class="acciones-der-inline">
                         <button onclick="abrirForm('Producto', 'Editar', @item.Id)" class="btn-accion edit"><i class="fas fa-pencil-alt"></i></button>
                         <button onclick="eliminarRegistro('Producto', @item.Id)" class="btn-accion delete"><i class="fas fa-trash-alt"></i></button>
                     </div>
                 </div>
                 <div class="detalles-desplegables">
-                    <p style="padding: 15px 25px; margin: 0; font-size: 0.9rem;"><strong>Descripción:</strong> @item.Descripcion</p>
+                    <p class="menu-description"><strong>Descripción:</strong> @item.Descripcion</p>
                 </div>
             </div>
         }

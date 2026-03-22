@@ -8,7 +8,7 @@
             <div class="position-relative d-inline-block">
                 <img id="previewUser"
                      src="@(Model.FotoBinaria != null ? $"data:{Model.ContentType};base64,{Convert.ToBase64String(Model.FotoBinaria)}" : "/img/default-avatar.png")"
-                     class="rounded-circle shadow" style="width: 130px; height: 130px; object-fit: cover; border: 5px solid white;" />
+                     class="rounded-circle shadow user-preview-img" />
                 <button type="button" class="btn btn-dark btn-sm rounded-circle position-absolute bottom-0 end-0 p-2"
                         onclick="document.getElementById('userFoto').click()">
                     <i class="fas fa-sync-alt"></i>
@@ -39,8 +39,7 @@
         </div>
 
         <div class="mt-5 pt-3 border-top">
-            <button type="button" onclick="guardarDatos('Usuario')" class="btn w-100 py-3"
-                    style="background: #472825; color: white; border-radius: 15px; font-weight: bold;">
+            <button type="button" onclick="guardarDatos('Usuario')" class="btn w-100 py-3 dashboard-user-confirm-btn">
                 <i class="fas fa-user-check me-2"></i> Confirmar Usuario
             </button>
         </div>

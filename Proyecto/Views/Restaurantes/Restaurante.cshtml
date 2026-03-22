@@ -5,138 +5,34 @@
 }
 
 @* ELEMENTO PARA LA ANIMACIÓN (Bolsita voladora) *@
-<div id="bolsa-fancy-vuelo" style="display: none; position: fixed; color: #d3ab80; font-size: 2.2rem; z-index: 99999; pointer-events: none;">
+<div id="bolsa-fancy-vuelo" class="bolsa-fancy-vuelo">
     <i class="fa-solid fa-bag-shopping"></i>
 </div>
 
-<style>
-    /* --- ESTILOS (Se mantienen los anteriores pero optimizados) --- */
-    .contenedor-menu-estrecho {
-        max-width: 850px;
-        margin: 100px auto 50px;
-        padding: 0 20px;
-    }
-
-    .card-platillo-moderno {
-        background: white;
-        border-radius: 30px;
-        margin-bottom: 25px;
-        padding: 20px 30px;
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        border: 1px solid #fde4bc;
-        box-shadow: 0 8px 20px rgba(71, 40, 37, 0.04);
-        transition: all 0.4s ease;
-    }
-
-        .card-platillo-moderno:hover {
-            transform: translateY(-5px);
-            border-color: #d3ab80;
-        }
-
-    .foto-circular {
-        width: 95px;
-        height: 95px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 4px solid white;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    }
-
-    .info-section {
-        flex-grow: 1;
-    }
-
-        .info-section h3 {
-            margin: 0;
-            color: #472825;
-            font-size: 1.3rem;
-            font-weight: 800;
-        }
-
-        .info-section .precio-badge {
-            color: #d3ab80;
-            font-weight: 800;
-            font-size: 1.2rem;
-        }
-
-    /* --- BOTÓN AÑADIR (Ajustado para clics rápidos) --- */
-    .btn-añadir-premium {
-        background: #472825;
-        color: white;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 50px;
-        font-weight: 800;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: all 0.2s;
-        box-shadow: 0 4px 12px rgba(71, 40, 37, 0.2);
-    }
-
-        .btn-añadir-premium:hover {
-            background: #d3ab80;
-            transform: scale(1.05);
-        }
-
-        .btn-añadir-premium:active {
-            transform: scale(0.9);
-        }
-    /* Efecto de rebote al tocar */
-
-    /* Animación de vuelo con parábola */
-    .vuelo-kraft {
-        animation: flyToCart 0.8s forwards cubic-bezier(0.42, 0, 0.58, 1);
-    }
-
-    @@keyframes flyToCart {
-        0% {
-            transform: translate(0, 0) scale(1) rotate(0deg);
-            opacity: 1;
-        }
-
-        50% {
-            opacity: 0.8;
-            transform: translate(calc(var(--x-dist) * 0.5), calc(var(--y-dist) * 0.5 - 150px)) scale(1.3) rotate(180deg);
-        }
-
-        100% {
-            transform: translate(var(--x-dist), var(--y-dist)) scale(0.1) rotate(360deg);
-            opacity: 0;
-        }
-    }
-</style>
-
-<main style="background-color: #fff4e2; min-height: 100vh; padding-top: 10px;">
+<main class="restaurante-main">
     <div class="contenedor-menu-estrecho">
 
-        <div style="text-align: center; margin-bottom: 50px;">
-            <h1 style="color: #472825; font-size: 2.8rem; font-weight: 900; margin: 0;">@ViewBag.RestauranteNombre</h1>
-            <p style="color: #d3ab80; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; font-size: 0.8rem;">Toque para añadir</p>
+        <div class="restaurante-header">
+            <h1 class="restaurante-title">@ViewBag.RestauranteNombre</h1>
+            <p class="restaurante-subtitle">Toque para añadir</p>
         </div>
 
         @foreach (var producto in Model)
         {
             <div class="card-platillo-moderno">
-                <div class="visual-section" style="display: flex; align-items: center; gap: 15px;">
+                <div class="visual-section">
                     <img src="@producto.ImagenBase64" class="foto-circular">
                 </div>
 
                 <div class="info-section">
                     <h3>@producto.Nombre</h3>
-                    <p style="color: #96786f; font-size: 0.9rem;">@producto.Descripcion</p>
+                    <p class="producto-descripcion">@producto.Descripcion</p>
                     <div class="precio-badge">₡@producto.Precio.ToString("N0")</div>
                 </div>
 
                 <div class="action-section">
                     @* Formulario manejado por AJAX *@
-                    <form class="form-agregar-carrito" action="@Url.Action("Agregar", "Carrito")" method="post">
+                    <form class="form-agregar-carrito" asp-controller="Carritos" asp-action="Agregar" method="post">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="productoId" value="@producto.Id" />
                         <input type="hidden" name="nombre" value="@producto.Nombre" />

@@ -30,7 +30,7 @@ namespace RappiDozApp.Controllers
 
             // 3. RETORNAR PARTIAL VIEW (Sin Layout)
             // Esto inyecta solo el formulario dentro del modal
-            return PartialView("~/Views/CRUDs/users-form.cshtml", usuario);
+            return PartialView("~/Views/Usuarios/users-form.cshtml", usuario);
         }
 
         
@@ -76,13 +76,12 @@ namespace RappiDozApp.Controllers
                 await _context.SaveChangesAsync();
 
                 // Actualizar las variables de sesión para que el Navbar sepa el nuevo nombre y foto
-                HttpContext.Session.SetString("UsuarioNombre", usuarioDb.NombreCompleto);
+                HttpContext.Session.SetString("NombreUsuario", usuarioDb.NombreCompleto);
 
                 if (usuarioDb.FotoBinaria != null)
                 {
                     string fotoBase64 = Convert.ToBase64String(usuarioDb.FotoBinaria);
-                    string fotoSrc = $"data:{usuarioDb.ContentType};base64,{fotoBase64}";
-                    HttpContext.Session.SetString("UsuarioFoto", fotoSrc);
+                    HttpContext.Session.SetString("FotoUsuario", fotoBase64);
                 }
 
                 return Json(new { success = true, message = "¡Cambios guardados con éxito!" });

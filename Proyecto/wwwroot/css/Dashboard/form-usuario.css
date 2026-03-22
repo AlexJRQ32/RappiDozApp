@@ -1,0 +1,14 @@
+/* Dashboard/_FormUsuario.cshtml */
+.user-preview-img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border: 5px solid white;
+}
+
+.dashboard-user-confirm-btn {
+    background: var(--surface-soft);
+    color: var(--text-main);
+    border-radius: 15px;
+    font-weight: bold;
+}

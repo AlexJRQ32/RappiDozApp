@@ -1,311 +1,171 @@
-﻿/* ============================================================
-   SISTEMA GOLD UNIFICADO: RESPONSIVE + ANIMACIONES
-   ============================================================ */
-
-:root {
-    --bg-main: #141216; /* Crema base -> Oscuro */
-    --text-main: #ece4da; /* Marrón -> Claro */
-    --text-muted: #9a8e82; /* Tierra suave -> Gris/Dorado suave */
-    --accent-main: #d3ab80; /* Dorado */
-    --accent-soft: #28262c; /* Arena clara -> Gris oscuro de fondo */
-    --white: #1e1c22; /* Blanco -> Card oscuro */
-    --crema-fondo: #141216;
-    --deep-dark: #ece4da;
-    --dark-green: #9a8e82;
-    --medium-green: #d3ab80;
-    --soft-green: #3a3530;
-    --light-mint: #141216;
-    --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.4);
-    --shadow-standard: 0 8px 30px rgba(0, 0, 0, 0.4);
-}
-
-/* --- ANIMACIONES DE ENTRADA --- */
-@keyframes entradaSuave {
-    from {
-        opacity: 0;
-        transform: translateY(15px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes brilloGold {
-    0% {
-        left: -150%;
-    }
-
-    100% {
-        left: 150%;
-    }
-}
-
-/* --- CONTENEDOR PRINCIPAL --- */
-.gestion-seccion {
+/* Usuarios/users-form.cshtml */
+.rd-card-main {
+    background: #1e1c22;
+    border-radius: 24px;
     width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 100px 5% 50px; /* Responsive padding */
-    background-color: var(--light-mint);
-    min-height: 100vh;
-    box-sizing: border-box;
-}
-
-.seccion-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid var(--soft-green);
-    animation: entradaSuave 0.5s ease-out forwards;
-}
-
-    .seccion-header h2 {
-        font-size: clamp(1.5rem, 4vw, 2rem); /* Texto fluido */
-        font-weight: 800;
-        color: var(--text-main);
-        margin: 0;
-    }
-
-/* --- BOTONES INTERACTIVOS (ANIMACIONES) --- */
-
-/* BotÃ³n Nuevo Circular */
-.btn-nuevo-producto {
-    background-color: var(--text-main);
-    color: var(--text-main);
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    font-size: 1.5rem;
+    max-width: none;
+    margin: 0;
+    padding: 34px;
+    box-shadow: none;
     position: relative;
-    overflow: hidden;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-    transition: var(--transicion-rebote);
+    border: 1px solid #3a3530;
+    color: #ece4da;
 }
 
-    .btn-nuevo-producto:hover {
-        background-color: var(--medium-green);
-        transform: scale(1.1) rotate(90deg);
-    }
-
-    /* Brillo que pasa por el botÃ³n al hacer hover */
-    .btn-nuevo-producto::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        height: 100%;
-        width: 50px;
-        background: rgba(255,255,255,0.2);
-        transform: skewX(-45deg);
-        left: -150%;
-    }
-
-    .btn-nuevo-producto:hover::after {
-        animation: brilloGold 0.6s infinite;
-    }
-
-    /* Efecto Click para todos los botones */
-    .btn-accion:active, .btn-nuevo-producto:active, #button:active {
-        transform: scale(0.85) !important;
-    }
-
-/* --- TARJETAS (GRID GESTIÃ“N) --- */
-.grid-gestion-crud {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
+.btn-close-custom {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #d3ab80;
+    cursor: pointer;
+    line-height: 1;
 }
 
-.card-gestion-crud {
-    background: #28262c;
-    border-radius: 22px;
-    overflow: hidden;
-    box-shadow: var(--shadow-standard);
-    border: 1px solid var(--soft-green);
-    transition: var(--transicion-suave);
-    animation: entradaSuave 0.6s ease-out both;
+.users-form-quote {
+    color: #d3ab80;
+    font-family: 'Georgia', serif;
+    font-style: italic;
+    margin-bottom: 6px;
 }
 
-    .card-gestion-crud:hover {
-        transform: translateY(-5px);
-        border-color: var(--medium-green);
-        box-shadow: 0 15px 45px rgba(0,0,0,0.4);
-    }
-
-.card-principal {
-    display: flex;
-    align-items: center;
-    padding: 15px 25px;
-    flex-wrap: nowrap;
+.users-form-title {
+    color: #ece4da;
+    font-weight: 900;
+    letter-spacing: -1px;
 }
 
-/* --- IMÃGENES --- */
-.card-contenido img {
-    width: 65px;
-    height: 65px;
-    border-radius: 50%;
+.profile-preview-img {
+    width: 180px;
+    height: 180px;
     object-fit: cover;
-    margin-right: 20px;
-    border: 3px solid var(--light-mint);
-    transition: transform 0.3s ease;
+    border: 5px solid #3a3530;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.22);
 }
 
-.card-gestion-crud:hover .card-contenido img {
-    transform: scale(1.1);
+.profile-photo-label {
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    background-color: #d3ab80;
+    color: #141216;
+    border: 4px solid #1e1c22;
 }
 
-/* --- INFO BÃSICA Y RESPONSIVE --- */
-.info-basica {
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-}
-
-/* Etiquetas de estado */
-.etiqueta {
-    padding: 5px 15px;
-    border-radius: 50px;
-    font-size: 0.75rem;
+.profile-change-text {
+    font-size: 0.8rem;
+    color: #9a8e82;
     font-weight: 700;
     text-transform: uppercase;
-    background: var(--light-mint);
-    color: var(--dark-green);
 }
 
-/* --- ACCIONES DERECHA --- */
-.acciones-der {
-    display: flex;
-    gap: 12px;
+.users-form-divider {
+    border-color: #3a3530 !important;
 }
 
-.btn-accion {
-    background: var(--light-mint);
-    color: var(--text-main);
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
+.rd-label {
+    color: #d3ab80;
+    font-weight: 800;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    margin-left: 10px;
+    display: block;
+}
+
+.rd-input-group {
+    border-radius: 18px;
+    background-color: #141216;
+    border: 1px solid #3a3530;
     display: flex;
-    justify-content: center;
     align-items: center;
-    transition: var(--transicion-rebote);
-}
-
-    .btn-accion.edit:hover {
-        background: var(--medium-green);
-        color: #ece4da;
-    }
-
-    .btn-accion.delete:hover {
-        background: #d9534f;
-        color: #ece4da;
-    }
-
-/* --- DETALLES DESPLEGABLES --- */
-.detalles-desplegables {
-    max-height: 0;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
     overflow: hidden;
-    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
-    background: #fffcf8;
 }
 
-.toggle-detalles:checked ~ .detalles-desplegables {
-    max-height: 500px;
-    transition: max-height 1s ease-in-out;
+.rd-input-group:focus-within {
+    border-color: #d3ab80;
+    box-shadow: 0 0 0 0.14rem rgba(211, 171, 128, 0.14);
 }
 
-/* ============================================================
-   MEDIA QUERIES (RESPONSIVE)
-   ============================================================ */
-
-/* TABLETS (Menos de 992px) */
-@media (max-width: 992px) {
-    .info-basica {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-    }
-
-    .meta-info {
-        width: 100%;
-        justify-content: flex-start;
-        gap: 20px;
-    }
+.rd-input-icon {
+    color: #d3ab80;
+    padding-left: 18px;
+    font-size: 1.1rem;
 }
 
-/* MÃ“VILES (Menos de 768px) */
+.rd-input {
+    border: none !important;
+    padding: 17px 18px !important;
+    font-size: 1rem !important;
+    background: transparent !important;
+    color: #ece4da !important;
+    width: 100%;
+    outline: none !important;
+    border-radius: 0 18px 18px 0;
+}
+
+.rd-input::placeholder {
+    color: #9a8e82;
+}
+
+.rd-input:-webkit-autofill,
+.rd-input:-webkit-autofill:hover,
+.rd-input:-webkit-autofill:focus,
+.rd-input:-webkit-autofill:active {
+    -webkit-text-fill-color: #ece4da !important;
+    -webkit-box-shadow: 0 0 0 1000px #141216 inset !important;
+    box-shadow: 0 0 0 1000px #141216 inset !important;
+    transition: background-color 9999s ease-in-out 0s;
+    caret-color: #ece4da;
+}
+
+.users-form-help {
+    font-size: 0.72rem;
+    color: #9a8e82;
+    text-align: right;
+    font-weight: 600;
+}
+
+.rd-btn-save {
+    background: #d3ab80 !important;
+    color: #141216 !important;
+    border-radius: 999px;
+    padding: 18px;
+    font-weight: 800;
+    font-size: 1rem;
+    width: 100%;
+    border: none;
+    margin-top: 18px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.rd-btn-save:hover {
+    background: #ece4da !important;
+    transform: translateY(-2px);
+}
+
 @media (max-width: 768px) {
-    .gestion-seccion {
-        padding-top: 80px;
+    .rd-card-main {
+        padding: 24px 20px;
     }
 
-    .seccion-header {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
+    .users-form-divider {
+        border-left: none !important;
+        border-top: 1px solid #3a3530 !important;
+        margin-top: 24px;
+        padding-top: 24px;
     }
 
-    .card-principal {
-        flex-direction: column;
-        padding: 25px 15px;
-        text-align: center;
-    }
-
-    .card-contenido {
-        flex-direction: column;
-        margin-bottom: 15px;
-    }
-
-        .card-contenido img {
-            margin-right: 0;
-            margin-bottom: 12px;
-            width: 80px;
-            height: 80px;
-        }
-
-    .info-basica {
-        align-items: center;
-    }
-
-    .acciones-der {
-        width: 100%;
-        margin-top: 20px;
-        padding-top: 15px;
-        border-top: 1px solid var(--soft-green);
-        justify-content: center;
-    }
-
-    .accion-izq {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-    }
-
-    .detalles-inner {
-        padding: 20px !important;
-        text-align: center;
+    .profile-preview-img {
+        width: 150px;
+        height: 150px;
     }
 }
-
-/* AJUSTES PARA TOUCH */
-@media (hover: none) {
-    .card-gestion-crud:hover {
-        transform: none;
-    }
-}
-
-
-
-
-
-
-

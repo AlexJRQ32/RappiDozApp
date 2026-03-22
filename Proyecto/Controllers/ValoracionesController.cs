@@ -15,7 +15,7 @@ namespace RappiDozApp.Controllers
         public IActionResult Crear()
         {
             // Cambiamos View por PartialView para que no cargue el _Layout
-            return PartialView("~/Views/Navbar/calificanos.cshtml");
+            return PartialView("~/Views/Valoraciones/calificanos.cshtml");
         }
 
         [HttpPost]

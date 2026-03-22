@@ -31,19 +31,10 @@ body {
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    /* Color base muy oscuro para que los colores "neÃ³n tierra" resalten */
-
-    background-color: #1a0f0e;
-    /* Gradientes con colores mÃ¡s saturados */
-
-    background-image: radial-gradient(at 0% 0%, #ece4da 0%, transparent 50%), radial-gradient(at 100% 100%, #8b4513 0%, transparent 50%), /* MarrÃ³n mÃ¡s rojizo */
-    radial-gradient(at 100% 0%, #d3ab80 0%, transparent 50%), /* Dorado mÃ¡s sÃ³lido */
-    radial-gradient(at 0% 100%, #5d3531 0%, transparent 50%); /* Mancha extra para llenar el vacÃ­o */
-
+    background-color: #141216;
+    background-image: radial-gradient(circle at 15% 20%, rgba(211, 171, 128, 0.2) 0%, transparent 32%), radial-gradient(circle at 85% 15%, rgba(58, 53, 48, 0.7) 0%, transparent 35%), radial-gradient(circle at 80% 85%, rgba(211, 171, 128, 0.12) 0%, transparent 28%), linear-gradient(135deg, #141216 0%, #1e1c22 55%, #141216 100%);
     background-attachment: fixed;
-    background-size: 200% 200%; /* Aumentamos el tamaÃ±o para que el recorrido sea largo */
-    /* AnimaciÃ³n mÃ¡s rÃ¡pida (10s) y con un movimiento mÃ¡s complejo */
-
+    background-size: 200% 200%;
     animation: liquidMove 10s ease-in-out infinite alternate;
 }
 
@@ -70,10 +61,10 @@ body {
 .form {
     width: 100%;
     max-width: 520px;
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(30, 28, 34, 0.88);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px); /* Soporte Safari */
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    border: 1px solid #3a3530;
     border-radius: 25px;
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
     color: #ece4da;
@@ -97,12 +88,14 @@ body {
     display: flex;
     align-items: center;
     transition: var(--transicion-suave);
+    border-radius: 50px;
+    overflow: hidden;
 }
 
     .container-translucid input {
         width: 100%;
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(20, 18, 22, 0.92);
+        border: 1px solid #3a3530;
         border-radius: 50px;
         padding: 14px 55px 14px 25px;
         font-size: 16px;
@@ -117,10 +110,10 @@ body {
 
         /* Efecto al seleccionar el input */
         .container-translucid input:focus {
-            background: rgba(255, 255, 255, 0.25);
-            border-color: #d3ab80; /* Color Madera/Dorado */
-            box-shadow: 0 0 20px rgba(211, 171, 128, 0.3);
-            transform: translateX(5px);
+            background: rgba(20, 18, 22, 0.92);
+            border-color: #d3ab80;
+            box-shadow: 0 0 0 0.14rem rgba(211, 171, 128, 0.14);
+            transform: none;
         }
 
     /* Iconos que reaccionan al foco */
@@ -134,14 +127,27 @@ body {
 
     .container-translucid input:focus + i {
         color: #d3ab80;
-        transform: scale(1.2);
+        transform: none;
+    }
+
+    .container-translucid input:-webkit-autofill,
+    .container-translucid input:-webkit-autofill:hover,
+    .container-translucid input:-webkit-autofill:focus,
+    .container-translucid input:-webkit-autofill:active,
+    select:-webkit-autofill,
+    input[type="time"]:-webkit-autofill {
+        -webkit-text-fill-color: #ece4da !important;
+        -webkit-box-shadow: 0 0 0 1000px rgba(20, 18, 22, 0.92) inset !important;
+        box-shadow: 0 0 0 1000px rgba(20, 18, 22, 0.92) inset !important;
+        transition: background-color 9999s ease-in-out 0s;
+        caret-color: #ece4da;
     }
 
 /* --- BOTÃ“N DE ENTRADA PREMIUM --- */
 #button {
     width: 100%;
-    background-color: #ece4da;
-    color: #ece4da; /* Tu marrÃ³n profundo */
+    background-color: var(--accent-main, #d3ab80);
+    color: var(--bg-main, #1a0f0e);
     border: none;
     padding: 16px;
     border-radius: 50px;
@@ -156,10 +162,10 @@ body {
 }
 
     #button:hover {
-        background-color: #f8f8f8;
+        background-color: var(--text-main, #ece4da);
         transform: translateY(-4px);
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-        color: #d3ab80; /* El texto se vuelve dorado al pasar */
+        color: var(--bg-main, #1a0f0e);
     }
 
     #button:active {
@@ -296,6 +302,98 @@ body {
 
 /* Error message for login view */
 #error-message { color: #ff4d4d; text-align: center; margin-bottom: 10px; font-weight: bold; display: none; }
+
+select,
+input[type="time"] {
+    width: 100%;
+    background: rgba(20, 18, 22, 0.92);
+    backdrop-filter: blur(20px);
+    border: 1px solid #3a3530;
+    border-radius: 50px;
+    font-size: 18px;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    appearance: none;
+    outline: none;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+select option {
+    background-color: #1e1c22;
+    color: #ece4da;
+}
+
+.select-container,
+.time-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.select-container i,
+.time-container i {
+    position: absolute;
+    right: 25px;
+    pointer-events: none;
+}
+
+.form {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.label-time {
+    color: white;
+    font-size: 0.9rem;
+    margin-left: 15px;
+    margin-bottom: 5px;
+    display: block;
+    opacity: 0.8;
+}
+
+.brand-mini {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.brand-rappi,
+.brand-doz {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.brand-rappi { color: #e74c3c; }
+.brand-doz { color: #2ecc71; }
+
+.time-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.time-col {
+    flex: 1;
+}
+
+.register-spaced {
+    margin-top: 25px;
+}
+
+.feedback-error {
+    color: #ff4d4d;
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.hidden-feedback {
+    display: none !important;
+}
 
 
 

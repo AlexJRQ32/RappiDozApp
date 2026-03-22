@@ -1,0 +1,156 @@
+/* Dashboard/_CuponesList.cshtml */
+.dashboard-section-root {
+    background: var(--cream-bg);
+}
+
+.dashboard-section-title {
+    color: var(--text-main);
+    font-weight: 800;
+}
+
+.dashboard-ticket-inner {
+    margin: -10px;
+}
+
+.coupon-ticket {
+    display: flex;
+    height: 165px;
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.18));
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.coupon-ticket:hover {
+    transform: translateY(-5px);
+}
+
+.t-left {
+    background: var(--surface-soft);
+    width: 125px;
+    min-width: 125px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 2px dashed rgba(211,171,128,0.2);
+    border-radius: 15px 0 0 15px;
+}
+
+.notch {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: var(--cream-bg);
+    border-radius: 50%;
+    z-index: 5;
+}
+
+.n-tl { top: -12px; left: -12px; }
+.n-bl { bottom: -12px; left: -12px; }
+.n-tr { top: -12px; right: -13px; }
+.n-br { bottom: -12px; right: -13px; }
+.n-tr-far { top: -12px; right: -12px; }
+.n-br-far { bottom: -12px; right: -12px; }
+
+.t-right {
+    flex-grow: 1;
+    background: var(--surface-card);
+    border-radius: 0 15px 15px 0;
+    position: relative;
+}
+
+.t-inner-padding {
+    padding: 25px 30px;
+}
+
+.t-content {
+    text-align: center;
+    z-index: 6;
+    color: var(--gold-light);
+}
+
+.t-val {
+    display: block;
+    font-size: 1.85rem;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.t-off {
+    font-size: 0.7rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.t-title,
+.t-code,
+.t-date {
+    color: var(--text-main);
+}
+
+.t-code-wrapper {
+    display: inline-flex;
+    flex-direction: column;
+    background: var(--cream-bg);
+    padding: 5px 12px;
+    border-radius: 8px;
+    border: 1px solid #3a3530;
+}
+
+.t-label {
+    font-size: 0.5rem;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.t-code {
+    font-family: 'Courier New', monospace;
+    font-weight: 800;
+    font-size: 0.95rem;
+}
+
+.rd-badge {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 50px;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+
+.b-act { background: #1a302a; color: #27ae60; }
+.b-exp { background: #3a1a1a; color: #dc2626; }
+.b-ina { background: #3a2b18; color: #d97706; }
+
+.btn-i {
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    transition: 0.2s;
+    margin-left: 6px;
+}
+
+.btn-i.edit { background: #1f2937; color: #cbd5e1; }
+.btn-i.del { background: #3a1a1a; color: #e11d48; }
+
+.btn-circular {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: var(--surface-soft);
+    color: var(--text-main);
+    font-size: 1.2rem;
+    transition: 0.3s;
+}
+
+.btn-circular:hover {
+    background: var(--gold-light);
+    color: var(--brown-dark);
+    transform: rotate(90deg);
+}
+
+.expired {
+    opacity: 0.7;
+}

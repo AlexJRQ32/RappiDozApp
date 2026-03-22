@@ -26,124 +26,6 @@
     }
 }
 
-<style>
-    /* ==========================================
-       ESTILOS ORIGINALES (ESCRITORIO)
-    ========================================== */
-    .navbar {
-        background-color: #472825;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 5px 25px;
-        position: fixed;
-        top: 0; left: 0; width: 100%;
-        z-index: 10000;
-        height: 80px;
-        box-sizing: border-box;
-    }
-
-    .navbar-brand img { height: 100px; width: auto; }
-    .sesion { display: flex; align-items: center; gap: 15px; }
-
-    .sesion a, .dropdown-btn {
-        color: #fff4e2;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.95rem;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 15px;
-        border-radius: 20px;
-        transition: 0.3s;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-    }
-
-    .sesion a:hover, .dropdown-btn:hover { background-color: rgba(211, 171, 128, 0.2); }
-    .link-activo { background-color: rgba(0, 0, 0, 0.3) !important; color: #d3ab80 !important; }
-
-    .menu-toggle { display: none; background: none; border: none; color: #fff4e2; font-size: 2rem; cursor: pointer; }
-
-    .cart-container { position: relative; }
-    .cart-badge {
-        position: absolute; top: -5px; right: -5px;
-        background-color: #ff4d4d; color: white;
-        font-size: 0.7rem; min-width: 18px; height: 18px;
-        border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        border: 2px solid #472825; font-weight: bold;
-    }
-
-    .dropdown { position: relative; }
-    .dropdown-content {
-        display: none; position: absolute; right: 0;
-        background-color: #472825; min-width: 200px;
-        box-shadow: 0px 8px 16px rgba(0,0,0,0.4);
-        border: 1px solid #d3ab80; border-radius: 12px;
-        overflow: hidden; z-index: 1001;
-    }
-    .dropdown:hover .dropdown-content { display: block; }
-    .dropdown-content a { border-radius: 0; width: 100%; justify-content: flex-start; padding: 12px 18px; }
-
-    /* USER-PILL MEJORADA */
-    .user-pill {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        background: rgba(211, 171, 128, 0.1);
-        padding: 6px 16px;
-        border-radius: 50px;
-        border: 1px solid rgba(211, 171, 128, 0.3);
-        transition: all 0.3s ease;
-        backdrop-filter: blur(4px);
-    }
-    .user-pill:hover { background: rgba(211, 171, 128, 0.2); border-color: #d3ab80; }
-    
-    .user-pill img {
-        width: 32px; height: 32px;
-        border-radius: 50%; object-fit: cover;
-        border: 2px solid #d3ab80;
-    }
-
-    .user-info-text { display: flex; flex-direction: column; line-height: 1.1; text-align: left; }
-    .user-name { color: #fff4e2; font-weight: 700; font-size: 0.85rem; }
-    .user-role { color: #d3ab80; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; }
-
-    /* ==========================================
-       RESPONSIVE
-    ========================================== */
-    @@media (max-width: 992px) {
-        .menu-toggle { display: block; }
-        
-        .sesion {
-            display: none; 
-            flex-direction: column;
-            align-items: center;
-            position: absolute;
-            top: 80px; left: 0; width: 100%;
-            background-color: #472825;
-            padding: 20px 0;
-            gap: 10px;
-        }
-
-        .sesion.active { display: flex; }
-
-        .sesion > a, .dropdown, .cart-container, .user-pill {
-            width: 85% !important; 
-        }
-
-        .dropdown-content {
-            position: static; 
-            width: 100% !important; 
-            background: rgba(0,0,0,0.2); 
-            border: none;
-            box-shadow: none;
-        }
-    }
-</style>
-
 <nav class="navbar">
     <a asp-controller="Home" asp-action="Index" class="navbar-brand">
         <img src="~/img/logo-final.png" alt="Logo">
@@ -166,7 +48,7 @@
 
             <a href="javascript:void(0);" onclick="window.abrirMapa()">
                 <i class="fa-solid fa-location-dot"></i> Ubicación
-                @if (!tieneUbicacion) { <span style="color: #ff4d4d; font-weight: bold;">!</span> }
+                @if (!tieneUbicacion) { <span class="location-alert">!</span> }
             </a>
 
             <div class="cart-container">
@@ -183,7 +65,7 @@
                     <i class="fa-solid fa-ellipsis-vertical"></i> Más
                 </button>
                 <div class="dropdown-content">
-                    <a asp-controller="Usuarios" asp-action="Movimientos"><i class="fa-solid fa-clock-rotate-left"></i> Mis Pedidos</a>
+                    <a asp-controller="Pedidos" asp-action="Movimientos"><i class="fa-solid fa-clock-rotate-left"></i> Mis Pedidos</a>
                     <a asp-controller="Cupones" asp-action="Index"><i class="fa-solid fa-ticket"></i> Cupones</a>
                     <a href="javascript:void(0)" onclick="abrirCalificar()">
                         <i class="fa-solid fa-star"></i> Califícanos
@@ -191,7 +73,7 @@
 
                     @if (rolUsuario == "Administrador" || rolUsuario == "Restaurante")
                     {
-                        <div style="height: 1px; background: rgba(211, 171, 128, 0.3); margin: 8px 15px;"></div>
+                        <div class="dropdown-divider-line"></div>
                         <a asp-controller="Dashboard" asp-action="Index"><i class="fa-solid fa-gauge-high"></i> Panel Admin</a>
                     }
                 </div>
@@ -202,7 +84,7 @@
                     @if (!string.IsNullOrEmpty(fotoUsuario)) {
                         <img src="data:image/png;base64,@fotoUsuario" alt="User">
                     } else {
-                        <i class="fa-solid fa-circle-user" style="color: #d3ab80; font-size: 1.8rem;"></i>
+                        <i class="fa-solid fa-circle-user user-icon-fallback"></i>
                     }
                     <div class="user-info-text">
                         <span class="user-name">@nombreUsuario</span>
@@ -213,8 +95,8 @@
                     <a href="javascript:void(0);" onclick="abrirPerfil()">
                         <i class="fa-solid fa-user-gear"></i> Mi Cuenta
                     </a>
-                    <div style="height: 1px; background: rgba(211, 171, 128, 0.3); margin: 8px 15px;"></div>
-                    <a href="javascript:void(0);" onclick="confirmarSalida()" style="color: #ff4d4d !important;">
+                    <div class="dropdown-divider-line"></div>
+                    <a href="javascript:void(0);" onclick="confirmarSalida()" class="logout-link">
                         <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
                     </a>
                 </div>
@@ -222,7 +104,7 @@
         }
         else
         {
-            <a asp-controller="Accesos" asp-action="Login" style="border: 2px solid #d3ab80; border-radius: 50px;">
+            <a asp-controller="Accesos" asp-action="Login" class="login-link-pill">
                 <i class="fa-solid fa-circle-user"></i> Iniciar sesión
             </a>
         }
@@ -245,21 +127,14 @@
             title: '¿Cerrar sesión?',
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#472825',
+            confirmButtonColor: '#d3ab80',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Sí, salir',
-            background: '#fff4e2',
-            color: '#472825',
-            didOpen: () => {
-            // Esto asegura que el contenedor de la alerta sea el rey del z-index
-                const container = document.querySelector('.swal2-container');
-                if (container) {
-                    container.style.zIndex = '15000';
-                }
-            },
+            background: '#1e1c22',
+            color: '#ece4da',
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = '@Url.Action("Salir", "Acceso")';
+                window.location.href = '@Url.Action("Salir", "Accesos")';
             }
         });
     }

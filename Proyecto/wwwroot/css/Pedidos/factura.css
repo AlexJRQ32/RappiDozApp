@@ -1387,6 +1387,176 @@ body {
     }
 }
 
+.factura-container {
+    background-color: var(--bg-main);
+    min-height: 100vh;
+    padding: 80px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.ticket {
+    width: 100%;
+    max-width: 450px;
+    background: var(--white);
+    padding: 40px;
+    border-radius: 0 0 20px 20px;
+    position: relative;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.ticket::before {
+    content: "";
+    position: absolute;
+    top: -15px;
+    left: 0;
+    width: 100%;
+    height: 15px;
+    background: linear-gradient(-45deg, var(--white) 10px, transparent 0), linear-gradient(45deg, var(--white) 10px, transparent 0);
+    background-size: 20px 20px;
+}
+
+.header-ticket {
+    text-align: center;
+    border-bottom: 2px dashed #3a3530;
+    padding-bottom: 20px;
+    margin-bottom: 25px;
+}
+
+.ticket-brand,
+.ticket-thanks {
+    color: var(--text-main);
+    font-family: sans-serif;
+    font-weight: 900;
+}
+
+.ticket-brand {
+    margin: 0;
+}
+
+.ticket-caption {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 5px 0;
+}
+
+.ticket-meta-item {
+    font-size: 0.85rem;
+    color: var(--accent-main);
+}
+
+.linea-producto {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    color: var(--text-main);
+    font-size: 0.95rem;
+}
+
+.linea-producto-nombre {
+    flex: 1;
+}
+
+.linea-producto-monto,
+.fila-total-amount {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.ticket-warning-box {
+    background: #2a1e22;
+    border: 1px dashed #e74c3c;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.ticket-warning-text {
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.seccion-totales {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #3a3530;
+}
+
+.fila-total {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: var(--text-muted);
+}
+
+.fila-total-descuento {
+    color: #27ae60;
+    font-weight: 700;
+}
+
+.gran-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 2px solid var(--text-main);
+    color: var(--text-main);
+    font-size: 1.7rem;
+    font-weight: 900;
+    font-family: sans-serif;
+}
+
+.ticket-footer {
+    text-align: center;
+    margin-top: 30px;
+    border-top: 1px dashed #3a3530;
+    padding-top: 20px;
+}
+
+.ticket-qr {
+    color: var(--text-main);
+    opacity: 0.1;
+    margin: 15px 0;
+}
+
+.btn-seguir {
+    display: block;
+    background: var(--accent-main);
+    color: var(--bg-main);
+    text-align: center;
+    padding: 18px;
+    border-radius: 15px;
+    text-decoration: none;
+    font-weight: 900;
+    margin-top: 35px;
+    font-family: sans-serif;
+    transition: 0.3s;
+}
+
+.btn-seguir:hover {
+    background: var(--text-main);
+    transform: translateY(-2px);
+}
+
+.ticket-btn-icon {
+    margin-left: 10px;
+}
+
+.ticket-back-link {
+    display: block;
+    margin-top: 15px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-decoration: none;
+    font-weight: 700;
+}
+
 @media (max-width: 768px) {
     /* Ajuste de márgenes para móvil */
     section {

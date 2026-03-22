@@ -1,0 +1,83 @@
+.modal-general {
+    z-index: 11000;
+}
+
+.modal-general .modal-dialog {
+    max-width: min(980px, 94vw);
+    width: 100%;
+    margin: 1.5rem auto;
+}
+
+.modal-general .modal-content {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 28px;
+    box-shadow: none !important;
+    color: #ece4da;
+    overflow: visible;
+}
+
+.modal-general .modal-header {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 20;
+    background: transparent;
+    padding: 0;
+    border: none !important;
+}
+
+.modal-general .modal-body {
+    padding: 0 !important;
+    text-align: initial !important;
+}
+
+.modal-general .btn-close {
+    filter: invert(1) sepia(0.1) saturate(0) brightness(1.7);
+    opacity: 0.8;
+}
+
+.modal-general .btn-close:hover {
+    opacity: 1;
+}
+
+.cta-final {
+    padding: 70px 8% 90px;
+    background: linear-gradient(180deg, #1e1c22 0%, #141216 100%);
+    border-top: 4px solid #d3ab80;
+    border-radius: 20px 20px 0 0;
+    text-align: center;
+    box-shadow: 0 -2px 18px rgba(211, 171, 128, 0.12), inset 0 1px 0 rgba(236, 228, 218, 0.08);
+}
+
+.cta-final h2 {
+    color: #ece4da;
+    font-size: clamp(1.7rem, 4vw, 2.3rem);
+    font-weight: 800;
+    margin-bottom: 18px;
+}
+
+.footer-cta-actions {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-cta-btn {
+    text-decoration: none;
+    display: inline-block;
+    background: #d3ab80;
+    color: #141216;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 999px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 22px rgba(0,0,0,0.2);
+}
+
+.footer-cta-btn:hover {
+    background: #ece4da;
+    color: #141216;
+    transform: translateY(-2px);
+}

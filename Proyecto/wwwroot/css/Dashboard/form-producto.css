@@ -1,0 +1,40 @@
+/* Dashboard/_FormProducto.cshtml */
+.product-image-label {
+    color: var(--text-main);
+}
+
+.image-preview-container {
+    position: relative;
+    display: inline-block;
+}
+
+.preview-photo {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 25px;
+    border: 3px solid #3a3530;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.preview-photo-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: var(--surface-soft);
+    color: var(--text-main);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+}
+
+.dashboard-secondary-btn {
+    border-radius: 12px;
+}
+
+.dashboard-save-btn {
+    background: var(--surface-soft);
+    color: var(--text-main);
+    border-radius: 12px;
+    font-weight: bold;
+}

@@ -1,0 +1,111 @@
+/* Dashboard/_FormCupon.cshtml */
+.form-gold-wrapper {
+    padding: 35px;
+    color: var(--text-main);
+}
+
+.gold-input {
+    padding: 12px;
+    border: 1px solid #3a3530;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background: var(--surface-card);
+    color: var(--text-main);
+}
+
+.gold-uppercase-input {
+    text-transform: uppercase;
+}
+
+.checkbox-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding-top: 25px;
+}
+
+.gold-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--gold-light);
+}
+
+.checkbox-label {
+    margin: 0 !important;
+    font-weight: bold;
+}
+
+.form-actions {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #3a3530;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.dashboard-modal-close {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.dashboard-primary-btn {
+    background: var(--surface-soft);
+    color: var(--gold-light);
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.preview-circle {
+    width: 260px;
+    height: 260px;
+    border: 2px dashed var(--gold-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cream-bg);
+}
+
+.minimal-coupon {
+    width: 200px;
+    height: 100px;
+    background: var(--surface-soft);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.minimal-coupon::before,
+.minimal-coupon::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: var(--cream-bg);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.minimal-coupon::before {
+    left: -10px;
+}
+
+.minimal-coupon::after {
+    right: -10px;
+}
+
+#bD {
+    color: var(--gold-light);
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin: 0;
+}

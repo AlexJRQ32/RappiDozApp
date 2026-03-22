@@ -1,128 +1,5 @@
 ﻿@model RappiDozApp.Models.Cupon
 
-<style>
-    /* Contenedor con espacio para que no pegue a los bordes */
-    .form-gold-wrapper {
-        padding: 35px;
-        color: #472825;
-    }
-
-    .form-main-grid {
-        display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
-        gap: 40px;
-        align-items: center;
-    }
-
-    /* Formulario */
-    .input-group {
-        margin-bottom: 18px;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-        .input-group label {
-            font-size: 0.8rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: #472825;
-        }
-
-    .gold-input {
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 0.9rem;
-        background: #fff;
-    }
-
-    .input-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-    }
-
-    /* --- ÁREA DE PREVISUALIZACIÓN --- */
-    .preview-aside {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .preview-label {
-        font-size: 0.7rem;
-        font-weight: bold;
-        color: #d3ab80;
-        letter-spacing: 2px;
-        margin-bottom: 20px;
-    }
-
-    /* El Círculo de Visualización */
-    .preview-circle {
-        width: 260px;
-        height: 260px;
-        border: 2px dashed #d3ab80;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #fdfaf6;
-    }
-
-    /* Cupón Horizontal Minimalista (Un solo color) */
-    .minimal-coupon {
-        width: 200px;
-        height: 100px;
-        background: #472825; /* Un solo color para notar las muescas */
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    }
-
-        /* Muescas laterales */
-        .minimal-coupon::before, .minimal-coupon::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: #fdfaf6; /* Color igual al fondo del círculo */
-            border-radius: 50%;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .minimal-coupon::before {
-            left: -10px;
-        }
-
-        .minimal-coupon::after {
-            right: -10px;
-        }
-
-    /* Texto del descuento (Solo esto dentro) */
-    #bD {
-        color: #d3ab80;
-        font-size: 2.5rem;
-        font-weight: 900;
-        margin: 0;
-    }
-
-    /* Footer */
-    .form-actions {
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 1px solid #eee;
-        display: flex;
-        justify-content: flex-end;
-        gap: 15px;
-    }
-</style>
-
 <div class="form-gold-wrapper fade-in">
     <form id="formCupon" autocomplete="off">
         <input type="hidden" asp-for="Id" />
@@ -151,7 +28,7 @@
                 <div class="input-row">
                     <div class="input-group">
                         <label>Código</label>
-                        <input asp-for="Codigo" class="gold-input" style="text-transform:uppercase">
+                        <input asp-for="Codigo" class="gold-input gold-uppercase-input">
                     </div>
                     <div class="input-group">
                         <label>Expiración</label>
@@ -178,9 +55,9 @@
                         <label>Stock</label>
                         <input asp-for="Stock" type="number" class="gold-input">
                     </div>
-                    <div class="input-group" style="flex-direction:row; align-items:center; gap:10px; padding-top:25px;">
-                        <input type="checkbox" asp-for="Activo" style="width:18px; height:18px; accent-color:#472825;">
-                        <label style="margin:0; font-weight:bold;">Activo</label>
+                    <div class="input-group checkbox-group">
+                        <input type="checkbox" asp-for="Activo" class="gold-checkbox">
+                        <label class="checkbox-label">Activo</label>
                     </div>
                 </div>
             </div>
@@ -198,9 +75,8 @@
         </div>
 
         <div class="form-actions">
-            <button type="button" class="btn btn-link" data-bs-dismiss="modal" style="color:#999; text-decoration:none; font-weight:bold;">Cerrar</button>
-            <button type="button" onclick="guardarDatos('Cupon')"
-                    style="background:#472825; color:#d3ab80; padding:12px 25px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
+            <button type="button" class="btn btn-link dashboard-modal-close" data-bs-dismiss="modal">Cerrar</button>
+            <button type="button" onclick="guardarDatos('Cupon')" class="dashboard-primary-btn">
                 Aplicar Cambios
             </button>
         </div>

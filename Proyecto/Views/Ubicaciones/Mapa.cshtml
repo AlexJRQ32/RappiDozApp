@@ -6,73 +6,17 @@
     var lng = Model?.Longitud.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-84.0833";
 }
 
-<style>
-    .modal-content-custom {
-        background: #ffffff !important;
-        border-radius: 30px;
-        color: #472825;
-        font-family: 'Segoe UI', Roboto, sans-serif;
-    }
-
-    #mapa-final {
-        height: 380px;
-        width: 100%;
-        background: #f8f9fa;
-        border-radius: 20px;
-        border: 2px solid #f0e6d6;
-        z-index: 5;
-    }
-
-    .input-rappi {
-        border-radius: 15px !important;
-        border: 2px solid #f0f0f0 !important;
-        padding: 12px 20px !important;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-        .input-rappi:focus {
-            border-color: #d3ab80 !important;
-            box-shadow: 0 0 0 0.2rem rgba(211, 171, 128, 0.25);
-        }
-
-    .btn-rappi-confirm {
-        background: #472825 !important;
-        color: white !important;
-        border: none;
-        border-radius: 15px;
-        padding: 16px;
-        font-weight: 800;
-        font-size: 1rem;
-        letter-spacing: 1px;
-        transition: 0.3s;
-    }
-
-        .btn-rappi-confirm:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(71, 40, 37, 0.2);
-            background: #5a332f !important;
-        }
-
-    .label-custom {
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: #96786f;
-        margin-bottom: 8px;
-        margin-left: 5px;
-    }
-</style>
-
 <div class="p-4 modal-content-custom">
+    <button type="button" class="btn-close-custom" data-bs-dismiss="modal">×</button>
     <div class="text-center mb-4">
-        <div style="width: 50px; height: 5px; background: #e0e0e0; border-radius: 10px; margin: 0 auto 15px;"></div>
-        <h4 class="fw-bold" style="color: #472825;">Ubica tu entrega</h4>
+        <div class="mapa-handle"></div>
+        <h4 class="fw-bold mapa-title">Ubica tu entrega</h4>
         <p class="text-muted small">Mueve el pin dorado exactamente sobre tu casa</p>
     </div>
 
     <div class="position-relative mb-4">
         <div id="mapa-final" data-lat="@lat" data-lng="@lng"></div>
-        <div style="position: absolute; bottom: 10px; right: 10px; z-index: 1000; background: rgba(255,255,255,0.8); padding: 5px 10px; border-radius: 10px; font-size: 10px; font-weight: bold;">
+        <div class="mapa-watermark">
             Leaflet | RappiDoz Maps
         </div>
     </div>
@@ -111,7 +55,7 @@
             }).setView([lat, lng], 16);
 
             // Capa de mapa elegante (CartoDB Voyager)
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
                 maxZoom: 19
             }).addTo(mapFinal);
 

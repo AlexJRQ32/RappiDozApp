@@ -3,105 +3,12 @@
     Layout = null;
 }
 
-<style>
-    /* RESET BOOTSTRAP */
-    #modalGeneral .modal-content {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-    }
-
-    /* TARJETA CREMA HORIZONTAL */
-    .rd-card-main {
-        background-color: #fffdfa !important;
-        border-radius: 45px !important;
-        width: 100%;
-        max-width: 800px;
-        margin: auto;
-        padding: 40px 50px;
-        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25) !important;
-        position: relative;
-        border: 1px solid #f3e5d0;
-    }
-
-    /* INPUTS PREMIUM */
-    .rd-input-group {
-        border-radius: 20px;
-        background-color: white;
-        border: 1px solid #f1ece4;
-        display: flex;
-        align-items: center;
-        margin-bottom: 15px;
-        transition: all 0.3s ease;
-    }
-
-        .rd-input-group:focus-within {
-            border-color: #d3ab80;
-            box-shadow: 0 5px 15px rgba(211, 171, 128, 0.15);
-        }
-
-    .rd-input-icon {
-        color: #d3ab80;
-        padding-left: 20px;
-        font-size: 1.2rem;
-    }
-
-    .rd-input {
-        border: none !important;
-        padding: 18px 20px !important;
-        font-size: 1rem !important;
-        background: transparent !important;
-        color: #472825 !important;
-        width: 100%;
-        outline: none !important;
-    }
-
-    .rd-label {
-        color: #8d7a66;
-        font-weight: 800;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 8px;
-        margin-left: 10px;
-        display: block;
-    }
-
-    /* BOTÃ“N */
-    .rd-btn-save {
-        background: #472825 !important;
-        color: #fff !important;
-        border-radius: 30px;
-        padding: 20px;
-        font-weight: 800;
-        font-size: 1.1rem;
-        width: 100%;
-        border: none;
-        margin-top: 20px;
-        cursor: pointer;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: 0.3s;
-    }
-
-    .btn-close-custom {
-        position: absolute;
-        top: 25px;
-        right: 35px;
-        background: none;
-        border: none;
-        font-size: 2rem;
-        color: #d3ab80;
-        cursor: pointer;
-    }
-</style>
-
 <div class="rd-card-main">
-    <button type="button" class="btn-close-custom" data-bs-dismiss="modal">Ã—</button>
+    <button type="button" class="btn-close-custom" data-bs-dismiss="modal">×</button>
 
     <div class="text-center mb-4">
-        <h4 style="color: #d3ab80; font-family: 'Georgia', serif; font-style: italic; margin-bottom: 5px;">"Tu cuenta, tu sazÃ³n"</h4>
-        <h2 style="color: #472825; font-weight: 900; letter-spacing: -1px;">Mi Perfil RappiDoz</h2>
+        <h4 class="users-form-quote">"Tu cuenta, tu sazón"</h4>
+        <h2 class="users-form-title">Mi Perfil RappiDoz</h2>
     </div>
 
     <form id="formPerfilUsuario" enctype="multipart/form-data">
@@ -117,38 +24,36 @@
                         ? $"data:{Model.ContentType};base64,{Convert.ToBase64String(Model.FotoBinaria)}"
                         : "/img/usuario-default.jpg";
                     }
-                    <img id="previewPerfil" src="@imgSrc" class="rounded-circle"
-                         style="width: 180px; height: 180px; object-fit: cover; border: 6px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                    <img id="previewPerfil" src="@imgSrc" class="rounded-circle profile-preview-img">
 
-                    <label for="fotoInput" class="position-absolute bottom-0 end-0 rounded-circle d-flex align-items-center justify-content-center shadow"
-                           style="width: 45px; height: 45px; cursor: pointer; background-color: #d3ab80; color: white; border: 4px solid #fffdfa;">
+                    <label for="fotoInput" class="position-absolute bottom-0 end-0 rounded-circle d-flex align-items-center justify-content-center shadow profile-photo-label">
                         <i class="fas fa-pencil-alt"></i>
                         <input type="file" id="fotoInput" name="fotoArchivo" hidden accept="image/*">
                     </label>
                 </div>
-                <p class="mt-3" style="font-size: 0.8rem; color: #8d7a66; font-weight: 600; text-transform: uppercase;">Cambiar imagen</p>
+                <p class="mt-3 profile-change-text">Cambiar imagen</p>
             </div>
 
             @* LADO DERECHO: DATOS *@
-            <div class="col-md-7 px-4 border-start" style="border-color: #f1ece4 !important;">
+            <div class="col-md-7 px-4 border-start users-form-divider">
                 <label class="rd-label">Nombre Completo</label>
                 <div class="rd-input-group">
                     <span class="rd-input-icon"><i class="fas fa-user-circle"></i></span>
                     <input asp-for="NombreCompleto" class="rd-input" placeholder="Tu nombre" required />
                 </div>
 
-                <label class="rd-label">Correo ElectrÃ³nico</label>
+                <label class="rd-label">Correo Electrónico</label>
                 <div class="rd-input-group">
                     <span class="rd-input-icon"><i class="fas fa-envelope"></i></span>
                     <input asp-for="Email" type="email" class="rd-input" placeholder="correo@ejemplo.com" required />
                 </div>
 
-                <label class="rd-label">Nueva ContraseÃ±a</label>
+                <label class="rd-label">Nueva Contraseña</label>
                 <div class="rd-input-group">
                     <span class="rd-input-icon"><i class="fas fa-lock"></i></span>
-                    <input type="password" name="nuevaPassword" class="rd-input" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
+                    <input type="password" name="nuevaPassword" class="rd-input" placeholder="••••••••">
                 </div>
-                <p style="font-size: 0.7rem; color: #a67c52; text-align: right; font-weight: 600;">* Dejar vacÃ­o para no cambiar</p>
+                <p class="users-form-help">* Dejar vacío para no cambiar</p>
             </div>
         </div>
 

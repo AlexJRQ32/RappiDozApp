@@ -107,7 +107,7 @@ namespace RappiDozApp.Controllers
                 .ToListAsync();
 
             // 3. Retornar la vista específica de movimientos
-            return View("~/Views/Usuarios/movimientos.cshtml", historial);
+            return View("~/Views/Pedidos/movimientos.cshtml", historial);
         }
 
         [HttpPost]

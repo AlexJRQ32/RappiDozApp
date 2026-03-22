@@ -6,20 +6,18 @@
 
         <div class="text-center mb-5">
             <div class="position-relative d-inline-block">
-                <div class="image-wrapper" style="border: 4px solid #f0e1cf; padding: 5px; border-radius: 50%; background: #fff;">
+                <div class="image-wrapper restaurant-image-wrapper">
                     <img id="previewRestaurante"
                          src="@(Model.LogoBinario != null ? $"data:{Model.ContentType};base64,{Convert.ToBase64String(Model.LogoBinario)}" : "/img/default-restaurante.png")"
-                         class="rounded-circle shadow-sm"
-                         style="width: 140px; height: 140px; object-fit: cover;" />
+                         class="rounded-circle shadow-sm restaurant-preview-img" />
                 </div>
-                <button type="button" class="btn btn-dark btn-sm rounded-circle position-absolute"
-                        style="bottom: 8px; right: 8px; width: 38px; height: 38px; border: 3px solid white;"
+                <button type="button" class="btn btn-dark btn-sm rounded-circle position-absolute restaurant-camera-btn"
                         onclick="document.getElementById('fotoRestaurante').click()">
                     <i class="fas fa-camera"></i>
                 </button>
                 <input type="file" name="fotoArchivo" id="fotoRestaurante" class="d-none" accept="image/*" onchange="previewRestImg(this)" />
             </div>
-            <h4 class="mt-3 fw-bold" style="color: #472825;">Identidad de la Sede</h4>
+            <h4 class="mt-3 fw-bold restaurant-identity-title">Identidad de la Sede</h4>
         </div>
 
         <div class="row g-4">
@@ -57,11 +55,10 @@
         </div>
 
         <div class="mt-5 pt-4 border-top text-end">
-            <button type="button" class="btn btn-light px-4 me-2" style="border-radius:15px;" data-bs-dismiss="modal">
+            <button type="button" class="btn btn-light px-4 me-2 dashboard-cancel-btn-rounded" data-bs-dismiss="modal">
                 Cancelar
             </button>
-            <button type="button" onclick="guardarDatos('Restaurante')" class="btn px-5 py-2"
-                    style="background: #472825; color: white; border-radius: 15px; font-weight: bold; box-shadow: 0 4px 15px rgba(71,40,37,0.2);">
+            <button type="button" onclick="guardarDatos('Restaurante')" class="btn px-5 py-2 dashboard-save-btn-rounded">
                 <i class="fas fa-save me-2"></i> Guardar Sede
             </button>
         </div>

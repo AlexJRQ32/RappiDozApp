@@ -1,87 +1,8 @@
 ﻿@model IEnumerable<RappiDozApp.Models.Restaurante>
 
-<style>
-    .seccion-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 2px solid #f0e1cf;
-        padding-bottom: 15px;
-        margin-bottom: 30px;
-    }
-
-    .card-sede {
-        background: white;
-        border-radius: 20px;
-        padding: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        margin-bottom: 15px;
-        transition: 0.3s;
-    }
-
-        .card-sede:hover {
-            transform: translateX(10px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-
-    .sede-img {
-        width: 70px;
-        height: 70px;
-        border-radius: 15px;
-        object-fit: cover;
-        border: 2px solid #fdf2e2;
-    }
-
-    .sede-placeholder {
-        width: 70px;
-        height: 70px;
-        border-radius: 15px;
-        background: #fdf2e2;
-        color: #d3ab80;
-        display: grid;
-        place-items: center;
-        font-size: 1.5rem;
-    }
-
-    .btn-circular {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        border: none;
-        background: #472825;
-        color: white;
-        transition: 0.3s;
-    }
-
-        .btn-circular:hover {
-            transform: scale(1.1) rotate(90deg);
-        }
-
-    .btn-accion {
-        width: 38px;
-        height: 38px;
-        border-radius: 10px;
-        border: none;
-        transition: 0.2s;
-    }
-
-    .btn-edit {
-        background: #fdf2e2;
-        color: #d3ab80;
-    }
-
-    .btn-delete {
-        background: #ffebeb;
-        color: #ff4d4d;
-    }
-</style>
-
 <div class="animate__animated animate__fadeIn">
     <div class="seccion-header">
-        <h2 class="fw-bold" style="color: #472825;">Nuestras Sedes</h2>
+        <h2 class="fw-bold restaurants-title">Nuestras Sedes</h2>
         <button onclick="abrirForm('Restaurante', 'Crear')" class="btn-circular"><i class="fa-solid fa-plus"></i></button>
     </div>
 
@@ -98,7 +19,7 @@
                     <div class="sede-placeholder"><i class="fa-solid fa-store"></i></div>
                 }
                 <div>
-                    <h4 class="mb-1 fw-bold" style="color: #472825;">@item.NombreComercial</h4>
+                    <h4 class="mb-1 fw-bold sede-name">@item.NombreComercial</h4>
                     <p class="text-muted mb-0"><i class="fa-solid fa-location-dot me-2"></i>@item.Direccion</p>
                 </div>
             </div>

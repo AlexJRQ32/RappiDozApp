@@ -1,0 +1,86 @@
+.wallet-container {
+    margin-top: 10px;
+}
+
+.wallet-title {
+    color: var(--text-main);
+    font-weight: 800;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.wallet-title i,
+.wallet-action-icon {
+    color: var(--accent-main);
+}
+
+.wallet-empty {
+    border: 2px dashed #3a3530;
+    padding: 15px;
+    border-radius: 15px;
+    text-align: center;
+    background: var(--white);
+}
+
+.wallet-empty small {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.wallet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.wallet-card {
+    background: var(--white);
+    border: 1.5px solid #3a3530;
+    padding: 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.wallet-card:hover {
+    border-color: var(--accent-main);
+    transform: translateY(-2px);
+}
+
+.wallet-card-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.wallet-icon-box {
+    background: var(--accent-soft);
+    color: var(--accent-main);
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+}
+
+.wallet-icon-box i {
+    font-size: 0.8rem;
+}
+
+.wallet-code {
+    display: block;
+    color: var(--text-main);
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+.wallet-discount {
+    color: #27ae60;
+    font-weight: 700;
+}

@@ -9,166 +9,9 @@
     var cuponesReclamados = (List<string>)ViewBag.CuponesReclamados ?? new List<string>();
 }
 
-<style>
-    .pizarra-virtual {
-        background-color: #cbaf8d;
-        background-image: url('https://www.transparenttextures.com/patterns/cork-board.png');
-        border: 12px solid #472825;
-        border-radius: 15px;
-        padding: 100px 20px 60px 20px;
-        min-height: 85vh;
-        box-shadow: inset 0 0 50px rgba(0,0,0,0.3);
-        margin-top: 20px;
-    }
-
-    .galeria-cupones {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 40px;
-    }
-
-    .voucher-container {
-        width: 180px;
-        height: 300px;
-        position: relative;
-    }
-
-    /* MUESCAS: Color fijo del fondo, sin cambios en hover */
-    .muesca {
-        position: absolute;
-        width: 24px;
-        height: 24px;
-        background-color: #cbaf8d !important; /* Siempre color corcho */
-        border-radius: 50%;
-        z-index: 10;
-        pointer-events: none; /* No interfieren con el clic */
-    }
-
-    .m-left {
-        top: 40%;
-        left: -12px;
-        transform: translateY(-50%);
-    }
-
-    .m-right {
-        top: 40%;
-        right: -12px;
-        transform: translateY(-50%);
-    }
-
-    .e-tl {
-        top: -12px;
-        left: -12px;
-    }
-
-    .e-tr {
-        top: -12px;
-        right: -12px;
-    }
-
-    .e-bl {
-        bottom: -12px;
-        left: -12px;
-    }
-
-    .e-br {
-        bottom: -12px;
-        right: -12px;
-    }
-
-    .pin-seguro {
-        width: 18px;
-        height: 18px;
-        background: radial-gradient(circle at 35% 35%, #ff5e5e, #8b0000);
-        border-radius: 50%;
-        position: absolute;
-        top: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 100;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.4);
-    }
-
-    .voucher-top {
-        background-color: #472825;
-        color: #d3ab80;
-        height: 40%;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px 8px 0 0;
-        position: relative;
-        z-index: 2;
-        transition: transform 0.3s ease; /* Mantenemos hover animation */
-    }
-
-    .voucher-container:hover .voucher-top,
-    .voucher-container:hover .voucher-bottom {
-        transform: scale(1.05);
-    }
-
-    .voucher-bottom {
-        background: white;
-        height: 60%;
-        width: 100%;
-        padding: 25px 15px 15px 15px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-        text-align: center;
-        border-radius: 0 0 8px 8px;
-        position: relative;
-        z-index: 1;
-        transition: transform 0.3s ease, opacity 0.3s;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
-
-    /* ESTADO RECLAMADO: Solo la parte de arriba café */
-    .reclamado .voucher-bottom,
-    .reclamado .e-bl,
-    .reclamado .e-br {
-        display: none;
-    }
-
-    .reclamado .voucher-top {
-        border-radius: 8px; /* Redondeamos abajo ahora que está solo */
-        height: 45%;
-        opacity: 0.8;
-    }
-
-    .txt-reclamado {
-        font-size: 0.6rem;
-        color: #ff5e5e;
-        font-weight: bold;
-        margin-top: 5px;
-        text-transform: uppercase;
-    }
-
-    /* ANIMACIÓN DE ARRANQUE */
-    .arrancar-anim {
-        animation: tearAway 0.8s forwards ease-in;
-    }
-
-    @@keyframes tearAway {
-        0% {
-            transform: translateY(0) rotate(0deg);
-            opacity: 1;
-        }
-
-        100% {
-            transform: translateY(800px) rotate(15deg);
-            opacity: 0;
-        }
-    }
-</style>
-
 <div class="container">
     <div class="pizarra-virtual">
-        <h2 class="text-center mb-5" style="color: #472825; font-weight: 900;">PANEL DE BENEFICIOS</h2>
+        <h2 class="text-center mb-5 benefits-title">PANEL DE BENEFICIOS</h2>
 
         <div class="galeria-cupones">
             @foreach (var cupon in Model)
@@ -185,8 +28,8 @@
                     <div class="pin-seguro"></div>
 
                     <div class="voucher-top">
-                        <small style="font-size: 0.5rem;">RAPPI'DOZ GOLD</small>
-                        <h1 style="font-size: 2.2rem; font-weight: 900; margin: 0;">
+                        <small class="voucher-brand">RAPPI'DOZ GOLD</small>
+                        <h1 class="voucher-amount">
                             @(cupon.EsPorcentaje? cupon.Descuento.ToString("0") + "%" : "₡" + cupon.Descuento.ToString("N0"))
                         </h1>
                         @if (yaReclamado)
@@ -203,10 +46,10 @@
                     {
                         <div class="voucher-bottom">
                             <div>
-                                <p style="font-weight: 800; color: #472825; font-size: 0.9rem; margin: 0;">@cupon.Titulo</p>
-                                <p style="font-size: 0.7rem; color: #666;">@cupon.Descripcion</p>
+                                <p class="voucher-title">@cupon.Titulo</p>
+                                <p class="voucher-description">@cupon.Descripcion</p>
                             </div>
-                            <div style="font-size: 0.6rem; background: #fdf2e4; padding: 2px 8px; border-radius: 10px;">
+                            <div class="voucher-stock">
                                 QUEDAN: @cupon.Stock
                             </div>
                         </div>

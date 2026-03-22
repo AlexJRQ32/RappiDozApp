@@ -37,7 +37,7 @@ namespace RappiDozApp.Controllers
                 };
             }
 
-            return PartialView("~/Views/Navbar/Mapa.cshtml", ultimaUbicacion);
+            return PartialView("~/Views/Ubicaciones/Mapa.cshtml", ultimaUbicacion);
         }
 
         [HttpPost]

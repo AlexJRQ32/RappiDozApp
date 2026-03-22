@@ -18,18 +18,18 @@
         <input type="hidden" id="errorMsg" value="@TempData["MensajeError"]" />
         <input type="hidden" id="successMsg" value="@TempData["MensajeExito"]" />
 
-        <header style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="color: #472825; font-weight: 900; margin: 0; font-size: 2rem;"><i class="fas fa-shopping-cart"></i> Pedido</h2>
-            <a href="@Url.Action("Index", "Home")" style="color: #96786f; font-weight: 700; text-decoration: none;">+ Seguir comprando</a>
+        <header class="carrito-header">
+            <h2 class="carrito-title"><i class="fas fa-shopping-cart"></i> Pedido</h2>
+            <a href="@Url.Action("Index", "Home")" class="carrito-back-link">+ Seguir comprando</a>
         </header>
 
-        <div style="display: grid; grid-template-columns: 1fr 350px; gap: 30px;">
+        <div class="carrito-grid">
 
             <section>
                 @if (Model == null || !Model.Any())
                 {
-                    <div style="text-align: center; padding: 50px; background: white; border-radius: 30px; border: 2px dashed #d3ab80;">
-                        <p style="font-weight: 800; color: #472825;">Aún no tienes productos.</p>
+                    <div class="carrito-empty">
+                        <p class="carrito-empty-text">Aún no tienes productos.</p>
                     </div>
                 }
                 else
@@ -38,9 +38,9 @@
                     {
                         <div class="item-carrito">
                             <img src="@item.ImagenBase64" class="img-carrito" onerror="this.src='/img/placeholder.png'">
-                            <div style="flex-grow: 1;">
-                                <h5 style="margin: 0; font-weight: 800; color: #472825;">@item.Nombre</h5>
-                                <span style="color: #d3ab80; font-weight: 700;">₡@item.Precio.ToString("N0")</span>
+                            <div class="item-main-info">
+                                <h5 class="item-name">@item.Nombre</h5>
+                                <span class="item-price">₡@item.Precio.ToString("N0")</span>
                             </div>
                             <div class="control-cantidad">
                                 <form asp-action="ActualizarCantidad" method="post">
@@ -57,26 +57,25 @@
                                     <button type="submit" class="btn-qty">+</button>
                                 </form>
                             </div>
-                            <a asp-action="Eliminar" asp-route-id="@item.ProductoId" style="color: #e74c3c; margin-left: 10px;"><i class="fas fa-trash"></i></a>
+                            <a asp-action="Eliminar" asp-route-id="@item.ProductoId" class="item-remove-link"><i class="fas fa-trash"></i></a>
                         </div>
                     }
                 }
             </section>
 
             <aside>
-                <div style="background: white; padding: 25px; border-radius: 30px; border: 1px solid #d3ab80; position: sticky; top: 120px;">
+                <div class="resumen-panel">
 
                     @* SECCIÓN DE DIRECCIÓN DE ENVÍO CON ELIMINAR *@
-                    <div style="margin-bottom: 20px; padding: 15px; background: #fffdfa; border: 2px solid #f0e6d6; border-radius: 20px;">
-                        <p style="font-size: 0.8rem; font-weight: 900; color: #472825; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-map-marker-alt" style="color: #d3ab80;"></i> DIRECCIÓN DE ENVÍO
+                    <div class="shipping-box">
+                        <p class="section-label">
+                            <i class="fas fa-map-marker-alt section-icon"></i> DIRECCIÓN DE ENVÍO
                         </p>
 
                         @if (ubicaciones != null && ubicaciones.Any())
                         {
-                            <div style="display: flex; gap: 8px;">
-                                <select id="selectUbicacionPedido" class="form-select"
-                                        style="border-radius: 12px; border: 2px solid #d3ab80; font-size: 0.85rem; font-weight: 700; color: #472825; background-color: white; flex-grow: 1;">
+                            <div class="ubicacion-row">
+                                <select id="selectUbicacionPedido" class="form-select ubicacion-select">
                                     <option value="">-- ¿A dónde lo llevamos? --</option>
                                     @foreach (var ubi in ubicaciones)
                                     {
@@ -84,24 +83,22 @@
                                     }
                                 </select>
                                 
-                                <button type="button" onclick="borrarUbicacionSeleccionada()"
-                                        style="background: #fff; border: 2px solid #ffcccc; color: #e74c3c; border-radius: 12px; padding: 0 12px; transition: 0.3s;">
+                                <button type="button" onclick="borrarUbicacionSeleccionada()" class="ubicacion-delete-btn">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>
                             
-                            <div style="text-align: right; margin-top: 8px;">
-                                <a href="javascript:void(0)" onclick="abrirMapa()" style="color: #96786f; font-size: 0.7rem; font-weight: 800; text-decoration: none;">
+                            <div class="ubicacion-extra-link-wrap">
+                                <a href="javascript:void(0)" onclick="abrirMapa()" class="ubicacion-extra-link">
                                     <i class="fas fa-plus-circle"></i> Agregar otra
                                 </a>
                             </div>
                         }
                         else
                         {
-                            <div style="text-align: center; padding: 5px;">
-                                <p style="font-size: 0.75rem; color: #96786f; margin-bottom: 8px;">No tienes direcciones guardadas.</p>
-                                <button type="button" onclick="abrirMapa()"
-                                        style="background: #d3ab80; color: white; border: none; font-size: 0.7rem; font-weight: 800; border-radius: 10px; padding: 8px 15px; cursor: pointer; width: 100%;">
+                            <div class="no-direcciones">
+                                <p class="no-direcciones-text">No tienes direcciones guardadas.</p>
+                                <button type="button" onclick="abrirMapa()" class="config-direccion-btn">
                                     CONFIGURAR DIRECCIÓN
                                 </button>
                             </div>
@@ -109,9 +106,9 @@
                     </div>
 
                     @* SECCIÓN DE CUPONES *@
-                    <div class="seccion-cupones-superior" style="margin-bottom: 20px;">
-                        <p style="font-size: 0.8rem; font-weight: 900; color: #472825; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-ticket-alt" style="color: #d3ab80;"></i> TUS CUPONES (Toca uno)
+                    <div class="seccion-cupones-superior carrito-cupones-section">
+                        <p class="section-label">
+                            <i class="fas fa-ticket-alt section-icon"></i> TUS CUPONES (Toca uno)
                         </p>
 
                         <div class="scroll-cupones">
@@ -132,14 +129,14 @@
                             }
                             else
                             {
-                                <p style="font-size: 0.75rem; color: #96786f; font-style: italic;">No tienes cupones disponibles.</p>
+                                <p class="cupones-empty">No tienes cupones disponibles.</p>
                             }
                         </div>
 
                         @if (!string.IsNullOrEmpty(codigoAplicado))
                         {
-                            <div style="text-align: right; margin-top: 5px;">
-                                <a href="@Url.Action("QuitarCupon", "Carrito")" style="color: #e74c3c; font-size: 0.7rem; font-weight: 800; text-decoration: none;">
+                            <div class="cupon-link-wrap">
+                                <a asp-controller="Carritos" asp-action="QuitarCupon" class="cupon-remove-link">
                                     <i class="fas fa-times"></i> Quitar cupón
                                 </a>
                             </div>
@@ -152,32 +149,32 @@
                     </div>
 
                     @* RESUMEN *@
-                    <div style="font-size: 0.95rem; color: #472825; border-top: 1px solid #eee; padding-top: 15px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <div class="resumen-detalle">
+                        <div class="resumen-line">
                             <span>Subtotal</span> <b>₡@subtotal.ToString("N0")</b>
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <div class="resumen-line">
                             <span>Envío</span> <b>₡@envioYTarifa.ToString("N0")</b>
                         </div>
                         @if (descuento > 0)
                         {
-                            <div style="display: flex; justify-content: space-between; color: #27ae60; font-weight: 800;">
+                            <div class="resumen-discount">
                                 <span><i class="fas fa-gift"></i> Descuento</span> <b>-₡@descuento.ToString("N0")</b>
                             </div>
                         }
                     </div>
 
-                    <div style="display: flex; justify-content: space-between; font-size: 1.6rem; font-weight: 900; color: #472825; margin-top: 20px; border-top: 3px solid #472825; padding-top: 15px;">
+                    <div class="resumen-grand-total">
                         <span>TOTAL</span> <span>₡@total.ToString("N0")</span>
                     </div>
 
                     @if (Model != null && Model.Any())
                     {
-                        <form id="formCheckout" asp-action="ConfirmarPedido" method="post" style="margin-top: 20px;">
+                        <form id="formCheckout" asp-controller="Pedidos" asp-action="ConfirmarPedido" method="post" class="checkout-form">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="UbicacionId" id="UbicacionIdFinal" />
                             
-                            <button type="submit" style="width: 100%; background: #472825; color: white; border: none; padding: 18px; border-radius: 15px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s;" onmouseover="this.style.background='#5a332f'" onmouseout="this.style.background='#472825'">
+                            <button type="submit" class="checkout-btn">
                                 FINALIZAR COMPRA
                             </button>
                         </form>
@@ -193,8 +190,8 @@
     window.onload = function() {
     const error = document.getElementById('errorMsg').value;
     const success = document.getElementById('successMsg').value;
-    if (error) Swal.fire({ icon: 'warning', title: 'Aviso', text: error, confirmButtonColor: '#472825', background: '#fff4e2' });
-    if (success) Swal.fire({ icon: 'success', title: 'Aplicado', text: success, timer: 1500, showConfirmButton: false, background: '#fff4e2' });
+    if (error) Swal.fire({ icon: 'warning', title: 'Aviso', text: error, confirmButtonColor: '#d3ab80', background: '#1e1c22', color: '#ece4da' });
+    if (success) Swal.fire({ icon: 'success', title: 'Aplicado', text: success, timer: 1500, showConfirmButton: false, background: '#1e1c22', color: '#ece4da' });
     };
 
     function aplicar(codigo) {
@@ -206,7 +203,7 @@
     function borrarUbicacionSeleccionada() {
     const id = document.getElementById('selectUbicacionPedido').value;
     if (!id) {
-    Swal.fire({ icon: 'info', title: 'Selecciona una', text: 'Primero elige la dirección que quieres borrar.', confirmButtonColor: '#472825' });
+    Swal.fire({ icon: 'info', title: 'Selecciona una', text: 'Primero elige la dirección que quieres borrar.', confirmButtonColor: '#d3ab80', background: '#1e1c22', color: '#ece4da' });
     return;
     }
 
@@ -215,15 +212,16 @@
     text: "No podrás deshacer esto.",
     icon: 'warning',
     showCancelButton: true,
-    confirmButtonColor: '#472825',
+    confirmButtonColor: '#d3ab80',
     cancelButtonColor: '#d33',
     confirmButtonText: 'Sí, eliminar',
     cancelButtonText: 'Cancelar',
-    background: '#fff4e2'
+    background: '#1e1c22',
+    color: '#ece4da'
     }).then((result) => {
     if (result.isConfirmed) {
     // Llamada AJAX al controlador
-    fetch('/Carrito/EliminarUbicacion/' + id, {
+    fetch('/Ubicaciones/EliminarUbicacion/' + id, {
     method: 'POST',
     headers: { 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value }
     }).then(response => {
@@ -248,8 +246,9 @@
     icon: 'warning',
     title: 'Falta Dirección',
     text: 'Por favor, selecciona a dónde debemos enviar tu pedido.',
-    confirmButtonColor: '#472825',
-    background: '#fff4e2'
+    confirmButtonColor: '#d3ab80',
+    background: '#1e1c22',
+    color: '#ece4da'
     });
     // Resaltar el combo para el usuario
     if (comboUbi) comboUbi.style.borderColor = "#e74c3c";

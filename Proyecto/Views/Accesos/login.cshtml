@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - Rappi'Doz</title>
-    <link rel="stylesheet" href="~/css/Accesos/restaurante-info.css">
+    <link rel="stylesheet" href="~/css/Accesos/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -84,7 +84,8 @@
                         text: 'Bienvenido de nuevo a Rappi\'Doz',
                         showConfirmButton: false,
                         timer: 1500, // Se cierra solo en 1.5 segundos
-                        background: '#fff4e2'
+                        background: '#1e1c22',
+                        color: '#ece4da'
                     }).then(() => {
                         window.location.href = response.url;
                     });
@@ -102,8 +103,9 @@
                         icon: 'error',
                         title: 'Error de acceso',
                         text: 'Las credenciales no coinciden. Inténtalo de nuevo.',
-                        confirmButtonColor: '#4a2c2a',
-                        background: '#fff4e2'
+                        confirmButtonColor: '#d3ab80',
+                        background: '#1e1c22',
+                        color: '#ece4da'
                     });
                 }
             })
@@ -113,8 +115,9 @@
                     icon: 'warning',
                     title: 'Servidor no disponible',
                     text: 'Hubo un problema de conexión. Inténtalo más tarde.',
-                    confirmButtonColor: '#4a2c2a',
-                    background: '#fff4e2'
+                    confirmButtonColor: '#d3ab80',
+                    background: '#1e1c22',
+                    color: '#ece4da'
                 });
                 console.error('Error:', error);
             });

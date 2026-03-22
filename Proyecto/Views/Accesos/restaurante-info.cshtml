@@ -15,69 +15,13 @@
     <link rel="stylesheet" href="~/css/Accesos/restaurante-info.css">
     @* Agregado SweetAlert2 *@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        select, input[type="time"] {
-            width: 100%;
-            background: transparent;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, .2);
-            border-radius: 50px;
-            font-size: 18px;
-            color: white;
-            padding: 10px 20px;
-            cursor: pointer;
-            appearance: none;
-            outline: none;
-        }
-
-            input[type="time"]::-webkit-calendar-picker-indicator {
-                filter: invert(1);
-                cursor: pointer;
-            }
-
-            select option {
-                background-color: #2c3e50;
-                color: white;
-            }
-
-        .select-container i, .time-container i {
-            position: absolute;
-            right: 25px;
-            pointer-events: none;
-        }
-
-        .form {
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-
-        .label-time {
-            color: white;
-            font-size: 0.9rem;
-            margin-left: 15px;
-            margin-bottom: 5px;
-            display: block;
-            opacity: 0.8;
-        }
-
-        #forgot-password, #register {
-            color: white;
-            text-decoration: none;
-            transition: 0.3s;
-            font-weight: 500;
-        }
-
-            #forgot-password:hover, #register:hover {
-                color: #d3ab80;
-            }
-    </style>
 </head>
 <body>
 
 
     <div class="form">
-        <div style="text-align: center; margin-bottom: 5px;">
-            <span style="color: #e74c3c; font-weight: bold; font-size: 1.2rem;">Rappi</span><span style="color: #2ecc71; font-weight: bold; font-size: 1.2rem;">'Doz</span>
+        <div class="brand-mini">
+            <span class="brand-rappi">Rappi</span><span class="brand-doz">'Doz</span>
         </div>
 
         <h1>Nuevo Restaurante</h1>
@@ -97,31 +41,31 @@
                 <i class="fa-solid fa-location-dot"></i>
             </section>
 
-            <div style="display: flex; gap: 10px; width: 100%;">
-                <div style="flex: 1;">
+            <div class="time-row">
+                <div class="time-col">
                     <label class="label-time">Apertura</label>
-                    <section class="container-translucid time-container" style="display: flex; align-items: center; position: relative; margin-top: 0;">
+                    <section class="container-translucid time-container">
                         <input type="time" asp-for="HoraApertura" required>
                         <i class="fa-regular fa-clock"></i>
                     </section>
                 </div>
-                <div style="flex: 1;">
+                <div class="time-col">
                     <label class="label-time">Cierre</label>
-                    <section class="container-translucid time-container" style="display: flex; align-items: center; position: relative; margin-top: 0;">
+                    <section class="container-translucid time-container">
                         <input type="time" asp-for="HoraCierre" required>
                         <i class="fa-solid fa-moon"></i>
                     </section>
                 </div>
             </div>
 
-            <section class="container-translucid select-container" style="display: flex; align-items: center; position: relative;">
+            <section class="container-translucid select-container">
                 <select asp-for="CategoriaId" asp-items="ViewBag.Categorias" required>
                     <option value="" disabled selected>Selecciona Categoría</option>
                 </select>
                 <i class="fa-solid fa-utensils"></i>
             </section>
 
-            <div id="error-message" style="color: #ff4d4d; text-align: center; margin-bottom: 10px; font-weight: bold; display:none;"></div>
+            <div id="error-message" class="feedback-error hidden-feedback"></div>
 
             <div class="container-button">
                 <button type="submit" id="button">
@@ -129,7 +73,7 @@
                 </button>
             </div>
 
-            <div class="register" style="margin-top: 25px;">
+            <div class="register register-spaced">
                 <a asp-controller="Accesos" asp-action="Login"><i class="fa-solid fa-arrow-left"></i> Cancelar registro</a>
             </div>
         </form>
@@ -144,7 +88,7 @@
             const formData = new FormData(form);
 
             // Ocultar errores previos
-            errorDiv.style.display = "none";
+            errorDiv.classList.add('hidden-feedback');
 
             // Enviar directamente por AJAX
             fetch(form.action, {
@@ -163,7 +107,8 @@
                         text: 'Tu restaurante se ha creado correctamente.',
                         showConfirmButton: false,
                         timer: 2000,
-                        background: '#fff4e2'
+                        background: '#1e1c22',
+                        color: '#ece4da'
                     }).then(() => {
                         window.location.href = response.url;
                     });
@@ -175,14 +120,15 @@
                 if (data) {
                     // AVISO DE ERROR: Problema en la validación del servidor
                     errorDiv.textContent = "Hubo un error al guardar los datos del restaurante.";
-                    errorDiv.style.display = "block";
+                    errorDiv.classList.remove('hidden-feedback');
 
                     Swal.fire({
                         icon: 'error',
                         title: 'No se pudo registrar',
                         text: 'Verifica que todos los campos sean válidos e inténtalo de nuevo.',
-                        confirmButtonColor: '#4a2c2a',
-                        background: '#fff4e2'
+                        confirmButtonColor: '#d3ab80',
+                        background: '#1e1c22',
+                        color: '#ece4da'
                     });
                 }
             })
@@ -192,8 +138,9 @@
                     icon: 'warning',
                     title: 'Error de servidor',
                     text: 'No pudimos conectar con el servidor. Inténtalo más tarde.',
-                    confirmButtonColor: '#4a2c2a',
-                    background: '#fff4e2'
+                    confirmButtonColor: '#d3ab80',
+                    background: '#1e1c22',
+                    color: '#ece4da'
                 });
                 console.error('Error:', error);
             });

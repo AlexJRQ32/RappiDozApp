@@ -6,16 +6,15 @@
 
         <div class="row g-4">
             <div class="col-md-5 text-center">
-                <label class="form-label d-block mb-3 fw-bold" style="color: #472825;">Imagen del Platillo</label>
-                <div class="image-preview-container" style="position: relative; display: inline-block;">
+                <label class="form-label d-block mb-3 fw-bold product-image-label">Imagen del Platillo</label>
+                <div class="image-preview-container">
                     <img id="previewFoto"
                          src="@(Model.FotoBinaria != null ? $"data:{Model.ContentType};base64,{Convert.ToBase64String(Model.FotoBinaria)}" : "/img/placeholder-food.png")"
-                         style="width: 200px; height: 200px; object-fit: cover; border-radius: 25px; border: 3px solid #f0e1cf; box-shadow: 0 10px 20px rgba(0,0,0,0.05);" />
+                         class="preview-photo" />
 
                     <input type="file" name="fotoArchivo" id="fotoArchivo" class="d-none" accept="image/*" onchange="previewImage(this)" />
 
-                    <button type="button" class="btn"
-                            style="position: absolute; bottom: 15px; right: 15px; background: #472825; color: white; border-radius: 50%; width: 45px; height: 45px;"
+                    <button type="button" class="btn preview-photo-btn"
                             onclick="document.getElementById('fotoArchivo').click()">
                         <i class="fas fa-camera"></i>
                     </button>
@@ -53,9 +52,8 @@
 
         <div class="row mt-5 pt-3 border-top">
             <div class="col-12 text-end">
-                <button type="button" class="btn btn-light px-4 me-2" style="border-radius:12px;" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" onclick="guardarDatos('Producto')" class="btn px-5"
-                        style="background: #472825; color: white; border-radius: 12px; font-weight: bold;">
+                <button type="button" class="btn btn-light px-4 me-2 dashboard-secondary-btn" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" onclick="guardarDatos('Producto')" class="btn px-5 dashboard-save-btn">
                     Guardar Platillo
                 </button>
             </div>

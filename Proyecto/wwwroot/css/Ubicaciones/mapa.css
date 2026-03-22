@@ -315,6 +315,116 @@
     border: none !important;
 }
 
+/* Ubicaciones/Mapa.cshtml */
+.modal-content-custom {
+    background: #1e1c22 !important;
+    border-radius: 30px;
+    color: #ece4da;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    border: 1px solid #3a3530;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+}
+
+.btn-close-custom {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    background: none;
+    border: none;
+    color: #d3ab80;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.mapa-handle {
+    width: 50px;
+    height: 5px;
+    background: #3a3530;
+    border-radius: 10px;
+    margin: 0 auto 15px;
+}
+
+.mapa-title {
+    color: #ece4da;
+}
+
+#mapa-final {
+    height: 380px;
+    width: 100%;
+    background: #141216;
+    border-radius: 20px;
+    border: 2px solid #3a3530;
+    z-index: 5;
+}
+
+#mapa-final .leaflet-tile-pane {
+    filter: saturate(0.96) brightness(0.94) contrast(1.02);
+}
+
+#mapa-final .leaflet-control-zoom a,
+#mapa-final .leaflet-popup-content-wrapper,
+#mapa-final .leaflet-popup-tip {
+    background: #1e1c22;
+    color: #ece4da;
+    border-color: #3a3530;
+}
+
+.mapa-watermark {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 1000;
+    background: rgba(20, 18, 22, 0.82);
+    color: #ece4da;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.input-rappi {
+    border-radius: 15px !important;
+    border: 2px solid #3a3530 !important;
+    padding: 12px 20px !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: #141216 !important;
+    color: #ece4da !important;
+}
+
+.input-rappi:focus {
+    border-color: #d3ab80 !important;
+    box-shadow: 0 0 0 0.2rem rgba(211, 171, 128, 0.25);
+}
+
+.btn-rappi-confirm {
+    background: #d3ab80 !important;
+    color: #141216 !important;
+    border: none;
+    border-radius: 15px;
+    padding: 16px;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.btn-rappi-confirm:hover {
+    transform: translateY(var(--hover-lift-global));
+    box-shadow: 0 10px 20px rgba(211, 171, 128, 0.2);
+    background: #ece4da !important;
+}
+
+.label-custom {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #d3ab80;
+    margin-bottom: 8px;
+    margin-left: 5px;
+}
+
 
 
 

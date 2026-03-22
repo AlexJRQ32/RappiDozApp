@@ -96,7 +96,7 @@ namespace RappiDozApp.Controllers
             if (restaurante == null) return NotFound();
 
             ViewBag.RestauranteNombre = restaurante.NombreComercial;
-            return View("~/Views/Home/Restaurante.cshtml", restaurante.Productos);
+            return View("~/Views/Restaurantes/Restaurante.cshtml", restaurante.Productos);
         }
     }
 }

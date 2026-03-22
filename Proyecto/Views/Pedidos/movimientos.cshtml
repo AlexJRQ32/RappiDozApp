@@ -1,4 +1,4 @@
-﻿@using System.Linq
+@using System.Linq
 @model IEnumerable<RappiDozApp.Models.Pedido>
 
 @{
@@ -8,7 +8,6 @@
 <div class="movimientos-container">
     <div class="movimientos-card">
 
-        @* Encabezado de la Sección *@
         <div class="header-seccion">
             <i class="fa-solid fa-receipt header-seccion-icon"></i>
             <h1 class="header-seccion-title">Mis Comprobantes</h1>
@@ -50,7 +49,6 @@
                         </div>
                     </summary>
 
-                    @* Contenido del Ticket Desplegable *@
                     <div class="movimiento-factura-box">
                         <div class="movimiento-factura-header">
                             <h2 class="movimiento-factura-title">DETALLE DE FACTURACIÓN</h2>
@@ -82,15 +80,10 @@
                             </tbody>
                         </table>
 
-                        @* Área de Totales *@
                         <div class="movimiento-breakdown">
                             @{
-                                // Ajuste: 1500 envío + 500 servicio = 2000 total de cargos fijos
                                 decimal cargosFijos = 2000;
                                 decimal subtotalProductos = pedido.Detalles?.Sum(d => d.PrecioHistorico * d.Cantidad) ?? 0;
-
-                                // El Total ya incluye el descuento restado en la BD
-                                // IVA se calcula sobre el pago real del cliente (Base imponible)
                                 decimal baseImponible = (subtotalProductos + cargosFijos - pedido.MontoDescuento) / 1.13m;
                                 decimal iva = (subtotalProductos + cargosFijos - pedido.MontoDescuento) - baseImponible;
                             }
@@ -123,7 +116,6 @@
                             </div>
                         </div>
 
-                        @* Pie del Ticket *@
                         <div class="movimiento-footer">
                             <p class="movimiento-footer-thanks">¡Gracias por preferir Rappi'Doz!</p>
                             <p class="movimiento-auth-code">

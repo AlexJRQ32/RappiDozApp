@@ -20,7 +20,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-    <link href="~/css/Dashboard/dashboard-gold.css" rel="stylesheet" />
+    <link href="~/css/Dashboard/index.css" rel="stylesheet" />
+    <link href="~/css/Dashboard/cupones-list.css" rel="stylesheet" />
+    <link href="~/css/Dashboard/form-cupon.css" rel="stylesheet" />
+    <link href="~/css/Dashboard/form-producto.css" rel="stylesheet" />
+    <link href="~/css/Dashboard/form-restaurante.css" rel="stylesheet" />
+    <link href="~/css/Dashboard/form-usuario.css" rel="stylesheet" />
+    <link href="~/css/Dashboard/menus-list.css" rel="stylesheet" />
+    <link href="~/css/Dashboard/restaurantes-list.css" rel="stylesheet" />
+    <link href="~/css/Dashboard/usuario-list.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -33,7 +41,7 @@
     <div class="dashboard-wrapper">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header mb-5">
-                <h4 class="fw-800" style="color:#d3ab80;">Rappi'Doz <span style="color:white;">Gold</span></h4>
+                <h4 class="fw-800 dashboard-brand-title">Rappi'Doz <span class="dashboard-brand-accent">Gold</span></h4>
             </div>
 
             <nav class="sidebar-nav">
@@ -58,10 +66,10 @@
                 }
             </nav>
 
-            <div class="mt-auto p-3 rounded-4" style="background: rgba(255,255,255,0.05);">
+            <div class="mt-auto p-3 rounded-4 dashboard-session-card">
                 <p class="small mb-1 text-muted">Sesión de:</p>
                 <p class="fw-bold mb-3 text-white">@nombreUsuario</p>
-                <a asp-controller="Home" asp-action="Index" class="btn btn-sm btn-outline-danger w-100 border-0">
+                <a asp-controller="Accesos" asp-action="Salir" class="btn btn-sm btn-outline-danger w-100 border-0">
                     <i class="fa-solid fa-power-off me-2"></i> Salir
                 </a>
             </div>
@@ -69,13 +77,13 @@
 
         <main class="main-content" id="contenedor-dinamico">
             <div class="animate__animated animate__fadeInUp">
-                <h1 class="fw-800 mb-1" style="color: #472825; font-weight: 800;">Bienvenido, @nombreUsuario</h1>
+                <h1 class="fw-800 mb-1 dashboard-welcome">Bienvenido, @nombreUsuario</h1>
                 <p class="text-muted mb-5">Panel de administración en tiempo real.</p>
 
                 <div class="row g-4 mb-5">
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="stat-card">
-                            <div class="icon-circle" style="background: var(--rd-gold-grad);">
+                            <div class="icon-circle icon-circle-gold">
                                 <i class="fa-solid fa-shop"></i>
                             </div>
                             <div>
@@ -86,7 +94,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="stat-card">
-                            <div class="icon-circle" style="background: var(--rd-brown-grad);">
+                            <div class="icon-circle icon-circle-brown">
                                 <i class="fa-solid fa-utensils"></i>
                             </div>
                             <div>
@@ -97,7 +105,7 @@
                     </div>
                 </div>
 
-                <div class="p-4 p-md-5 rounded-5 bg-white shadow-sm border animate__animated animate__zoomIn">
+                <div class="p-4 p-md-5 rounded-5 quick-actions-card animate__animated animate__zoomIn">
                     <h3 class="fw-bold mb-3">Accesos Rápidos</h3>
                     <div class="d-flex flex-wrap gap-2">
                         <button onclick="cargarSeccion('Menus')" class="btn btn-dark px-4 py-3 rounded-4">
@@ -114,7 +122,7 @@
 
     <div class="modal fade" id="rdModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content shadow-lg" style="border:none; border-radius:25px;">
+            <div class="modal-content shadow-lg dashboard-modal-content">
                 <div id="modalContainerBody"></div>
             </div>
         </div>
@@ -165,6 +173,16 @@
         }
 
         // --- GUARDAR DATOS (AJAX) ---
+        function obtenerRutaEntidad(entidad) {
+            switch (entidad) {
+                case 'Producto': return 'Productos';
+                case 'Restaurante': return 'Restaurantes';
+                case 'Usuario': return 'Usuarios';
+                case 'Cupon': return 'Cupones';
+                default: return entidad;
+            }
+        }
+
         function guardarDatos(entidad) {
             const form = document.getElementById('form' + entidad);
             if (!form) return;
@@ -172,9 +190,10 @@
             const formData = new FormData(form);
             const btn = event?.target;
             if(btn) btn.disabled = true;
+            const rutaEntidad = obtenerRutaEntidad(entidad);
 
             $.ajax({
-                url: `/${entidad}/Guardar`,
+                url: `/${rutaEntidad}/Guardar`,
                 type: 'POST',
                 data: formData,
                 processData: false,
@@ -197,6 +216,7 @@
 
         // --- ELIMINAR REGISTRO ---
         function eliminarRegistro(entidad, id) {
+            const rutaEntidad = obtenerRutaEntidad(entidad);
             Swal.fire({
                 title: '¿Confirmar eliminación?',
                 text: "No podrás revertir esto",
@@ -206,7 +226,7 @@
                 confirmButtonText: 'Sí, eliminar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $.post(`/${entidad}/Eliminar`, { id: id }, function(res) {
+                    $.post(`/${rutaEntidad}/Eliminar`, { id: id }, function(res) {
                         if (res.success) {
                             Swal.fire('Eliminado', res.message, 'success');
                             let sec = (entidad === 'Producto') ? 'Menus' : (entidad === 'Restaurante') ? 'Restaurantes' : entidad + 'es';
