@@ -1,6 +1,6 @@
 /* Dashboard/_CuponesList.cshtml */
 .dashboard-section-root {
-    background: var(--cream-bg);
+    background: var(--section-bg-primary);
 }
 
 .dashboard-section-title {
@@ -25,7 +25,7 @@
 }
 
 .t-left {
-    background: var(--surface-soft);
+    background: var(--brown-dark);
     width: 125px;
     min-width: 125px;
     position: relative;
@@ -40,7 +40,7 @@
     position: absolute;
     width: 24px;
     height: 24px;
-    background: var(--cream-bg);
+    background: var(--section-bg-secondary);
     border-radius: 50%;
     z-index: 5;
 }
@@ -54,7 +54,7 @@
 
 .t-right {
     flex-grow: 1;
-    background: var(--surface-card);
+    background: var(--section-bg-primary);
     border-radius: 0 15px 15px 0;
     position: relative;
 }
@@ -66,7 +66,7 @@
 .t-content {
     text-align: center;
     z-index: 6;
-    color: var(--gold-light);
+    color: #fff8ef;
 }
 
 .t-val {
@@ -91,10 +91,10 @@
 .t-code-wrapper {
     display: inline-flex;
     flex-direction: column;
-    background: var(--cream-bg);
+    background: var(--section-bg-primary);
     padding: 5px 12px;
     border-radius: 8px;
-    border: 1px solid #3a3530;
+    border: 1px solid var(--border-main);
 }
 
 .t-label {
@@ -118,9 +118,9 @@
     display: inline-block;
 }
 
-.b-act { background: #1a302a; color: #27ae60; }
-.b-exp { background: #3a1a1a; color: #dc2626; }
-.b-ina { background: #3a2b18; color: #d97706; }
+.b-act { background: rgba(39, 174, 96, 0.15); color: #27ae60; }
+.b-exp { background: rgba(220, 38, 38, 0.15); color: #dc2626; }
+.b-ina { background: rgba(217, 119, 6, 0.15); color: #d97706; }
 
 .btn-i {
     border: none;
@@ -131,16 +131,16 @@
     margin-left: 6px;
 }
 
-.btn-i.edit { background: #1f2937; color: #cbd5e1; }
-.btn-i.del { background: #3a1a1a; color: #e11d48; }
+.btn-i.edit { background: var(--brown-dark); color: #fff8ef; }
+.btn-i.del { background: rgba(225, 29, 72, 0.15); color: #e11d48; }
 
 .btn-circular {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     border: none;
-    background: var(--surface-soft);
-    color: var(--text-main);
+    background: var(--brown-dark);
+    color: #fff8ef;
     font-size: 1.2rem;
     transition: 0.3s;
 }

@@ -21,8 +21,6 @@ namespace RappiDozApp.Controllers
         }
 
         #region MÉTODOS DE SESIÓN
-        // --- MÉTODO PRIVADO PARA LOGUEAR AUTOMÁTICAMENTE ---
-        // Se encarga de llenar todos los campos necesarios en la sesión
         private void EstablecerSesion(Usuario usuario)
         {
             HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
@@ -30,7 +28,6 @@ namespace RappiDozApp.Controllers
             HttpContext.Session.SetString("RolUsuario", usuario.Rol?.NombreRol ?? "Cliente");
             HttpContext.Session.SetString("EmailUsuario", usuario.Email);
 
-            // Intentamos obtener el ID del restaurante si el usuario ya tiene uno asociado
             var primerRestaurante = usuario.Restaurantes?.FirstOrDefault();
             if (primerRestaurante != null)
             {
@@ -78,7 +75,6 @@ namespace RappiDozApp.Controllers
         [HttpGet]
         public IActionResult Registrar()
         {
-            // Esto limpia cualquier rastro de datos previos para que no se sobreescriban
             ModelState.Clear();
             return View("~/Views/Accesos/register.cshtml", new Usuario());
         }
@@ -87,14 +83,12 @@ namespace RappiDozApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Registrar(Usuario usuario, string confirmarPassword)
         {
-            // 1. Validamos que coincidan
             if (usuario.PasswordHash != confirmarPassword)
             {
                 ModelState.AddModelError("", "Las contraseñas no coinciden.");
                 return View("~/Views/Accesos/register.cshtml", usuario);
             }
 
-            // 2. Limpiamos validaciones de navegación
             ModelState.Remove("Rol");
             ModelState.Remove("Restaurantes");
 
@@ -102,14 +96,12 @@ namespace RappiDozApp.Controllers
             {
                 try
                 {
-                    usuario.RolId = 1; // Cliente por defecto
+                    usuario.RolId = 1;
                     _context.Add(usuario);
                     await _context.SaveChangesAsync();
 
-                    // 3. Guardamos sesión
                     HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
 
-                    // 4. ¡EL AVANCE! Al terminar, el controlador te manda al Selector
                     return RedirectToAction("Selector", "Accesos", new { usuarioId = usuario.Id });
                 }
                 catch
@@ -128,7 +120,6 @@ namespace RappiDozApp.Controllers
         #endregion
 
         #region FLUJO DE REGISTRO Y ROLES
-        // Muestra la vista para elegir entre Cliente o Restaurante
         public IActionResult Selector(int usuarioId)
         {
             ViewBag.UsuarioId = usuarioId;
@@ -144,14 +135,11 @@ namespace RappiDozApp.Controllers
             usuario.RolId = rolId;
             await _context.SaveChangesAsync();
 
-            // Si el rol es Restaurante (ID 2), lo mandamos a llenar la info del local
             if (rolId == 2)
             {
                 return RedirectToAction("RegistroRestaurante", "Accesos", new { id = usuarioId });
             }
 
-            // SI ES CLIENTE: Lo logueamos automáticamente y enviamos al Home
-            // Recargamos el usuario para asegurar que el include del Rol traiga el nombre nuevo
             var usuarioFinal = await _context.Usuarios
                 .Include(u => u.Rol)
                 .FirstOrDefaultAsync(u => u.Id == usuarioId);
@@ -160,7 +148,6 @@ namespace RappiDozApp.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // GET: Vista para registrar los datos del Restaurante
         public async Task<IActionResult> RegistroRestaurante(int id)
         {
             ViewBag.UsuarioId = id;
@@ -172,7 +159,6 @@ namespace RappiDozApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GuardarRestaurante(Restaurante restaurante)
         {
-            // Limpiamos validaciones de objetos relacionados para evitar que el ModelState sea inválido
             ModelState.Remove("Usuarios");
             ModelState.Remove("Productos");
             ModelState.Remove("Categoria");
@@ -182,7 +168,6 @@ namespace RappiDozApp.Controllers
                 _context.Restaurantes.Add(restaurante);
                 await _context.SaveChangesAsync();
 
-                // LOGUEO AUTOMÁTICO: Una vez creado el restaurante, iniciamos sesión para el dueño
                 var usuarioConRol = await _context.Usuarios
                     .Include(u => u.Rol)
                     .Include(u => u.Restaurantes)
@@ -197,7 +182,6 @@ namespace RappiDozApp.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // Si falla, recargamos la vista con los errores
             ViewBag.UsuarioId = restaurante.UsuarioId;
             ViewBag.Categorias = new SelectList(await _context.Categorias.ToListAsync(), "Id", "Nombre", restaurante.CategoriaId);
             return View("~/Views/Accesos/restaurante-info.cshtml", restaurante);
@@ -231,7 +215,6 @@ namespace RappiDozApp.Controllers
         {
             try
             {
-                // Configurar con tus credenciales reales
                 string correoEmisor = "tu-correo@gmail.com";
                 string claveAplicacion = "tu-clave";
 

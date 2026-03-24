@@ -8,7 +8,6 @@ namespace RappiDozApp.Controllers
 {
     public class CarritosController : Controller
     {
-        // LLAVES DE SESIÓN UNIFICADAS (Usa estas siempre)
         private const string SESSION_KEY = "CarritoRappiDoz";
         private const string BADGE_KEY = "CarritoCount";
 
@@ -19,7 +18,7 @@ namespace RappiDozApp.Controllers
             _context = context;
         }
 
-        // --- VISTA PRINCIPAL DEL CARRITO ---
+        #region Vistas
         public async Task<IActionResult> Index()
         {
             int? userId = HttpContext.Session.GetInt32("UsuarioId");
@@ -27,7 +26,6 @@ namespace RappiDozApp.Controllers
 
             var usuario = await _context.Usuarios.FindAsync(userId);
 
-            // CARGAR UBICACIONES: Esto permite que el select en la vista tenga datos
             var ubicaciones = await _context.UbicacionUsuario
                 .Where(u => u.IdUsuario == userId.Value)
                 .OrderByDescending(u => u.IdUbicacion)
@@ -35,15 +33,12 @@ namespace RappiDozApp.Controllers
 
             ViewBag.Ubicaciones = ubicaciones;
 
-            // 1. Billetera
             ViewBag.CuponesApartados = _context.CuponesApartados
                 .Where(c => c.UsuarioEmail == usuario.Email).ToList();
 
-            // 2. Carrito
             var lista = ObtenerCarritoDeSesion();
             decimal subtotal = lista.Sum(x => x.Precio * x.Cantidad);
 
-            // 3. Recuperar cupón
             string codigoCupon = HttpContext.Session.GetString("CuponAplicado");
             decimal descuentoMonetario = 0;
 
@@ -60,14 +55,12 @@ namespace RappiDozApp.Controllers
 
             return View("~/Views/Carritos/carrito.cshtml", lista);
         }
+        #endregion
 
-        
-
-        // --- AGREGAR PRODUCTO (Asegúrate de enviar 'imagen' desde la vista) ---
+        #region Acciones
         [HttpPost]
         public IActionResult Agregar(int productoId, string nombre, decimal precio, string imagen)
         {
-            // Si llega 0, es que el nombre del input en el HTML sigue mal
             if (productoId == 0) return Json(new { success = false, message = "ID no recibido" });
 
             var lista = ObtenerCarritoDeSesion();
@@ -91,7 +84,6 @@ namespace RappiDozApp.Controllers
 
             GuardarCarritoEnSesion(lista);
 
-            // DEVOLVEMOS JSON para que el JavaScript de tu vista reciba la confirmación
             return Json(new
             {
                 success = true,
@@ -99,7 +91,6 @@ namespace RappiDozApp.Controllers
             });
         }
 
-        // --- ELIMINAR PRODUCTO ---
         public IActionResult Eliminar(int id)
         {
             var lista = ObtenerCarritoDeSesion();
@@ -108,7 +99,6 @@ namespace RappiDozApp.Controllers
             return RedirectToAction("Index");
         }
 
-        // --- APLICAR CUPÓN (Desde la lista de "Mis Cupones") ---
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AplicarCupon(string codigoCupon)
@@ -116,13 +106,11 @@ namespace RappiDozApp.Controllers
             var emailSession = HttpContext.Session.GetString("EmailUsuario");
             if (string.IsNullOrEmpty(emailSession)) return RedirectToAction("Login", "Accesos");
 
-            // Buscamos el cupón en la tabla CuponesApartados filtrando por Código y Email
             var cupon = _context.CuponesApartados
                 .FirstOrDefault(c => c.Codigo == codigoCupon && c.UsuarioEmail == emailSession);
 
             if (cupon != null)
             {
-                // Guardamos todo en sesión con nombres estandarizados
                 HttpContext.Session.SetString("CuponAplicado", cupon.Codigo);
                 HttpContext.Session.SetString("DescuentoValor", cupon.Descuento.ToString());
                 HttpContext.Session.SetString("EsPorcentaje", cupon.EsPorcentaje.ToString().ToLower());
@@ -148,7 +136,6 @@ namespace RappiDozApp.Controllers
         }
 
 
-        // --- ACTUALIZAR CANTIDAD (Para los botones + y -) ---
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult ActualizarCantidad(int productoId, string accion)
@@ -165,7 +152,6 @@ namespace RappiDozApp.Controllers
                 else if (accion == "disminuir")
                 {
                     item.Cantidad--;
-                    // Si la cantidad llega a 0, eliminamos el producto automáticamente
                     if (item.Cantidad <= 0)
                     {
                         lista.Remove(item);
@@ -177,9 +163,9 @@ namespace RappiDozApp.Controllers
 
             return RedirectToAction("Index");
         }
+        #endregion
 
-        // --- MÉTODOS DE AYUDA (Helpers) ---
-
+        #region Helpers
         public List<CarritoItem> ObtenerCarritoDeSesion()
         {
             var json = HttpContext.Session.GetString(SESSION_KEY);
@@ -203,6 +189,7 @@ namespace RappiDozApp.Controllers
             HttpContext.Session.Remove("EsPorcentaje");
             HttpContext.Session.SetString(BADGE_KEY, "0");
         }
+        #endregion
 
 
     }

@@ -26,7 +26,7 @@
     }
 }
 
-<nav class="navbar">
+<nav class="navbar" data-logout-url="@Url.Action("Salir", "Accesos")">
     <a asp-controller="Home" asp-action="Index" class="navbar-brand">
         <img src="~/img/logo-final.png" alt="Logo">
     </a>
@@ -36,6 +36,8 @@
     </button>
 
     <div class="sesion" id="navbar-menu">
+        
+
         @if (!string.IsNullOrEmpty(nombreUsuario))
         {
             <a asp-controller="Home" asp-action="Index" class="@ClaseActiva("Home", "Index")">
@@ -70,6 +72,11 @@
                     <a href="javascript:void(0)" onclick="abrirCalificar()">
                         <i class="fa-solid fa-star"></i> Califícanos
                     </a>
+                    <div class="theme-switch-item">
+                        <input type="checkbox" id="themeSwitch" class="theme-switch-input">
+                        <label for="themeSwitch" class="theme-switch"></label>
+                        <span id="themeLabel" class="theme-switch-text">Modo oscuro</span>
+                    </div>
 
                     @if (rolUsuario == "Administrador" || rolUsuario == "Restaurante")
                     {
@@ -99,6 +106,7 @@
                     <a href="javascript:void(0);" onclick="confirmarSalida()" class="logout-link">
                         <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
                     </a>
+                        
                 </div>
             </div>
         }
@@ -111,33 +119,4 @@
     </div>
 </nav>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const btnMenu = document.getElementById('btn-menu');
-        const navbarMenu = document.getElementById('navbar-menu');
-        if(btnMenu && navbarMenu) {
-            btnMenu.onclick = function() {
-                navbarMenu.classList.toggle('active');
-            };
-        }
-    });
-
-    function confirmarSalida() {
-        Swal.fire({
-            title: '¿Cerrar sesión?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#d3ab80',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, salir',
-            background: '#1e1c22',
-            color: '#ece4da',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = '@Url.Action("Salir", "Accesos")';
-            }
-        });
-    }
-
-    
-</script>
+<script src="~/js/Shared/header.js"></script>

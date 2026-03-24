@@ -1,14 +1,12 @@
-﻿/* --- CONFIGURACIÓN DE MAPA FULL-SCREEN (scope local a contenedores de seguimiento) --- */
-/* No modificar el overflow global del <body> para no impedir el scroll en otras páginas. */
+﻿/* #region Mapa Full-Screen */
 .tracking-wrapper, .main-container, #mapContainer {
-    overflow: hidden; /* Evita scroll dentro del área del mapa */
+    overflow: hidden;
 }
 
 .tracking-wrapper {
     position: relative;
     height: 100vh;
     width: 100vw;
-    /* Mantenemos tu ajuste de layout pero lo hacemos dinámico */
     margin-top: calc(-1 * var(--navbar-height, 20px));
 }
 
@@ -16,42 +14,43 @@
     height: 100vh;
     width: 100%;
     z-index: 1;
-    background-color: #3a3530; /* Color de carga */
+    background-color: var(--border-main);
 }
 
-/* --- PANEL DE INFORMACIÓN (Glassmorphism Gold) --- */
+/* #endregion */
+
+/* #region Panel de Estado */
 .status-card {
     position: absolute;
     top: 100px;
     left: 20px;
     z-index: 1000;
     width: 320px;
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(var(--surface-main-rgb), 0.88);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     padding: 25px;
     border-radius: 25px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-    border: 1px solid rgba(211, 171, 128, 0.4);
+    box-shadow: var(--shadow-standard);
+    border: 1px solid rgba(var(--accent-main-rgb), 0.4);
     font-family: 'Poppins', sans-serif;
     animation: slideInLeft 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* Caja de Tiempo Estimado (ETA) */
 .eta-box {
-    background: #ece4da;
-    color: #ece4da;
+    background: var(--surface-main);
+    color: var(--text-main);
     padding: 18px;
     border-radius: 18px;
     text-align: center;
     margin-top: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+    box-shadow: var(--shadow-soft);
     transition: var(--transicion, all 0.3s ease);
 }
 
     .eta-box:hover {
         transform: translateY(-3px);
-        background: #5d3531;
+        background: var(--surface-elevated);
     }
 
     .eta-box h4 {
@@ -67,15 +66,16 @@
         display: block;
     }
 
-/* --- ICONO DE MOTO ANIMADO --- */
+/* #endregion */
+
+/* #region Animaciones */
 .moto-icon-div i {
     font-size: 35px;
-    color: #ece4da;
+    color: var(--text-main);
     filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
     animation: motoVibration 0.3s infinite alternate;
 }
 
-/* Animación de motor encendido */
 @keyframes motoVibration {
     from {
         transform: translateY(0) rotate(-2deg);
@@ -86,7 +86,6 @@
     }
 }
 
-/* Animación de entrada del panel */
 @keyframes slideInLeft {
     from {
         opacity: 0;
@@ -98,12 +97,13 @@
         transform: translateX(0);
     }
 }
+/* #endregion */
 
-/* --- RESPONSIVE MÓVIL (Crítico para Mapas) --- */
+/* #region Responsivo */
 @media (max-width: 768px) {
     .status-card {
         top: auto;
-        bottom: 30px; /* En móvil, el panel va abajo para manejo con una mano */
+        bottom: 30px;
         left: 5%;
         right: 5%;
         width: 90%;
@@ -112,7 +112,7 @@
     }
 
     .tracking-wrapper {
-        margin-top: 0; /* Reset en móvil */
+        margin-top: 0;
     }
 
     .eta-box {
@@ -127,7 +127,6 @@
             margin-bottom: 0;
         }
 
-    /* Pequeño indicador para "deslizar" el panel (decorativo) */
     .status-card::before {
         content: '';
         position: absolute;
@@ -136,7 +135,7 @@
         transform: translateX(-50%);
         width: 40px;
         height: 4px;
-        background: rgba(0,0,0,0.1);
+        background: rgba(var(--text-main-rgb), 0.1);
         border-radius: 10px;
     }
 }
@@ -153,26 +152,20 @@
     }
 }
 
-/* Estilo para los markers del mapa (si usas Leaflet o Google Maps) */
+/* #endregion */
+
+/* #region Markers y Estilos Migrados */
 .custom-marker {
     background: var(--accent-main);
-    border: 3px solid #1e1c22;
+    border: 3px solid var(--surface-main);
     border-radius: 50%;
-    box-shadow: 0 0 15px rgba(211, 171, 128, 0.6);
+    box-shadow: 0 0 15px rgba(var(--accent-main-rgb), 0.6);
 }
 
-/* -----------------------------------------------------------------
-   Styles moved from Views/Pedido/Seguimiento.cshtml
-   ----------------------------------------------------------------- */
-
-/* Ocultar elementos que estorban (solo dentro del contexto de seguimiento) */
-/* Nota: no ocultamos el elemento <footer> globalmente para evitar esconder el footer en otras páginas. */
 .tracking-wrapper .cta-final,
 .tracking-wrapper .footer-content {
     display: none !important;
 }
-
-/* Evitamos tocar html/body globalmente para no bloquear el scroll en otras páginas. */
 
 .main-container {
     position: relative;
@@ -182,11 +175,8 @@
 }
 
 #map {
-    /* Default map styling left minimal. Scoped tracking map styles are applied below to avoid
-       interfering with other pages that also use an element with id="map" (e.g. Home/Index). */
 }
 
-/* Scoped map styles for the tracking view */
 .tracking-wrapper #map,
 .main-container #map {
     position: absolute;
@@ -197,28 +187,26 @@
     z-index: 1;
 }
 
-/* TARJETA ESQUINEADA (PC Y RESPONSIVE) */
 .tracking-card {
     position: absolute;
     top: 20px;
     left: 20px;
     z-index: 1000;
-    background: rgba(255, 255, 255, 0.96);
-    width: 300px; /* Ancho fijo para que no se estire en responsive */
-    max-width: 85%; /* Para que en pantallas muy pequeñas no se salga */
+    background: rgba(var(--surface-main-rgb), 0.96);
+    width: 300px;
+    max-width: 85%;
     border-radius: 20px;
     padding: 20px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(var(--accent-main-rgb), 0.22);
 }
 
-/* Ajuste mínimo para que en móviles no se vea gigante */
 @media (max-width: 768px) {
     .tracking-card {
         top: 15px;
         left: 15px;
         padding: 15px;
-        width: 260px; /* Un pelín más delgada en móvil */
+        width: 260px;
     }
 
     .main-container {
@@ -227,7 +215,6 @@
     }
 }
 
-/* COLORES DE LETRAS DINÁMICOS */
 .status-badge {
     font-size: 11px;
     padding: 4px 10px;
@@ -237,20 +224,28 @@
     transition: all 0.4s ease;
 }
 
-/* Amarillo mientras va de camino */
 .text-camino {
     background: #fffde7;
     color: #fbc02d !important;
 }
-/* Verde cuando llega */
 .text-llegado {
-    background: #1a302a;
+    background: #e8f5e9;
     color: #2e7d32 !important;
 }
 
+html[data-theme="dark"] .text-camino {
+    background: rgba(251, 192, 45, 0.15);
+    color: #fdd835 !important;
+}
+
+html[data-theme="dark"] .text-llegado {
+    background: rgba(46, 125, 50, 0.2);
+    color: #66bb6a !important;
+}
+
 .eta-box {
-    background: #ece4da;
-    color: #ece4da;
+    background: var(--surface-main);
+    color: var(--text-main);
     border-radius: 15px;
     padding: 15px;
     text-align: center;
@@ -264,16 +259,15 @@
     bottom: 0;
     left: 0;
     height: 4px;
-    background: #d3ab80;
+    background: var(--accent-main);
     width: 0%;
 }
 
-/* ESPACIO DEL USUARIO CON MÁS INFO */
 .client-info {
     margin: 15px 0;
     padding-top: 10px;
-    border-top: 1px dashed #3a3530;
-    color: #444;
+    border-top: 1px dashed var(--border-main);
+    color: var(--text-muted);
     font-size: 0.85rem;
 }
 
@@ -285,7 +279,7 @@
 }
 
     .info-row i {
-        color: #d3ab80;
+        color: var(--accent-main);
         width: 18px;
         text-align: center;
     }
@@ -293,19 +287,19 @@
 .btn-back {
     display: block;
     width: 100%;
-    background: #fdfaf6;
-    color: #ece4da !important;
+    background: var(--surface-main);
+    color: var(--text-main) !important;
     text-align: center;
     padding: 10px;
     border-radius: 12px;
     text-decoration: none;
     font-weight: bold;
-    border: 1px solid #3a3530;
+    border: 1px solid var(--border-main);
     font-size: 0.9rem;
 }
 
 .moto-icon {
-    color: #ece4da;
+    color: var(--text-main);
     font-size: 28px !important;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
 }
@@ -314,15 +308,16 @@
     background: none !important;
     border: none !important;
 }
+/* #endregion */
 
-/* Ubicaciones/Mapa.cshtml */
+/* #region Modal Mapa */
 .modal-content-custom {
-    background: #1e1c22 !important;
-    border-radius: 30px;
-    color: #ece4da;
+    background: var(--surface-main) !important;
+    border-radius: 28px;
+    color: var(--text-main);
     font-family: 'Segoe UI', Roboto, sans-serif;
-    border: 1px solid #3a3530;
-    box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+    border: none;
+    box-shadow: var(--shadow-standard);
 }
 
 .btn-close-custom {
@@ -331,7 +326,7 @@
     right: 18px;
     background: none;
     border: none;
-    color: #d3ab80;
+    color: var(--accent-main);
     font-size: 2rem;
     line-height: 1;
     cursor: pointer;
@@ -341,34 +336,30 @@
 .mapa-handle {
     width: 50px;
     height: 5px;
-    background: #3a3530;
+    background: var(--border-main);
     border-radius: 10px;
     margin: 0 auto 15px;
 }
 
 .mapa-title {
-    color: #ece4da;
+    color: var(--text-main);
 }
 
 #mapa-final {
     height: 380px;
     width: 100%;
-    background: #141216;
+    background: var(--bg-main);
     border-radius: 20px;
-    border: 2px solid #3a3530;
+    border: 2px solid var(--border-main);
     z-index: 5;
-}
-
-#mapa-final .leaflet-tile-pane {
-    filter: saturate(0.96) brightness(0.94) contrast(1.02);
 }
 
 #mapa-final .leaflet-control-zoom a,
 #mapa-final .leaflet-popup-content-wrapper,
 #mapa-final .leaflet-popup-tip {
-    background: #1e1c22;
-    color: #ece4da;
-    border-color: #3a3530;
+    background: var(--surface-main);
+    color: var(--text-main);
+    border-color: var(--border-main);
 }
 
 .mapa-watermark {
@@ -376,8 +367,8 @@
     bottom: 10px;
     right: 10px;
     z-index: 1000;
-    background: rgba(20, 18, 22, 0.82);
-    color: #ece4da;
+    background: rgba(var(--surface-main-rgb), 0.82);
+    color: var(--text-main);
     padding: 5px 10px;
     border-radius: 10px;
     font-size: 10px;
@@ -386,22 +377,22 @@
 
 .input-rappi {
     border-radius: 15px !important;
-    border: 2px solid #3a3530 !important;
+    border: 2px solid var(--border-main) !important;
     padding: 12px 20px !important;
     font-weight: 600;
     transition: all 0.3s ease;
-    background: #141216 !important;
-    color: #ece4da !important;
+    background: var(--bg-main) !important;
+    color: var(--text-main) !important;
 }
 
 .input-rappi:focus {
-    border-color: #d3ab80 !important;
-    box-shadow: 0 0 0 0.2rem rgba(211, 171, 128, 0.25);
+    border-color: var(--accent-main) !important;
+    box-shadow: 0 0 0 0.2rem rgba(var(--accent-main-rgb), 0.25);
 }
 
 .btn-rappi-confirm {
-    background: #d3ab80 !important;
-    color: #141216 !important;
+    background: var(--accent-main) !important;
+    color: var(--accent-contrast) !important;
     border: none;
     border-radius: 15px;
     padding: 16px;
@@ -414,21 +405,15 @@
 .btn-rappi-confirm:hover {
     transform: translateY(var(--hover-lift-global));
     box-shadow: 0 10px 20px rgba(211, 171, 128, 0.2);
-    background: #ece4da !important;
+    background: var(--footer-text) !important;
 }
 
 .label-custom {
     font-size: 0.85rem;
     font-weight: 700;
-    color: #d3ab80;
+    color: var(--accent-main);
     margin-bottom: 8px;
     margin-left: 5px;
 }
-
-
-
-
-
-
-
+/* #endregion */
 

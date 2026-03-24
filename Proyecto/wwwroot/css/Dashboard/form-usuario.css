@@ -1,14 +1,74 @@
-/* Dashboard/_FormUsuario.cshtml */
-.user-preview-img {
-    width: 130px;
-    height: 130px;
-    object-fit: cover;
-    border: 5px solid white;
+/* #region Form Usuario */
+.user-image-wrapper {
+    border: 4px solid var(--border-main);
+    padding: 5px;
+    border-radius: 50%;
+    background: var(--surface-card);
+    display: inline-block;
 }
 
-.dashboard-user-confirm-btn {
-    background: var(--surface-soft);
+.user-preview-img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.user-camera-btn {
+    bottom: 8px;
+    right: 8px;
+    width: 40px;
+    height: 40px;
+    background: var(--accent-main) !important;
+    color: var(--accent-contrast) !important;
+    border: 3px solid var(--surface-card) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.user-camera-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(var(--accent-main-rgb), 0.4);
+}
+
+.user-form-title {
     color: var(--text-main);
+    letter-spacing: -0.5px;
+}
+
+.user-form-subtitle {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-bottom: 0;
+}
+
+.user-form-label {
+    color: var(--text-main);
+    font-size: 0.85rem;
+}
+
+.user-cancel-btn {
+    border-radius: 15px;
+    background: var(--surface-soft) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-main) !important;
+}
+
+.user-save-btn {
+    background: var(--brown-dark) !important;
+    color: #fff8ef !important;
     border-radius: 15px;
     font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
 }
+
+.user-save-btn:hover {
+    background: var(--accent-main) !important;
+    color: var(--accent-contrast) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(var(--accent-main-rgb), 0.3);
+}
+/* #endregion */

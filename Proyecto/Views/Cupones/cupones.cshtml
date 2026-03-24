@@ -5,7 +5,6 @@
 @{
     Layout = "_Layout";
     var emailLogueado = Accessor.HttpContext.Session.GetString("EmailUsuario");
-    // Obtenemos la lista de códigos que el usuario ya reclamó para saber qué mostrar
     var cuponesReclamados = (List<string>)ViewBag.CuponesReclamados ?? new List<string>();
 }
 
@@ -19,6 +18,7 @@
                 bool yaReclamado = cuponesReclamados.Contains(cupon.Codigo);
 
                 <div class="voucher-container @(yaReclamado ? "reclamado" : "")"
+                     data-requires-login="@(string.IsNullOrEmpty(emailLogueado) ? "true" : "false")"
                      onclick="@(yaReclamado ? "" : "ejecutarArranque(this)")">
 
                     <div class="muesca e-tl"></div><div class="muesca e-tr"></div>
@@ -65,21 +65,4 @@
     </div>
 </div>
 
-<script>
-    function ejecutarArranque(contenedor) {
-        @if (string.IsNullOrEmpty(emailLogueado))
-        {
-                <text>
-                Swal.fire({ title: '¡Sesión Requerida!', text: 'Inicia sesión para arrancar cupones.', icon: 'info' });
-                return;
-                </text>
-        }
-
-        const parteBlanca = contenedor.querySelector('.voucher-bottom');
-        parteBlanca.classList.add('arrancar-anim');
-
-        setTimeout(() => {
-            contenedor.querySelector('form').submit();
-        }, 700);
-    }
-</script>
+<script src="~/js/Cupones/cupones.js"></script>

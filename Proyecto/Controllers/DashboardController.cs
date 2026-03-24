@@ -15,9 +15,7 @@ namespace RappiDozApp.Controllers
             _context = context;
         }
 
-        // ================================================
-        // 1. VISTA PRINCIPAL
-        // ================================================
+        #region Vistas
         public async Task<IActionResult> Index()
         {
             var rol = HttpContext.Session.GetString("RolUsuario");
@@ -57,9 +55,9 @@ namespace RappiDozApp.Controllers
             return View("~/Views/Dashboard/index.cshtml");
         }
 
-        // ================================================
-        // 2. CARGA DE LISTADOS (TABLAS)
-        // ================================================
+        #endregion
+
+        #region Listados
         public async Task<IActionResult> GetUsuarios()
         {
             try
@@ -110,8 +108,6 @@ namespace RappiDozApp.Controllers
         [Route("Dashboard/GetForm")]
         public async Task<IActionResult> GetForm(string entidad, string accion, int? id)
         {
-            // PASO 1: INICIALIZACIÓN PREVENTIVA
-            // Esto garantiza que NUNCA sean null, aunque la base de datos falle.
             ViewBag.Categorias = new List<SelectListItem>();
             ViewBag.Restaurantes = new SelectListItem[] { }.ToList();
             ViewBag.Usuarios = new List<SelectListItem>();
@@ -122,12 +118,8 @@ namespace RappiDozApp.Controllers
                 var rolSesion = HttpContext.Session.GetString("RolUsuario");
                 var usuarioId = HttpContext.Session.GetInt32("UsuarioId") ?? 0;
 
-                // ==========================================
-                // ENTIDAD: PRODUCTO (MENÚS)
-                // ==========================================
                 if (entidad == "Producto")
                 {
-                    // 1. Cargamos los Restaurantes (Filtrados por dueño o admin)
                     var rests = await _context.Restaurantes
                         .Where(r => r.UsuarioId == usuarioId || rolSesion == "Administrador")
                         .ToListAsync();
@@ -138,8 +130,6 @@ namespace RappiDozApp.Controllers
                         Text = r.NombreComercial
                     }).ToList();
 
-                    // 2. ¡CLAVE! Cargamos las Categorías (Esto es lo que te faltaba)
-                    // Sin esto, el select de categorías en el HTML no tendrá ítems
                     var cats = await _context.Categorias.ToListAsync();
                     ViewBag.Categorias = cats.Select(c => new SelectListItem
                     {
@@ -147,7 +137,6 @@ namespace RappiDozApp.Controllers
                         Text = c.Nombre
                     }).ToList();
 
-                    // 3. Obtenemos el producto o creamos uno nuevo
                     var producto = (id.HasValue && id > 0)
                         ? await _context.Productos.FindAsync(id)
                         : new Producto { Id = 0, Precio = 0 };
@@ -155,12 +144,8 @@ namespace RappiDozApp.Controllers
                     return PartialView("_FormProducto", producto);
                 }
 
-                // ==========================================
-                // ENTIDAD: RESTAURANTE (SEDES)
-                // ==========================================
                 if (entidad == "Restaurantes" || entidad == "Restaurante")
                 {
-                    // Aquí cargamos las Categorías porque aquí es donde se eligen
                     var cats = await _context.Categorias.ToListAsync();
                     ViewBag.Categorias = cats.Select(c => new SelectListItem
                     {
@@ -188,9 +173,6 @@ namespace RappiDozApp.Controllers
                     return PartialView("_FormRestaurante", restaurante);
                 }
 
-                // ==========================================
-                // ENTIDAD: USUARIO
-                // ==========================================
                 if (entidad == "Usuarios" || entidad == "Usuario")
                 {
                     var roles = await _context.Roles.ToListAsync();
@@ -207,12 +189,8 @@ namespace RappiDozApp.Controllers
                     return PartialView("_FormUsuario", usuario);
                 }
 
-                // ==========================================
-                // ENTIDAD: CUPON
-                // ==========================================
                 if (entidad == "Cupones" || entidad == "Cupon")
                 {
-                    // 1. Cargamos las categorías para que aparezcan en el dropdown del cupón
                     var cats = await _context.Categorias.ToListAsync();
                     ViewBag.Categorias = cats.Select(c => new SelectListItem
                     {
@@ -220,7 +198,6 @@ namespace RappiDozApp.Controllers
                         Text = c.Nombre
                     }).ToList();
 
-                    // 2. Obtenemos el cupón o creamos uno nuevo con valores por defecto
                     var cupon = (id.HasValue && id > 0)
                         ? await _context.Cupones.FindAsync(id)
                         : new Cupon
@@ -228,10 +205,9 @@ namespace RappiDozApp.Controllers
                             Id = 0,
                             Activo = true,
                             FechaExpiracion = DateTime.Now.AddDays(7),
-                            Stock = 10 // Valor inicial sugerido
+                            Stock = 10
                         };
 
-                    // 3. Retornamos la vista parcial (Asegúrate de que el nombre del archivo coincida)
                     return PartialView("_FormCupon", cupon);
                 }
 
@@ -239,14 +215,13 @@ namespace RappiDozApp.Controllers
             }
             catch (Exception ex)
             {
-                // El error 500 será capturado por tu SweetAlert en el JS
                 return StatusCode(500, $"Error interno: {ex.Message}");
             }
         }
 
-        // ================================================
-        // 4. MÉTODOS AUXILIARES (JSON)
-        // ================================================
+        #endregion
+
+        #region Auxiliares
         [HttpGet]
         public async Task<IActionResult> GetRolesJson()
         {
@@ -262,6 +237,6 @@ namespace RappiDozApp.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
+        #endregion
     }
 }
-

@@ -1,4 +1,4 @@
-﻿// wwwroot/js/rating.js
+﻿// #region Rating
 document.addEventListener('DOMContentLoaded', function () {
     const stars = document.querySelectorAll('.rating-stars i');
     const inputEstrellas = document.getElementById('inputEstrellas');
@@ -7,30 +7,29 @@ document.addEventListener('DOMContentLoaded', function () {
         stars.forEach(star => {
             star.addEventListener('click', () => {
                 const val = star.getAttribute('data-value');
-                inputEstrellas.value = val; // Guardamos el valor para el servidor
+                inputEstrellas.value = val;
 
-                // Actualizar la apariencia visual de las estrellas
                 stars.forEach(s => {
                     s.classList.remove('active');
                     if (parseInt(s.getAttribute('data-value')) <= parseInt(val)) {
                         s.classList.add('active');
                     }
                 });
+// #endregion
             });
 
-            // Opcional: Efecto hover para que se sienta más interactivo
             star.addEventListener('mouseover', () => {
                 const val = star.getAttribute('data-value');
                 stars.forEach(s => {
                     if (parseInt(s.getAttribute('data-value')) <= parseInt(val)) {
-                        s.style.color = "#ffc107"; // Color dorado temporal
+                        s.style.color = "#ffc107";
                     }
                 });
             });
 
             star.addEventListener('mouseout', () => {
                 stars.forEach(s => {
-                    s.style.color = ""; // Volver al color definido por CSS (.active)
+                    s.style.color = "";
                 });
             });
         });

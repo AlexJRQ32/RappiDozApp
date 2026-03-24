@@ -1,6 +1,6 @@
-/* Dashboard/_FormRestaurante.cshtml */
+/* #region Form Restaurante */
 .restaurant-image-wrapper {
-    border: 4px solid #3a3530;
+    border: 4px solid var(--border-main);
     padding: 5px;
     border-radius: 50%;
     background: var(--surface-card);
@@ -17,7 +17,9 @@
     right: 8px;
     width: 38px;
     height: 38px;
-    border: 3px solid white;
+    border: 3px solid var(--surface-card) !important;
+    background: var(--accent-main) !important;
+    color: var(--accent-contrast) !important;
 }
 
 .restaurant-identity-title {
@@ -35,3 +37,4 @@
     font-weight: bold;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
+/* #endregion */

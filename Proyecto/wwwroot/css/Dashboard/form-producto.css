@@ -1,4 +1,4 @@
-/* Dashboard/_FormProducto.cshtml */
+/* #region Form Producto */
 .product-image-label {
     color: var(--text-main);
 }
@@ -13,7 +13,7 @@
     height: 200px;
     object-fit: cover;
     border-radius: 25px;
-    border: 3px solid #3a3530;
+    border: 3px solid var(--border-main);
     box-shadow: 0 10px 20px rgba(0,0,0,0.15);
 }
 
@@ -38,3 +38,4 @@
     border-radius: 12px;
     font-weight: bold;
 }
+/* #endregion */

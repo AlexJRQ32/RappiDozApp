@@ -1,6 +1,6 @@
 /* Home/busqueda.cshtml */
 .main-search {
-    background-color: var(--bg-main);
+    background-color: var(--section-bg-primary);
     min-height: 100vh;
     padding-top: 70px;
     font-family: 'Segoe UI', sans-serif;
@@ -134,7 +134,7 @@
 .result-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(20, 18, 22, 0.55);
+    background: rgba(var(--bg-main-rgb), 0.55);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -142,7 +142,7 @@
 
 .result-closed-badge {
     background: var(--white);
-    color: #e74c3c;
+    color: var(--danger-main);
     padding: 2px 8px;
     border-radius: 5px;
     font-weight: 900;
@@ -218,7 +218,7 @@
 
 .badge-status.closed {
     background: #3a1a1a;
-    color: #e74c3c;
+    color: var(--danger-main);
 }
 
 .delivery-meta {
@@ -245,7 +245,7 @@
 }
 
 .btn-menu-slim.disabled {
-    background: #9a8e82;
+    background: var(--text-muted);
     opacity: 0.7;
 }
 

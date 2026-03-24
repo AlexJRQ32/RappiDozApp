@@ -22,21 +22,21 @@ namespace RappiDozApp.Data
         public DbSet<CuponApartado> CuponesApartados { get; set; }
         public DbSet<UbicacionUsuario> UbicacionUsuario { get; set; }
 
+        #region Configuración
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Precisión para Monedas
             modelBuilder.Entity<Producto>().Property(p => p.Precio).HasPrecision(18, 2);
             modelBuilder.Entity<Cupon>().Property(c => c.Descuento).HasPrecision(18, 2);
             modelBuilder.Entity<Pedido>().Property(p => p.Total).HasPrecision(18, 2);
             modelBuilder.Entity<DetallePedido>().Property(d => d.PrecioHistorico).HasPrecision(18, 2);
 
-            // Precisión para Coordenadas del Mapa
             modelBuilder.Entity<UbicacionUsuario>().Property(u => u.Latitud).HasPrecision(18, 10);
             modelBuilder.Entity<UbicacionUsuario>().Property(u => u.Longitud).HasPrecision(18, 10);
             modelBuilder.Entity<Pedido>().Property(p => p.EntregaLatitud).HasPrecision(18, 10);
             modelBuilder.Entity<Pedido>().Property(p => p.EntregaLongitud).HasPrecision(18, 10);
         }
+        #endregion
     }
 }

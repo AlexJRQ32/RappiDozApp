@@ -16,20 +16,16 @@ namespace RappiDozApp.Controllers
             _context = context;
         }
 
-        // ================================================
-        // 1. GUARDAR (CREAR Y EDITAR - AJAX)
-        // ================================================
+        #region Guardar y Eliminar
         [HttpPost]
         public async Task<IActionResult> Guardar(Restaurante restaurante, IFormFile fotoArchivo)
         {
-            // Removemos validaciones de objetos de navegación para evitar conflictos en el ModelState
             ModelState.Remove("Usuarios");
             ModelState.Remove("Categoria");
             ModelState.Remove("Productos");
 
             try
             {
-                // 1. Lógica para procesar la imagen
                 if (fotoArchivo != null && fotoArchivo.Length > 0)
                 {
                     using (var ms = new MemoryStream())
@@ -41,8 +37,6 @@ namespace RappiDozApp.Controllers
                 }
                 else if (restaurante.Id != 0)
                 {
-                    // 2. Si es edición y NO se subió foto nueva, mantenemos la anterior
-                    // Esto evita que el campo LogoBinario se vuelva nulo al actualizar
                     var restauranteExistente = await _context.Restaurantes
                         .AsNoTracking()
                         .FirstOrDefaultAsync(r => r.Id == restaurante.Id);
@@ -54,7 +48,6 @@ namespace RappiDozApp.Controllers
                     }
                 }
 
-                // 3. Guardar o Actualizar
                 if (restaurante.Id == 0)
                 {
                     _context.Add(restaurante);
@@ -83,9 +76,9 @@ namespace RappiDozApp.Controllers
             return Json(new { success = true, message = "Restaurante eliminado correctamente." });
         }
 
-        // ================================================
-        // 3. VISTA PÚBLICA DEL MENÚ (CLIENTE)
-        // ================================================
+        #endregion
+
+        #region Vista Pública
         public async Task<IActionResult> Menu(int id)
         {
             var restaurante = await _context.Restaurantes
@@ -98,5 +91,6 @@ namespace RappiDozApp.Controllers
             ViewBag.RestauranteNombre = restaurante.NombreComercial;
             return View("~/Views/Restaurantes/Restaurante.cshtml", restaurante.Productos);
         }
+        #endregion
     }
 }

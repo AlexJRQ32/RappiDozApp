@@ -10,6 +10,7 @@ namespace RappiDozApp.Controllers
         private readonly ApplicationDbContext _context;
         public ProductosController(ApplicationDbContext context) => _context = context;
 
+        #region CRUD
         [HttpPost]
         public async Task<IActionResult> Guardar(Producto producto, IFormFile? fotoArchivo)
         {
@@ -19,7 +20,6 @@ namespace RappiDozApp.Controllers
 
             try
             {
-                // PROTECCIÓN: Si CategoriaId llega en 0, buscamos una válida
                 if (producto.CategoriaId == 0)
                 {
                     var catDefecto = await _context.Categorias.FirstOrDefaultAsync();
@@ -27,7 +27,6 @@ namespace RappiDozApp.Controllers
                     else return Json(new { success = false, message = "No existen categorías en la base de datos." });
                 }
 
-                // Manejo de Imagen (Mantiene la anterior si no se sube una nueva)
                 if (fotoArchivo != null && fotoArchivo.Length > 0)
                 {
                     using var ms = new MemoryStream();
@@ -67,5 +66,6 @@ namespace RappiDozApp.Controllers
             await _context.SaveChangesAsync();
             return Json(new { success = true, message = "Platillo eliminado." });
         }
+        #endregion
     }
 }

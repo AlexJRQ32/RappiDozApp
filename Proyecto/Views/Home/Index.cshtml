@@ -114,7 +114,7 @@
             <div class="map-card">
                 <h2 class="map-title">¿A dónde enviamos hoy?</h2>
 
-                <div id="map"></div>
+                <div id="map" data-lat="@latActual.ToString(System.Globalization.CultureInfo.InvariantCulture)" data-lng="@lngActual.ToString(System.Globalization.CultureInfo.InvariantCulture)"></div>
 
                 @if (userId == null)
                 {
@@ -174,87 +174,5 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // 1. INICIALIZACIÓN DEL MAPA
-            const latIni = parseFloat("@latActual.ToString(System.Globalization.CultureInfo.InvariantCulture)");
-            const lngIni = parseFloat("@lngActual.ToString(System.Globalization.CultureInfo.InvariantCulture)");
-
-            const map = L.map('map').setView([latIni, lngIni], 15);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
-
-            const iconRappi = L.icon({
-                iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-                iconSize: [46, 46],
-                iconAnchor: [23, 46],
-                popupAnchor: [0, -40]
-            });
-
-            const marker = L.marker([latIni, lngIni], {
-                draggable: true,
-                icon: iconRappi
-            }).addTo(map);
-
-            // 2. EVENTOS DEL MARCADOR
-            function actualizarInputs(lat, lng) {
-                document.getElementById("Latitud").value = lat;
-                document.getElementById("Longitud").value = lng;
-            }
-
-            marker.on('dragend', function (e) {
-                const pos = e.target.getLatLng();
-                actualizarInputs(pos.lat, pos.lng);
-            });
-
-            map.on('click', function (e) {
-                marker.setLatLng(e.latlng);
-                actualizarInputs(e.latlng.lat, e.latlng.lng);
-            });
-
-            // 3. ENVÍO POR AJAX (GUARDAR UBICACIÓN)
-            const formUbi = document.getElementById('formUbicacion');
-            if (formUbi) {
-                formUbi.addEventListener('submit', function (e) {
-                    e.preventDefault();
-                    
-                    const btn = document.getElementById('btn-confirmar-mapa');
-                    btn.disabled = true;
-                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
-
-                    const formData = new FormData(this);
-
-                    fetch(this.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '¡Dirección Guardada!',
-                                text: data.message,
-                                confirmButtonColor: '#472825'
-                            }).then(() => {
-                                window.location.reload();
-                            });
-                        } else {
-                            Swal.fire({ icon: 'error', title: 'Error', text: data.message });
-                            btn.disabled = false;
-                            btn.innerHTML = '<i class="fas fa-map-pin me-2"></i> GUARDAR ESTA DIRECCIÓN';
-                        }
-                    })
-                    .catch(err => {
-                        console.error("Error:", err);
-                        btn.disabled = false;
-                    });
-                });
-            }
-        });
-    </script>
+    <script src="~/js/Home/index.js"></script>
 }

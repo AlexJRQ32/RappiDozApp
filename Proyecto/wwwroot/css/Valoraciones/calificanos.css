@@ -1,6 +1,6 @@
-﻿/* Valoraciones/calificanos.cshtml */
+﻿/* #region Calificanos */
 .rd-card-main {
-    background: #1e1c22;
+    background: var(--section-bg-primary);
     border-radius: 24px;
     width: 100%;
     max-width: none;
@@ -8,8 +8,9 @@
     padding: 34px;
     box-shadow: none;
     position: relative;
-    border: 1px solid #3a3530;
-    color: #ece4da;
+    border: 1px solid var(--border-main);
+    color: var(--text-main);
+    color-scheme: light;
 }
 
 .btn-close-custom {
@@ -19,7 +20,7 @@
     background: none;
     border: none;
     font-size: 2rem;
-    color: #d3ab80;
+    color: var(--accent-main);
     cursor: pointer;
     opacity: 0.85;
 }
@@ -29,7 +30,7 @@
 }
 
 .rating-main-title {
-    color: #ece4da;
+    color: var(--text-main);
     font-weight: 900;
     font-size: 2.1rem;
     margin-bottom: 5px;
@@ -38,7 +39,7 @@
 .rating-divider {
     width: 60px;
     height: 4px;
-    background: #d3ab80;
+    background: var(--accent-main);
     margin: 0 auto 15px;
     border-radius: 2px;
 }
@@ -46,7 +47,7 @@
 .rating-subtitle,
 .rating-label,
 .rating-recommend-label {
-    color: #9a8e82;
+    color: var(--text-muted);
 }
 
 .rating-subtitle {
@@ -75,21 +76,21 @@
 
 .rating-stars i {
     font-size: 3rem;
-    color: #4a4540;
+    color: var(--text-muted);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .rating-stars i.active {
-    color: #d3ab80 !important;
+    color: var(--accent-main) !important;
     transform: scale(1.2);
-    filter: drop-shadow(0 0 10px rgba(211, 171, 128, 0.35));
+    filter: drop-shadow(0 0 10px rgba(var(--accent-main-rgb), 0.35));
 }
 
 .rd-input-group {
     border-radius: 18px;
-    background-color: #141216;
-    border: 1px solid #3a3530;
+    background-color: var(--section-bg-tertiary);
+    border: 1px solid var(--border-main);
     display: flex;
     align-items: center;
     margin-bottom: 18px;
@@ -100,19 +101,32 @@
     border: none !important;
     padding: 18px;
     font-size: 1rem;
-    background: transparent !important;
-    color: #ece4da !important;
+    background: var(--section-bg-tertiary) !important;
+    color: var(--text-main) !important;
     width: 100%;
     outline: none !important;
+    color-scheme: light;
+}
+
+.rd-textarea {
+    border-radius: 18px;
+    resize: vertical;
+}
+
+.rd-select {
+    border-radius: 18px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
 .rd-textarea::placeholder {
-    color: #9a8e82;
+    color: var(--text-muted);
 }
 
 .rd-btn-save {
-    background: #d3ab80 !important;
-    color: #141216 !important;
+    background: var(--accent-main) !important;
+    color: var(--accent-contrast) !important;
     border-radius: 999px;
     padding: 18px;
     font-weight: 800;
@@ -127,16 +141,20 @@
 }
 
 .rd-btn-save:hover {
-    background: #ece4da !important;
+    background: var(--footer-text) !important;
     transform: translateY(-2px);
 }
 
+.modal-content .rd-card-main {
+    background: var(--section-bg-primary);
+}
+
 .rating-brand-side {
-    border-color: #3a3530 !important;
+    border-color: var(--border-main) !important;
 }
 
 .rating-brand-quote {
-    color: #d3ab80;
+    color: var(--accent-main);
     font-family: 'Georgia', serif;
     font-style: italic;
     font-weight: 400;
@@ -152,9 +170,9 @@
     width: 180px;
     height: 180px;
     border-radius: 50%;
-    border: 6px solid #3a3530;
+    border: 6px solid var(--border-main);
     box-shadow: 0 10px 25px rgba(0,0,0,0.18);
-    background: #141216;
+    background: var(--bg-main);
     object-fit: cover;
 }
 
@@ -162,15 +180,15 @@
     position: absolute;
     bottom: 10px;
     right: 10px;
-    background: #d3ab80;
-    color: #141216;
+    background: var(--accent-main);
+    color: var(--accent-contrast);
     width: 45px;
     height: 45px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid #1e1c22;
+    border: 3px solid var(--surface-main);
 }
 
 .rating-recommend-label {
@@ -185,14 +203,10 @@
 
     .rating-brand-side {
         border-left: none !important;
-        border-top: 1px solid #3a3530 !important;
+        border-top: 1px solid var(--border-main) !important;
         margin-top: 24px;
         padding-top: 24px;
     }
 }
-
-
-
-
-
+/* #endregion */
 

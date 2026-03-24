@@ -1,27 +1,24 @@
 using Microsoft.EntityFrameworkCore;
 using RappiDozApp.Data;
-using Microsoft.AspNetCore.Authentication.Cookies; // Necesario para el esquema de autenticación
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. CONFIGURACIÓN DE CONTROLADORES Y VISTAS
+#region Servicios
 builder.Services.AddControllersWithViews();
 
-// 2. CONFIGURACIÓN DE BASE DE DATOS
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// 3. CONFIGURACIÓN DE AUTENTICACIÓN (Esto soluciona el InvalidOperationException)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Accesos/Login";      // Si no está logueado, va aquí
-        options.AccessDeniedPath = "/Home/Index"; // Si no tiene el rol, va aquí
+        options.LoginPath = "/Accesos/Login";
+        options.AccessDeniedPath = "/Home/Index";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
     });
 
-// 4. CONFIGURACIÓN DE SESIÓN
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession(options =>
@@ -30,10 +27,10 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
+#endregion
 var app = builder.Build();
 
-// 5. PIPELINE DE MIDDLEWARE (El orden aquí es CRÍTICO)
+#region Middleware
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -45,13 +42,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// El orden sagrado: Sesión -> Autenticación -> Autorización
-app.UseSession();        // Habilita HttpContext.Session
-app.UseAuthentication(); // Lee la Cookie y reconoce quién es el usuario
-app.UseAuthorization();  // Revisa si tiene permiso ([Authorize])
+app.UseSession();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+#endregion
 
 app.Run();

@@ -15,6 +15,7 @@ namespace RappiDozApp.Controllers
             _context = context;
         }
 
+        #region Vistas
         [HttpGet]
         public async Task<IActionResult> Mapa()
         {
@@ -31,7 +32,7 @@ namespace RappiDozApp.Controllers
                 ultimaUbicacion = new UbicacionUsuario
                 {
                     IdUsuario = userId.Value,
-                    Latitud = 9.9333m, // La 'm' es para decimal
+                    Latitud = 9.9333m,
                     Longitud = -84.0833m,
                     NombreUbicacion = "Nueva Ubicación"
                 };
@@ -39,7 +40,9 @@ namespace RappiDozApp.Controllers
 
             return PartialView("~/Views/Ubicaciones/Mapa.cshtml", ultimaUbicacion);
         }
+        #endregion
 
+        #region Acciones
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GuardarUbicacion(string Latitud, string Longitud, string nombreUbicacion = "Mi Ubicación")
@@ -47,7 +50,6 @@ namespace RappiDozApp.Controllers
             int? userId = HttpContext.Session.GetInt32("UsuarioId");
             if (userId == null) return Json(new { success = false, message = "Sesión expirada" });
 
-            // Conversión segura de string (punto decimal JS) a decimal C#
             bool latOk = decimal.TryParse(Latitud, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out decimal lat);
             bool lngOk = decimal.TryParse(Longitud, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out decimal lng);
 
@@ -66,7 +68,6 @@ namespace RappiDozApp.Controllers
                     _context.UbicacionUsuario.Add(nuevaUbicacion);
                     await _context.SaveChangesAsync();
 
-                    // Guardar en sesión para persistencia rápida si es necesario
                     HttpContext.Session.SetString("Latitud", lat.ToString(CultureInfo.InvariantCulture));
                     HttpContext.Session.SetString("Longitud", lng.ToString(CultureInfo.InvariantCulture));
 
@@ -98,6 +99,6 @@ namespace RappiDozApp.Controllers
 
             return Json(new { success = false, message = "No se encontró la ubicación" });
         }
+        #endregion
     }
 }
-

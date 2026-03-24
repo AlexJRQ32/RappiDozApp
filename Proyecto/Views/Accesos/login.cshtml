@@ -1,7 +1,4 @@
-﻿@{
-    Layout = null;
-}
-
+﻿
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -53,75 +50,10 @@
         </form>
 
         <div class="register">
-            <a asp-controller="Usuarios" asp-action="Registrar" id="register">¿No tienes una cuenta? Regístrate</a>
+            <a asp-controller="Accesos" asp-action="Registrar" id="register">¿No tienes una cuenta? Regístrate</a>
         </div>
     </div>
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            const form = this;
-            const errorDiv = document.getElementById('error-message');
-            const formData = new FormData(form);
-
-            // Ocultar mensaje de error previo si existe
-            errorDiv.style.display = "none";
-
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                }
-            })
-            .then(response => {
-                if (response.redirected) {
-                    // AVISO DE ÉXITO: Aparece justo antes de redirigir
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Acceso Correcto!',
-                        text: 'Bienvenido de nuevo a Rappi\'Doz',
-                        showConfirmButton: false,
-                        timer: 1500, // Se cierra solo en 1.5 segundos
-                        background: '#1e1c22',
-                        color: '#ece4da'
-                    }).then(() => {
-                        window.location.href = response.url;
-                    });
-                    return;
-                }
-                return response.text();
-            })
-            .then(data => {
-                if (data) {
-                    // AVISO DE ERROR: El servidor devolvió la vista (credenciales mal)
-                    errorDiv.textContent = "Correo o contraseña incorrectos.";
-                    errorDiv.style.display = "block";
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error de acceso',
-                        text: 'Las credenciales no coinciden. Inténtalo de nuevo.',
-                        confirmButtonColor: '#d3ab80',
-                        background: '#1e1c22',
-                        color: '#ece4da'
-                    });
-                }
-            })
-            .catch(error => {
-                // AVISO DE ERROR TÉCNICO
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Servidor no disponible',
-                    text: 'Hubo un problema de conexión. Inténtalo más tarde.',
-                    confirmButtonColor: '#d3ab80',
-                    background: '#1e1c22',
-                    color: '#ece4da'
-                });
-                console.error('Error:', error);
-            });
-        });
-    </script>
+    <script src="~/js/Accesos/login.js"></script>
 </body>
 </html>

@@ -17,7 +17,7 @@
 }
 
 .wallet-empty {
-    border: 2px dashed #3a3530;
+    border: 2px dashed var(--border-main);
     padding: 15px;
     border-radius: 15px;
     text-align: center;
@@ -37,7 +37,7 @@
 
 .wallet-card {
     background: var(--white);
-    border: 1.5px solid #3a3530;
+    border: 1.5px solid var(--border-main);
     padding: 12px;
     border-radius: 15px;
     cursor: pointer;

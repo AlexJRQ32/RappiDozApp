@@ -8,7 +8,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #3a3530;
+    border-bottom: 2px solid var(--border-main);
     padding-bottom: 15px;
     margin-bottom: 30px;
 }
@@ -47,6 +47,8 @@
 .user-avatar {
     width: 55px;
     height: 55px;
+    min-width: 55px;
+    min-height: 55px;
     background: var(--surface-soft);
     color: var(--accent-main);
     border-radius: 50%;
@@ -57,7 +59,7 @@
     font-size: 1.4rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     overflow: hidden;
-    border: 2px solid #3a3530;
+    border: 2px solid var(--border-main);
 }
 
 .user-avatar img {
@@ -80,7 +82,7 @@
 }
 
 .badge-rol {
-    background: #3a2b18;
+    background: rgba(var(--accent-main-rgb), 0.18);
     color: var(--accent-main);
     padding: 5px 15px;
     border-radius: 20px;
@@ -109,12 +111,12 @@
 }
 
 .btn-accion.edit {
-    background: #3a2b18;
+    background: rgba(var(--accent-main-rgb), 0.14);
     color: var(--accent-main);
 }
 
 .btn-accion.delete {
-    background: #3a1a1a;
+    background: rgba(255, 77, 77, 0.15);
     color: #ff4d4d;
 }
 
@@ -128,12 +130,14 @@
     height: 45px;
     border-radius: 50%;
     border: none;
-    background: var(--surface-soft);
-    color: var(--text-main);
+    background: var(--brown-dark);
+    color: #fff8ef;
     transition: 0.3s;
 }
 
 .btn-circular:hover {
+    background: var(--gold-light);
+    color: var(--brown-dark);
     transform: scale(1.1) rotate(90deg);
 }
 

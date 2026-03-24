@@ -1,10 +1,11 @@
 ﻿@model RappiDozApp.Models.UbicacionUsuario
+@* #region Configuración *@
 @{
     Layout = null;
-    // Forzamos formato de punto para coordenadas (JS no entiende comas decimales)
     var lat = Model?.Latitud.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "9.9333";
     var lng = Model?.Longitud.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-84.0833";
 }
+@* #endregion *@
 
 <div class="p-4 modal-content-custom">
     <button type="button" class="btn-close-custom" data-bs-dismiss="modal">×</button>
@@ -36,112 +37,4 @@
     </button>
 </div>
 
-<script>
-    (function() {
-        var mapFinal = null;
-        var markerFinal = null;
-
-        function initMap() {
-            var $el = $('#mapa-final');
-            if ($el.length === 0 || mapFinal !== null) return;
-
-            var lat = parseFloat($el.attr('data-lat'));
-            var lng = parseFloat($el.attr('data-lng'));
-
-            // Inicializar mapa
-            mapFinal = L.map('mapa-final', {
-                zoomControl: true,
-                attributionControl: false
-            }).setView([lat, lng], 16);
-
-            // Capa de mapa elegante (CartoDB Voyager)
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                maxZoom: 19
-            }).addTo(mapFinal);
-
-            // Icono personalizado estilo Rappi
-            var iconRappi = L.icon({
-                iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-                iconSize: [46, 46],
-                iconAnchor: [23, 46],
-                popupAnchor: [0, -40]
-            });
-
-            // Marcador arrastrable
-            markerFinal = L.marker([lat, lng], {
-                draggable: true,
-                icon: iconRappi
-            }).addTo(mapFinal);
-
-            // Actualizar inputs al terminar de arrastrar
-            markerFinal.on('dragend', function(e) {
-                var pos = markerFinal.getLatLng();
-                // Forzamos el uso de punto decimal para evitar problemas de cultura regional
-                $('#lat-hidden').val(pos.lat.toFixed(10));
-                $('#lng-hidden').val(pos.lng.toFixed(10));
-            });
-
-            // Arreglar bug de grisado en modales de Bootstrap
-            setTimeout(function() {
-                mapFinal.invalidateSize();
-            }, 400);
-        }
-
-        // Lógica de apertura del modal
-        if ($('#modalGeneral').hasClass('show')) {
-            initMap();
-        }
-        $(document).on('shown.bs.modal', '#modalGeneral', function() {
-            initMap();
-        });
-
-        // Evento de Guardado AJAX
-        $(document).off('click', '#btnConfirmarFinal').on('click', '#btnConfirmarFinal', function() {
-            var nombre = $('#nombre-ubicacion').val();
-            
-            if (!nombre || nombre.trim() === "") {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Falta un detalle',
-                    text: 'Por favor, escribe un nombre para tu dirección.',
-                    confirmButtonColor: '#472825'
-                });
-                return;
-            }
-
-            var btn = $(this);
-            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
-
-            var data = {
-                Latitud: $('#lat-hidden').val(),
-                Longitud: $('#lng-hidden').val(),
-                nombreUbicacion: nombre,
-                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
-            };
-
-            $.post('/Usuario/GuardarUbicacion', data)
-                .done(function(res) {
-                    if (res.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Ubicación lista!',
-                            text: res.message,
-                            showConfirmButton: false,
-                            timer: 1800,
-                            background: '#fff4e2'
-                        }).then(() => {
-                            // RECARGA EL CARRITO AUTOMÁTICAMENTE
-                            window.location.reload();
-                        });
-                    } else {
-                        Swal.fire('Error', res.message, 'error');
-                        btn.prop('disabled', false).text('CONFIRMAR Y GUARDAR');
-                    }
-                })
-                .fail(function() {
-                    Swal.fire('Error', 'No se pudo conectar con el servidor. Verifica tu conexión.', 'error');
-                    btn.prop('disabled', false).text('CONFIRMAR Y GUARDAR');
-                });
-        });
-    })();
-</script>
+<script src="~/js/Ubicaciones/mapa.js"></script>

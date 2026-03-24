@@ -1,4 +1,4 @@
-/* Dashboard/_FormCupon.cshtml */
+/* #region Form Cupon */
 .form-gold-wrapper {
     padding: 35px;
     color: var(--text-main);
@@ -6,7 +6,7 @@
 
 .gold-input {
     padding: 12px;
-    border: 1px solid #3a3530;
+    border: 1px solid var(--border-main);
     border-radius: 8px;
     font-size: 0.9rem;
     background: var(--surface-card);
@@ -38,7 +38,7 @@
 .form-actions {
     margin-top: 30px;
     padding-top: 20px;
-    border-top: 1px solid #3a3530;
+    border-top: 1px solid var(--border-main);
     display: flex;
     justify-content: flex-end;
     gap: 15px;
@@ -109,3 +109,4 @@
     font-weight: 900;
     margin: 0;
 }
+/* #endregion */

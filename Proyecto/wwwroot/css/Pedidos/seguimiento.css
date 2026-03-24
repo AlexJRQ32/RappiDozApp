@@ -1,14 +1,12 @@
-﻿/* --- CONFIGURACIÓN DE MAPA FULL-SCREEN (scope local a contenedores de seguimiento) --- */
-/* No modificar el overflow global del <body> para no impedir el scroll en otras páginas. */
+﻿/* #region Mapa Full-Screen */
 .tracking-wrapper, .main-container, #mapContainer {
-    overflow: hidden; /* Evita scroll dentro del área del mapa */
+    overflow: hidden;
 }
 
 .tracking-wrapper {
     position: relative;
     height: 100vh;
     width: 100vw;
-    /* Mantenemos tu ajuste de layout pero lo hacemos dinámico */
     margin-top: calc(-1 * var(--navbar-height, 20px));
 }
 
@@ -16,42 +14,43 @@
     height: 100vh;
     width: 100%;
     z-index: 1;
-    background-color: #3a3530; /* Color de carga */
+    background-color: var(--border-main);
 }
 
-/* --- PANEL DE INFORMACIÓN (Glassmorphism Gold) --- */
+/* #endregion */
+
+/* #region Panel de Estado */
 .status-card {
     position: absolute;
     top: 100px;
     left: 20px;
     z-index: 1000;
     width: 320px;
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(var(--surface-main-rgb), 0.88);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     padding: 25px;
     border-radius: 25px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-    border: 1px solid rgba(211, 171, 128, 0.4);
+    box-shadow: var(--shadow-standard);
+    border: 1px solid rgba(var(--accent-main-rgb), 0.4);
     font-family: 'Poppins', sans-serif;
     animation: slideInLeft 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* Caja de Tiempo Estimado (ETA) */
 .eta-box {
-    background: #ece4da;
-    color: #ece4da;
+    background: var(--surface-main);
+    color: var(--text-main);
     padding: 18px;
     border-radius: 18px;
     text-align: center;
     margin-top: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+    box-shadow: var(--shadow-soft);
     transition: var(--transicion, all 0.3s ease);
 }
 
     .eta-box:hover {
         transform: translateY(-3px);
-        background: #5d3531;
+        background: var(--surface-elevated);
     }
 
     .eta-box h4 {
@@ -67,15 +66,16 @@
         display: block;
     }
 
-/* --- ICONO DE MOTO ANIMADO --- */
+/* #endregion */
+
+/* #region Animaciones */
 .moto-icon-div i {
     font-size: 35px;
-    color: #ece4da;
+    color: var(--text-main);
     filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
     animation: motoVibration 0.3s infinite alternate;
 }
 
-/* Animación de motor encendido */
 @keyframes motoVibration {
     from {
         transform: translateY(0) rotate(-2deg);
@@ -86,7 +86,6 @@
     }
 }
 
-/* Animación de entrada del panel */
 @keyframes slideInLeft {
     from {
         opacity: 0;
@@ -98,12 +97,13 @@
         transform: translateX(0);
     }
 }
+/* #endregion */
 
-/* --- RESPONSIVE MÓVIL (Crítico para Mapas) --- */
+/* #region Responsivo */
 @media (max-width: 768px) {
     .status-card {
         top: auto;
-        bottom: 30px; /* En móvil, el panel va abajo para manejo con una mano */
+        bottom: 30px;
         left: 5%;
         right: 5%;
         width: 90%;
@@ -112,7 +112,7 @@
     }
 
     .tracking-wrapper {
-        margin-top: 0; /* Reset en móvil */
+        margin-top: 0;
     }
 
     .eta-box {
@@ -127,7 +127,6 @@
             margin-bottom: 0;
         }
 
-    /* Pequeño indicador para "deslizar" el panel (decorativo) */
     .status-card::before {
         content: '';
         position: absolute;
@@ -136,7 +135,7 @@
         transform: translateX(-50%);
         width: 40px;
         height: 4px;
-        background: rgba(0,0,0,0.1);
+        background: rgba(var(--text-main-rgb), 0.1);
         border-radius: 10px;
     }
 }
@@ -153,26 +152,20 @@
     }
 }
 
-/* Estilo para los markers del mapa (si usas Leaflet o Google Maps) */
+/* #endregion */
+
+/* #region Markers y Estilos Migrados */
 .custom-marker {
     background: var(--accent-main);
-    border: 3px solid #1e1c22;
+    border: 3px solid var(--surface-main);
     border-radius: 50%;
-    box-shadow: 0 0 15px rgba(211, 171, 128, 0.6);
+    box-shadow: 0 0 15px rgba(var(--accent-main-rgb), 0.6);
 }
 
-/* -----------------------------------------------------------------
-   Styles moved from Views/Pedido/Seguimiento.cshtml
-   ----------------------------------------------------------------- */
-
-/* Ocultar elementos que estorban (solo dentro del contexto de seguimiento) */
-/* Nota: no ocultamos el elemento <footer> globalmente para evitar esconder el footer en otras páginas. */
 .tracking-wrapper .cta-final,
 .tracking-wrapper .footer-content {
     display: none !important;
 }
-
-/* Evitamos tocar html/body globalmente para no bloquear el scroll en otras páginas. */
 
 .main-container {
     position: relative;
@@ -182,11 +175,8 @@
 }
 
 #map {
-    /* Default map styling left minimal. Scoped tracking map styles are applied below to avoid
-       interfering with other pages that also use an element with id="map" (e.g. Home/Index). */
 }
 
-/* Scoped map styles for the tracking view */
 .tracking-wrapper #map,
 .main-container #map {
     position: absolute;
@@ -197,28 +187,26 @@
     z-index: 1;
 }
 
-/* TARJETA ESQUINEADA (PC Y RESPONSIVE) */
 .tracking-card {
     position: absolute;
     top: 20px;
     left: 20px;
     z-index: 1000;
-    background: rgba(255, 255, 255, 0.96);
-    width: 300px; /* Ancho fijo para que no se estire en responsive */
-    max-width: 85%; /* Para que en pantallas muy pequeñas no se salga */
+    background: rgba(var(--surface-main-rgb), 0.96);
+    width: 300px;
+    max-width: 85%;
     border-radius: 20px;
     padding: 20px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(var(--accent-main-rgb), 0.22);
 }
 
-/* Ajuste mínimo para que en móviles no se vea gigante */
 @media (max-width: 768px) {
     .tracking-card {
         top: 15px;
         left: 15px;
         padding: 15px;
-        width: 260px; /* Un pelín más delgada en móvil */
+        width: 260px;
     }
 
     .main-container {
@@ -227,7 +215,6 @@
     }
 }
 
-/* COLORES DE LETRAS DINÁMICOS */
 .status-badge {
     font-size: 11px;
     padding: 4px 10px;
@@ -237,12 +224,10 @@
     transition: all 0.4s ease;
 }
 
-/* Amarillo mientras va de camino */
 .text-camino {
     background: #fffde7;
     color: #fbc02d !important;
 }
-/* Verde cuando llega */
 .text-llegado {
     background: #1a302a;
     color: #2e7d32 !important;
@@ -268,11 +253,10 @@
     width: 0%;
 }
 
-/* ESPACIO DEL USUARIO CON MÁS INFO */
 .client-info {
     margin: 15px 0;
     padding-top: 10px;
-    border-top: 1px dashed #3a3530;
+    border-top: 1px dashed var(--border-main);
     color: #444;
     font-size: 0.85rem;
 }
@@ -300,8 +284,7 @@
     border-radius: 12px;
     text-decoration: none;
     font-weight: bold;
-    border: 1px solid #3a3530;
-    font-size: 0.9rem;
+    border: 1px solid var(--border-main);
 }
 
 .moto-icon {
@@ -314,11 +297,5 @@
     background: none !important;
     border: none !important;
 }
-
-
-
-
-
-
-
+/* #endregion */
 

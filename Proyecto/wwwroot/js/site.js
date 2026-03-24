@@ -1,8 +1,30 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿// #region Mapa Compartido
+window.RappiDozMap = {
+    tileUrls: {
+        light: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+        dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+    },
+    getCurrentTileUrl: function () {
+        var tema = document.documentElement.getAttribute('data-theme') || 'light';
+        return tema === 'dark' ? this.tileUrls.dark : this.tileUrls.light;
+    },
+    addTileLayer: function (map) {
+        var self = this;
+        var tileLayer = L.tileLayer(self.getCurrentTileUrl(), {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
 
-// Write your JavaScript code.
+        document.addEventListener('rappidoz-theme-changed', function () {
+            tileLayer.setUrl(self.getCurrentTileUrl());
+        });
 
+        return tileLayer;
+    }
+};
+// #endregion
+
+// #region Modales Compartidos
 function openSharedModal(url) {
     const modalBody = document.getElementById('modalBodyGeneral');
     const modalEl = document.getElementById('modalGeneral');
@@ -47,7 +69,9 @@ window.abrirPerfil = function () {
 window.abrirCalificar = function () {
     openSharedModal('/Valoraciones/Crear');
 };
+// #endregion
 
+// #region Perfil y Valoraciones
 document.addEventListener('change', function (e) {
     if (e.target && e.target.id === 'fotoInput' && e.target.files && e.target.files[0]) {
         const reader = new FileReader();
@@ -125,3 +149,4 @@ document.addEventListener('submit', function (e) {
             .catch(() => Swal.fire('Error', 'No se pudo guardar la valoración.', 'error'));
     }
 });
+// #endregion

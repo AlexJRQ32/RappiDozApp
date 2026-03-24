@@ -1,15 +1,15 @@
-/* Usuarios/users-form.cshtml */
+/* #region Users Form */
 .rd-card-main {
-    background: #1e1c22;
-    border-radius: 24px;
+    background: var(--surface-main);
+    border-radius: 28px;
     width: 100%;
     max-width: none;
     margin: 0;
     padding: 34px;
     box-shadow: none;
     position: relative;
-    border: 1px solid #3a3530;
-    color: #ece4da;
+    border: none;
+    color: var(--text-main);
 }
 
 .btn-close-custom {
@@ -19,20 +19,20 @@
     background: none;
     border: none;
     font-size: 2rem;
-    color: #d3ab80;
+    color: var(--accent-main);
     cursor: pointer;
     line-height: 1;
 }
 
 .users-form-quote {
-    color: #d3ab80;
+    color: var(--accent-main);
     font-family: 'Georgia', serif;
     font-style: italic;
     margin-bottom: 6px;
 }
 
 .users-form-title {
-    color: #ece4da;
+    color: var(--text-main);
     font-weight: 900;
     letter-spacing: -1px;
 }
@@ -41,32 +41,32 @@
     width: 180px;
     height: 180px;
     object-fit: cover;
-    border: 5px solid #3a3530;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.22);
+    border: 5px solid var(--border-main);
+    box-shadow: var(--shadow-soft);
 }
 
 .profile-photo-label {
     width: 48px;
     height: 48px;
     cursor: pointer;
-    background-color: #d3ab80;
-    color: #141216;
-    border: 4px solid #1e1c22;
+    background-color: var(--accent-main);
+    color: var(--accent-contrast);
+    border: 4px solid var(--surface-main);
 }
 
 .profile-change-text {
     font-size: 0.8rem;
-    color: #9a8e82;
+    color: var(--text-muted);
     font-weight: 700;
     text-transform: uppercase;
 }
 
 .users-form-divider {
-    border-color: #3a3530 !important;
+    border-color: var(--border-main) !important;
 }
 
 .rd-label {
-    color: #d3ab80;
+    color: var(--accent-main);
     font-weight: 800;
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -78,8 +78,8 @@
 
 .rd-input-group {
     border-radius: 18px;
-    background-color: #141216;
-    border: 1px solid #3a3530;
+    background-color: var(--surface-elevated);
+    border: 1px solid var(--border-main);
     display: flex;
     align-items: center;
     margin-bottom: 15px;
@@ -88,12 +88,12 @@
 }
 
 .rd-input-group:focus-within {
-    border-color: #d3ab80;
+    border-color: var(--accent-main);
     box-shadow: 0 0 0 0.14rem rgba(211, 171, 128, 0.14);
 }
 
 .rd-input-icon {
-    color: #d3ab80;
+    color: var(--accent-main);
     padding-left: 18px;
     font-size: 1.1rem;
 }
@@ -103,37 +103,37 @@
     padding: 17px 18px !important;
     font-size: 1rem !important;
     background: transparent !important;
-    color: #ece4da !important;
+    color: var(--text-main) !important;
     width: 100%;
     outline: none !important;
     border-radius: 0 18px 18px 0;
 }
 
 .rd-input::placeholder {
-    color: #9a8e82;
+    color: var(--text-muted);
 }
 
 .rd-input:-webkit-autofill,
 .rd-input:-webkit-autofill:hover,
 .rd-input:-webkit-autofill:focus,
 .rd-input:-webkit-autofill:active {
-    -webkit-text-fill-color: #ece4da !important;
-    -webkit-box-shadow: 0 0 0 1000px #141216 inset !important;
-    box-shadow: 0 0 0 1000px #141216 inset !important;
+    -webkit-text-fill-color: var(--text-main) !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--surface-elevated) inset !important;
+    box-shadow: 0 0 0 1000px var(--surface-elevated) inset !important;
     transition: background-color 9999s ease-in-out 0s;
-    caret-color: #ece4da;
+    caret-color: var(--text-main);
 }
 
 .users-form-help {
     font-size: 0.72rem;
-    color: #9a8e82;
+    color: var(--text-muted);
     text-align: right;
     font-weight: 600;
 }
 
 .rd-btn-save {
-    background: #d3ab80 !important;
-    color: #141216 !important;
+    background: var(--accent-main) !important;
+    color: var(--accent-contrast) !important;
     border-radius: 999px;
     padding: 18px;
     font-weight: 800;
@@ -148,7 +148,7 @@
 }
 
 .rd-btn-save:hover {
-    background: #ece4da !important;
+    background: var(--accent-soft) !important;
     transform: translateY(-2px);
 }
 
@@ -159,7 +159,7 @@
 
     .users-form-divider {
         border-left: none !important;
-        border-top: 1px solid #3a3530 !important;
+        border-top: 1px solid var(--border-main) !important;
         margin-top: 24px;
         padding-top: 24px;
     }
@@ -169,3 +169,4 @@
         height: 150px;
     }
 }
+/* #endregion */

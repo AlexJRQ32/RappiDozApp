@@ -1,4 +1,14 @@
-/* Accesos/selector.cshtml */
+/* #region Ocultar Navbar y Footer */
+.navbar {
+    display: none;
+}
+
+.cta-final {
+    display: none;
+}
+/* #endregion */
+
+/* #region Configuración General */
 * {
     margin: 0;
     padding: 0;
@@ -19,8 +29,8 @@ body {
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    background-color: #141216;
-    background-image: radial-gradient(circle at 15% 20%, rgba(211, 171, 128, 0.2) 0%, transparent 32%), radial-gradient(circle at 85% 15%, rgba(58, 53, 48, 0.7) 0%, transparent 35%), radial-gradient(circle at 80% 85%, rgba(211, 171, 128, 0.12) 0%, transparent 28%), linear-gradient(135deg, #141216 0%, #1e1c22 55%, #141216 100%);
+    background-color: var(--bg-main);
+    background-image: var(--auth-bg-gradient);
     background-attachment: fixed;
     background-size: 200% 200%;
     animation: liquidMove 10s ease-in-out infinite alternate;
@@ -44,17 +54,19 @@ body {
         transform: scale(1);
     }
 }
+/* #endregion */
 
+/* #region Formulario */
 .form {
     width: 100%;
     max-width: 520px;
-    background: rgba(30, 28, 34, 0.88);
+    background: var(--glass-surface);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid #3a3530;
+    border: 1px solid var(--border-main);
     border-radius: 25px;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
-    color: #ece4da;
+    box-shadow: var(--shadow-standard);
+    color: var(--text-main);
     padding: 50px 40px;
     text-align: center;
     animation: fadeInScale 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -67,20 +79,22 @@ body {
     letter-spacing: -1px;
     text-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
+/* #endregion */
 
+/* #region Tarjetas de Selección */
 .selector-brand-mini {
     text-align: center;
     margin-bottom: 10px;
 }
 
 .selector-brand-rappi {
-    color: #e74c3c;
+    color: var(--danger-main);
     font-weight: bold;
     font-size: 1.5rem;
 }
 
 .selector-brand-doz {
-    color: #2ecc71;
+    color: var(--medium-green);
     font-weight: bold;
     font-size: 1.2rem;
 }
@@ -98,23 +112,23 @@ body {
 .card-option {
     flex: 1;
     padding: 30px 10px;
-    border: 1px solid #3a3530;
+    border: 1px solid var(--border-main);
     border-radius: 15px;
-    background: rgba(20, 18, 22, 0.85);
+    background: var(--input-surface);
     transition: 0.3s;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     cursor: pointer;
-    color: #ece4da;
+    color: var(--text-main);
     width: 100%;
     font-family: inherit;
 }
 
 .card-option:hover {
-    background: rgba(58, 53, 48, 0.95);
-    color: #ece4da;
+    background: var(--surface-elevated);
+    color: var(--text-main);
     transform: translateY(-5px);
 }
 
@@ -139,10 +153,12 @@ body {
 }
 
 .register a {
-    color: #ece4da;
+    color: var(--text-main);
     text-decoration: none;
 }
+/* #endregion */
 
+/* #region Responsivo */
 @media (max-width: 600px) {
     .form {
         padding: 40px 25px;
@@ -157,3 +173,4 @@ body {
         flex-direction: column;
     }
 }
+/* #endregion */

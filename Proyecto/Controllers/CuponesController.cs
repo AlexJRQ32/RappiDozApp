@@ -16,14 +16,11 @@ namespace RappiDozApp.Controllers
             _context = context;
         }
 
-        // ==========================================
-        // GET: /Cupones/Index
-        // ==========================================
+        #region Vistas
         public async Task<IActionResult> Index()
         {
             var emailUsuario = HttpContext.Session.GetString("EmailUsuario");
 
-            // CAMBIO: Agregamos .Include(c => c.Categoria) para traer los datos de la tabla relacionada
             var cuponesVisibles = await _context.Cupones
                 .Include(c => c.Categoria)
                 .Where(c => c.Activo && c.Stock > 0)
@@ -43,7 +40,6 @@ namespace RappiDozApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Detalles(int id)
         {
-            // CAMBIO: También incluimos la categoría aquí por si acaso
             var cupon = await _context.Cupones
                 .Include(c => c.Categoria)
                 .FirstOrDefaultAsync(c => c.Id == id);
@@ -53,7 +49,9 @@ namespace RappiDozApp.Controllers
             return View("~/Views/Cupones/cupones.cshtml", cupon);
         }
 
-        // POST: /Cupon/Apartar
+        #endregion
+
+        #region Acciones
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Apartar(string codigo)
@@ -83,7 +81,6 @@ namespace RappiDozApp.Controllers
                 return RedirectToAction("Index");
             }
 
-            // --- PROCESO DE RECLAMO ---
             cuponMaestro.Stock--;
 
             var nuevoApartado = new CuponApartado
@@ -93,8 +90,6 @@ namespace RappiDozApp.Controllers
                 EsPorcentaje = cuponMaestro.EsPorcentaje,
                 UsuarioEmail = emailUsuario,
                 FechaReclamado = DateTime.Now
-                // Nota: Aquí podrías guardar también el CategoriaId si tu tabla Apartados lo requiere, 
-                // pero con el Código suele ser suficiente para vincularlo luego.
             };
 
             _context.CuponesApartados.Add(nuevoApartado);
@@ -110,13 +105,10 @@ namespace RappiDozApp.Controllers
         {
             try
             {
-                // 1. Limpieza de Código
                 cupon.Codigo = cupon.Codigo?.ToUpper().Trim();
 
-                // 2. Manejo de Categoría General
                 if (cupon.CategoriaId == 0) cupon.CategoriaId = null;
 
-                // 3. Validación de Fecha (Seguridad extra)
                 if (cupon.FechaExpiracion == DateTime.MinValue)
                 {
                     cupon.FechaExpiracion = DateTime.Now.AddDays(30);
@@ -143,5 +135,6 @@ namespace RappiDozApp.Controllers
             await _context.SaveChangesAsync();
             return Json(new { success = true, message = "Cupón eliminado." });
         }
+        #endregion
     }
 }

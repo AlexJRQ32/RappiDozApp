@@ -10,11 +10,9 @@ namespace RappiDozApp.Controllers
 
         public ValoracionesController(ApplicationDbContext context) => _context = context;
 
-        // GET: Valoracion/Crear
-        // GET: Valoracion/Crear
+        #region Vistas
         public IActionResult Crear()
         {
-            // Cambiamos View por PartialView para que no cargue el _Layout
             return PartialView("~/Views/Valoraciones/calificanos.cshtml");
         }
 
@@ -32,9 +30,8 @@ namespace RappiDozApp.Controllers
             _context.Add(nuevaValoracion);
             await _context.SaveChangesAsync();
 
-            // Como estamos en un modal, lo ideal es devolver un JSON de éxito
-            // para que SweetAlert o JS cierren el modal y recarguen.
             return Json(new { success = true, message = "¡Gracias por tu calificación!" });
         }
+        #endregion
     }
 }

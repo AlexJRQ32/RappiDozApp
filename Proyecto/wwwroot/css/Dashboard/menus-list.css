@@ -3,7 +3,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #3a3530;
+    border-bottom: 2px solid var(--border-main);
     padding-bottom: 15px;
     margin-bottom: 30px;
 }
@@ -26,8 +26,8 @@
     font-size: 1.2rem;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    background-color: var(--surface-soft);
-    color: var(--text-main);
+    background-color: var(--brown-dark);
+    color: #fff8ef;
     border: none;
 }
 
@@ -96,12 +96,12 @@
 }
 
 .btn-accion.edit {
-    background: #3a2b18;
-    color: #d3ab80;
+    background: rgba(var(--accent-main-rgb), 0.14);
+    color: var(--accent-main);
 }
 
 .btn-accion.delete {
-    background: #3a1a1a;
+    background: rgba(255, 77, 77, 0.15);
     color: #ff4d4d;
 }
 
@@ -117,12 +117,12 @@
     max-height: 0;
     overflow: hidden;
     transition: 0.4s;
-    background: #18161b;
+    background: var(--surface-elevated);
 }
 
 .toggle-detalles:checked ~ .detalles-desplegables {
     max-height: 100px;
-    border-top: 1px solid #3a3530;
+    border-top: 1px solid var(--border-main);
 }
 
 .btn-lupa {

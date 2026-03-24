@@ -1,9 +1,17 @@
-﻿/* Shared/_PageTransition.cshtml */
+﻿/* #region Page Transition */
 :root {
+    --rd-cafe: #5a322d;
+    --rd-dorado: #d3ab80;
+    --rd-bg: var(--section-bg-primary, #fffdf9);
+    --rd-surface: var(--section-bg-secondary, #fbf1df);
+    --rd-cloud: rgba(211, 171, 128, 0.18);
+}
+
+html[data-theme="dark"] {
     --rd-cafe: #ece4da;
     --rd-dorado: #d3ab80;
-    --rd-bg: #141216;
-    --rd-surface: #1e1c22;
+    --rd-bg: var(--section-bg-primary, #141216);
+    --rd-surface: var(--section-bg-secondary, #1e1c22);
     --rd-cloud: rgba(236, 228, 218, 0.14);
 }
 
@@ -12,7 +20,7 @@
     inset: 0;
     width: 100vw;
     height: 100vh;
-    background: radial-gradient(circle at top, #28262c 0%, var(--rd-bg) 55%);
+    background: radial-gradient(circle at top, var(--rd-surface) 0%, var(--rd-bg) 55%);
     z-index: 100000;
     display: flex;
     justify-content: center;
@@ -162,10 +170,5 @@
     50% { transform: translate(-1px, 3px) rotate(-1deg); }
     100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
-
-
-
-
-
-
+/* #endregion */
 

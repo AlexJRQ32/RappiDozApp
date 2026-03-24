@@ -1,32 +1,187 @@
-﻿/* VARIABLES RAPIDDOZ */
+﻿/* #region Variables Light */
 :root {
-    --bg-main: #141216; /* Crema base -> Oscuro */
-    --text-main: #ece4da; /* Marrón -> Claro */
-    --text-muted: #9a8e82; /* Tierra suave -> Gris/Dorado suave */
-    --accent-main: #d3ab80; /* Dorado */
-    --accent-soft: #28262c; /* Arena clara -> Gris oscuro de fondo */
-    --white: #1e1c22; /* Blanco -> Card oscuro */
+    --section-bg-primary: #fffdf9;
+    --section-bg-secondary: #fbf1df;
+    --section-bg-tertiary: #f4e2c9;
+    --bg-main-rgb: 255, 248, 239;
+    --text-main-rgb: 71, 40, 37;
+    --surface-main-rgb: 255, 253, 250;
+    --surface-elevated-rgb: 248, 239, 228;
+    --accent-main-rgb: 211, 171, 128;
+    --bg-main: #fffdfa;
+    --text-main: #542f28;
+    --text-muted: #a07e5d;
+    --accent-main: #d3ab80;
+    --accent-contrast: #542f28;
+    --accent-soft: #f3e5d0;
+    --white: #fffdf9;
+    --crema-fondo: #fffdfa;
+    --deep-dark: #542f28;
+    --dark-green: #b48c66;
+    --medium-green: #c9a06b;
+    --soft-green: #ecd8bc;
+    --light-mint: #fbf1df;
+    --light-cream: #f7ead7;
+    --shadow-soft: 0 8px 30px rgba(71, 40, 37, 0.08);
+    --shadow-standard: 0 8px 30px rgba(71, 40, 37, 0.1);
+    --surface-main: #fffdf9;
+    --surface-elevated: #f7ead7;
+    --border-main: rgba(211, 171, 128, 0.35);
+    --rd-cafe: #5a322d;
+    --rd-crema: #f3e5d0;
+    --sidebar-w: 280px;
+    --modal-shell-bg: var(--section-bg-secondary);
+    --modal-text: var(--text-main);
+    --modal-border: #dcb487;
+    --modal-divider: #f1ece4;
+    --modal-shadow: 0 25px 50px rgba(71, 40, 37, 0.12);
+    --modal-close-filter: sepia(1) saturate(5) hue-rotate(340deg);
+    --auth-bg-gradient:
+        linear-gradient(135deg, #ecdcc8 0%, #d4b896 25%, #e6d2b8 50%, #c9a87a 75%, #ecdcc8 100%);
+    --glass-surface: rgba(var(--surface-main-rgb), 0.88);
+    --input-surface: rgba(var(--surface-elevated-rgb), 0.92);
+    --cream-bg: var(--bg-main);
+    --cream-form: var(--surface-main);
+    --surface-card: var(--surface-main);
+    --surface-soft: var(--surface-elevated);
+    --brown-dark: var(--accent-contrast);
+    --gold-accent: var(--accent-main);
+    --gold-light: var(--accent-main);
+    --transicion-suave: all 0.3s ease;
+    --dashboard-page-bg: var(--section-bg-secondary);
+    --dashboard-card-bg: var(--section-bg-primary);
+    --dashboard-soft-bg: var(--section-bg-tertiary);
+    --dashboard-text: var(--text-main);
+    --dashboard-muted: var(--text-muted);
+    --dashboard-sidebar-bg: #5a322d;
+    --dashboard-sidebar-text: #fff8ef;
+    --dashboard-sidebar-text-rgb: 255, 248, 239;
+}
+/* #endregion */
+
+input,
+textarea,
+select,
+.form-control,
+.form-select {
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+select:focus,
+select:focus-visible,
+.form-control:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--accent-main) !important;
+    box-shadow: 0 0 0 0.14rem rgba(var(--accent-main-rgb), 0.18) !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+    -webkit-text-fill-color: currentColor !important;
+    caret-color: currentColor !important;
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    box-shadow: 0 0 0 1000px transparent inset !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    transition: background-color 9999s ease-in-out 0s, color 9999s ease-in-out 0s;
+}
+
+input[type="text"]:-webkit-autofill,
+input[type="text"]:-webkit-autofill:hover,
+input[type="text"]:-webkit-autofill:focus {
+    -webkit-text-fill-color: currentColor !important;
+    caret-color: currentColor !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--surface-main) inset !important;
+    box-shadow: 0 0 0 1000px var(--surface-main) inset !important;
+    background-color: var(--surface-main) !important;
+    background-image: none !important;
+}
+
+/* #region Variables Dark */
+html[data-theme="dark"] {
+    --bg-main-rgb: 20, 18, 22;
+    --text-main-rgb: 236, 228, 218;
+    --surface-main-rgb: 30, 28, 34;
+    --surface-elevated-rgb: 40, 38, 44;
+    --accent-main-rgb: 211, 171, 128;
+    --bg-main: #141216;
+    --text-main: #ece4da;
+    --text-muted: #9a8e82;
+    --accent-main: #d3ab80;
+    --accent-contrast: #141216;
+    --accent-soft: #28262c;
+    --white: #1e1c22;
     --crema-fondo: #141216;
     --deep-dark: #ece4da;
     --dark-green: #9a8e82;
     --medium-green: #d3ab80;
     --soft-green: #3a3530;
     --light-mint: #141216;
+    --light-cream: #28262c;
     --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.4);
     --shadow-standard: 0 8px 30px rgba(0, 0, 0, 0.4);
+    --surface-main: #1e1c22;
+    --surface-elevated: #28262c;
+    --border-main: rgba(211, 171, 128, 0.24);
+    --rd-cafe: #d3ab80;
+    --rd-crema: rgba(211, 171, 128, 0.14);
+    --modal-shell-bg: #2a252b;
+    --modal-text: #ece4da;
+    --modal-border: #f3e5d0;
+    --modal-divider: #f1ece4;
+    --modal-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    --modal-close-filter: invert(1) sepia(0.1) saturate(0) brightness(1.7);
+    --auth-bg-gradient:
+        linear-gradient(135deg, #1c1418 0%, #3b2518 25%, #261a24 50%, #4d3222 75%, #1c1418 100%);
+    --glass-surface: rgba(var(--surface-main-rgb), 0.88);
+    --input-surface: rgba(var(--bg-main-rgb), 0.92);
+    --cream-bg: var(--bg-main);
+    --cream-form: var(--surface-main);
+    --surface-card: var(--surface-main);
+    --surface-soft: var(--surface-elevated);
+    --brown-dark: var(--accent-contrast);
+    --gold-accent: var(--accent-main);
+    --gold-light: var(--accent-main);
+    --transicion-suave: all 0.3s ease;
+    --dashboard-page-bg: #1b171d;
+    --dashboard-card-bg: #2a252b;
+    --dashboard-soft-bg: #342e36;
+    --dashboard-text: #ece4da;
+    --dashboard-muted: #b7aa9f;
+    --dashboard-sidebar-bg: #1e1c22;
+    --dashboard-sidebar-text: #ece4da;
+    --dashboard-sidebar-text-rgb: 236, 228, 218;
+    --section-bg-primary: #1e1c22;
+    --section-bg-secondary: #141216;
+    --section-bg-tertiary: #28262c;
 }
+/* #endregion */
 
+/* #region Dashboard Layout */
 .dashboard-wrapper {
     display: flex;
     min-height: 100vh;
-    background: #f9f6f2;
+    background: var(--section-bg-secondary);
 }
+/* #endregion */
 
-/* SIDEBAR */
+/* #region Sidebar */
 .sidebar-rd {
     width: var(--sidebar-w);
-    background: var(--white);
-    border-right: 1px solid #3a3530;
+    background: var(--section-bg-primary);
+    border-right: 1px solid var(--border-main);
     display: flex;
     flex-direction: column;
     position: sticky;
@@ -59,7 +214,7 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    color: #777;
+    color: var(--text-muted);
     font-weight: 600;
     transition: 0.3s;
     margin-bottom: 5px;
@@ -67,15 +222,16 @@
 
     .nav-link-rd.active {
         background: var(--rd-cafe);
-        color: #ece4da;
+        color: var(--accent-contrast, #141216);
     }
 
     .nav-link-rd:hover:not(.active) {
         background: var(--rd-crema);
         color: var(--rd-cafe);
     }
+/* #endregion */
 
-/* STAT CARDS */
+/* #region Stat Cards */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -83,13 +239,13 @@
 }
 
 .stat-card {
-    background: var(--white);
+    background: var(--section-bg-primary);
     padding: 20px;
     border-radius: 20px;
     display: flex;
     align-items: center;
     gap: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    box-shadow: var(--shadow-soft);
 }
 
 .stat-icon {
@@ -111,10 +267,11 @@
         background: #fff4e5;
         color: #ff9800;
     }
+/* #endregion */
 
-/* REUTILIZANDO TU ESTILO DE CARTAS */
+/* #region Cards de Gestión */
 .card-gestion-crud {
-    background: var(--white);
+    background: var(--section-bg-tertiary);
     border-radius: 20px;
     margin-bottom: 15px;
     transition: 0.3s;
@@ -141,50 +298,45 @@
 
 .etiqueta-rol {
     font-size: 0.75rem;
-    background: #3a3530;
+    background: var(--surface-elevated);
     padding: 2px 10px;
     border-radius: 50px;
-    color: #666;
+    color: var(--text-muted);
     font-weight: bold;
 }
+/* #endregion */
 
-/* --- ESTILO GLOBAL PARA TODOS LOS MODALES --- */
-
-/* 1. Quitamos el fondo blanco cuadrado por defecto de Bootstrap */
+/* #region Modales Globales */
 .modal-content {
-    background-color: #fffdfa !important; /* El color crema de tu marca */
-    border-radius: 45px !important; /* Bordes muy redondeados */
-    border: 1px solid #f3e5d0 !important; /* Borde sutil cafÃ© claro */
-    box-shadow: 0 25px 50px rgba(0,0,0,0.15) !important;
+    background-color: var(--modal-shell-bg) !important;
+    border-radius: 45px !important;
+    border: 1px solid var(--modal-border) !important;
+    box-shadow: var(--modal-shadow) !important;
     overflow: hidden;
+    color: var(--modal-text) !important;
 }
 
-/* 2. Suavizamos los encabezados de los modales */
 .modal-header {
-    border-bottom: 1px solid #f1ece4 !important;
+    background: var(--section-bg-secondary) !important;
+    border-bottom: 1px solid var(--modal-divider) !important;
     padding: 20px 30px !important;
 }
 
-/* 3. Estilo para el botÃ³n de cerrar (X) de todos los modales */
 .btn-close {
-    filter: sepia(1) saturate(5) hue-rotate(340deg); /* Lo vuelve color cafÃ©/dorado */
+    filter: var(--modal-close-filter);
     opacity: 0.8;
 }
 
-/* 4. Aseguramos que el cuerpo tenga buen espacio */
 .modal-body {
+    background: var(--section-bg-primary) !important;
     padding: 30px !important;
+    color: var(--modal-text) !important;
 }
 
-/* 5. Si usas botones de footer en otros modales */
 .modal-footer {
-    border-top: 1px solid #f1ece4 !important;
+    background: var(--section-bg-secondary) !important;
+    border-top: 1px solid var(--modal-divider) !important;
     padding: 20px !important;
 }
-
-
-
-
-
-
+/* #endregion */
 

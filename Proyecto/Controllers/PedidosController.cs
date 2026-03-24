@@ -15,9 +15,7 @@ namespace RappiDozApp.Controllers
             _context = context;
         }
 
-        // ============================================================
-        // VISTA PRINCIPAL DE SEGUIMIENTO
-        // ============================================================
+        #region Vistas
         [HttpGet]
         public async Task<IActionResult> Seguimiento(int id)
         {
@@ -27,7 +25,6 @@ namespace RappiDozApp.Controllers
             var pedido = await _context.Pedidos.FindAsync(id);
             if (pedido == null) return NotFound();
 
-            // 3. Obtener la ubicación de entrega (Usando decimal ahora)
             var ubicacionEntrega = await _context.UbicacionUsuario
                 .Where(u => u.IdUsuario == usuarioSesionId)
                 .OrderByDescending(u => u.IdUbicacion)
@@ -35,29 +32,23 @@ namespace RappiDozApp.Controllers
 
             if (ubicacionEntrega == null)
             {
-                // Usamos 'm' para indicar que son decimales
                 ubicacionEntrega = new UbicacionUsuario { Latitud = 9.9333m, Longitud = -84.0833m };
             }
 
-            // 4. LÓGICA DE SIMULACIÓN
             if (pedido.Estado == "Pendiente" || pedido.Estado == "Preparando")
             {
                 pedido.Estado = "En Camino";
                 await _context.SaveChangesAsync();
             }
 
-            // 5. FORMATEO (Cambiamos double por decimal)
             var cultura = CultureInfo.InvariantCulture;
 
-            // Usamos decimal para evitar el InvalidCastException
             decimal latDest = ubicacionEntrega.Latitud;
             decimal lngDest = ubicacionEntrega.Longitud;
 
-            // Origen: Restaurante (También en decimal)
             decimal latOrig = 9.9600m;
             decimal lngOrig = -84.0800m;
 
-            // Al convertir a String con InvariantCulture, JavaScript recibirá "9.9600" correctamente
             ViewBag.UsuarioLat = latDest.ToString(cultura);
             ViewBag.UsuarioLng = lngDest.ToString(cultura);
             ViewBag.RepartidorLat = latOrig.ToString(cultura);
@@ -66,13 +57,12 @@ namespace RappiDozApp.Controllers
             ViewBag.PedidoId = pedido.Id;
             ViewBag.EstadoActual = pedido.Estado;
 
-            return View("~/Views/Pedidos/seguimiento.cshtml");
+            return View("~/Views/Pedidos/Seguimiento.cshtml");
         }
 
         [HttpGet]
         public async Task<IActionResult> Factura(int id)
         {
-            // Crucial: Usar .Include para que la factura tenga los nombres de los productos
             var pedido = await _context.Pedidos
                 .Include(p => p.Detalles)
                     .ThenInclude(d => d.Producto)
@@ -80,46 +70,39 @@ namespace RappiDozApp.Controllers
 
             if (pedido == null) return RedirectToAction("Index");
 
-            // Ajusta la ruta a tu vista de factura real
             return View("~/Views/Pedidos/factura.cshtml", pedido);
         }
 
         [HttpGet]
         public async Task<IActionResult> Movimientos()
         {
-            // 1. Validar Sesión: Obtenemos el ID del usuario logueado
             int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
 
             if (usuarioId == null)
             {
-                // Si no hay sesión, redirigir al Login para evitar errores de acceso
                 return RedirectToAction("Login", "Accesos");
             }
 
-            // 2. Consulta con "Eager Loading": Traemos el Pedido y sus hijos
-            // .Include(p => p.Detalles) trae la lista de productos comprados
-            // .ThenInclude(d => d.Producto) trae los nombres/fotos de esos productos
             var historial = await _context.Pedidos
                 .Include(p => p.Detalles)
                     .ThenInclude(d => d.Producto)
                 .Where(p => p.UsuarioId == usuarioId)
-                .OrderByDescending(p => p.FechaHora) // Los más recientes arriba
+                .OrderByDescending(p => p.FechaHora)
                 .ToListAsync();
 
-            // 3. Retornar la vista específica de movimientos
             return View("~/Views/Pedidos/movimientos.cshtml", historial);
         }
+        #endregion
 
+        #region Procesos
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmarPedido()
         {
-            // 1. Validaciones de Usuario y Carrito
             int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
             var emailUsuario = HttpContext.Session.GetString("EmailUsuario");
             if (usuarioId == null || string.IsNullOrEmpty(emailUsuario)) return RedirectToAction("Login", "Accesos");
 
-            
             var listaCarritoJson = HttpContext.Session.GetString("CarritoRappiDoz");
             if (string.IsNullOrEmpty(listaCarritoJson))
             {
@@ -127,7 +110,6 @@ namespace RappiDozApp.Controllers
                 return RedirectToAction("Index");
             }
 
-            // 2. Cálculos de Totales y Descuento
             var listaCarrito = JsonSerializer.Deserialize<List<CarritoItem>>(listaCarritoJson) ?? new List<CarritoItem>();
             decimal subtotal = listaCarrito.Sum(x => x.Precio * x.Cantidad);
             decimal descuentoFinal = 0;
@@ -143,7 +125,6 @@ namespace RappiDozApp.Controllers
                 descuentoFinal = esPorc ? (subtotal * (valorDescuento / 100)) : valorDescuento;
             }
 
-            // 3. Mapeo del Pedido
             var nuevoPedido = new Pedido
             {
                 UsuarioId = usuarioId.Value,
@@ -161,7 +142,6 @@ namespace RappiDozApp.Controllers
 
             try
             {
-                // 4. ELIMINACIÓN DEL CUPÓN DE LA TABLA
                 if (!string.IsNullOrEmpty(codigoAplicado))
                 {
                     var cuponAEliminar = await _context.CuponesApartados
@@ -173,11 +153,9 @@ namespace RappiDozApp.Controllers
                     }
                 }
 
-                // 5. Guardar Pedido y Eliminar Cupón (Transaccional)
                 _context.Pedidos.Add(nuevoPedido);
                 await _context.SaveChangesAsync();
 
-                // 6. Limpieza Total
                 HttpContext.Session.Remove("CarritoRappiDoz");
                 HttpContext.Session.Remove("CuponAplicado");
                 HttpContext.Session.Remove("CuponActivo");
@@ -193,13 +171,10 @@ namespace RappiDozApp.Controllers
                 return RedirectToAction("Index");
             }
         }
+        #endregion
 
 
-        // ============================================================
-        // API ENDPOINTS (Llamados desde AJAX)
-        // ============================================================
-
-        // 1. Consultar estado actual sin recargar la página
+        #region API
         [HttpGet]
         public async Task<IActionResult> ObtenerEstado(int id)
         {
@@ -212,7 +187,6 @@ namespace RappiDozApp.Controllers
             return Json(new { estado = pedido.Estado });
         }
 
-        // 2. Avanzar manualmente el estado (Útil para pruebas o botones de admin)
         [HttpPost]
         public async Task<IActionResult> AvanzarEstado(int id)
         {
@@ -228,7 +202,6 @@ namespace RappiDozApp.Controllers
             return Json(new { nuevoEstado = pedido.Estado });
         }
 
-        // 3. Finalizar el pedido (Llamado automáticamente por el JS al llegar a la meta)
         [HttpPost]
         public async Task<IActionResult> MarcarEntregado(int id)
         {
@@ -241,5 +214,6 @@ namespace RappiDozApp.Controllers
             }
             return NotFound();
         }
+        #endregion
     }
 }

@@ -1,7 +1,7 @@
 ﻿@model RappiDozApp.Models.Restaurante
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Registrar Restaurante";
     int userId = ViewBag.UsuarioId ?? 0;
 }
 
@@ -79,72 +79,6 @@
         </form>
     </div>
 
-    <script>
-        document.getElementById('restaurantForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            const form = this;
-            const errorDiv = document.getElementById('error-message');
-            const formData = new FormData(form);
-
-            // Ocultar errores previos
-            errorDiv.classList.add('hidden-feedback');
-
-            // Enviar directamente por AJAX
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                }
-            })
-            .then(response => {
-                if (response.redirected) {
-                    // AVISO DE ÉXITO: Negocio registrado correctamente
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Negocio Registrado!',
-                        text: 'Tu restaurante se ha creado correctamente.',
-                        showConfirmButton: false,
-                        timer: 2000,
-                        background: '#1e1c22',
-                        color: '#ece4da'
-                    }).then(() => {
-                        window.location.href = response.url;
-                    });
-                    return;
-                }
-                return response.text();
-            })
-            .then(data => {
-                if (data) {
-                    // AVISO DE ERROR: Problema en la validación del servidor
-                    errorDiv.textContent = "Hubo un error al guardar los datos del restaurante.";
-                    errorDiv.classList.remove('hidden-feedback');
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'No se pudo registrar',
-                        text: 'Verifica que todos los campos sean válidos e inténtalo de nuevo.',
-                        confirmButtonColor: '#d3ab80',
-                        background: '#1e1c22',
-                        color: '#ece4da'
-                    });
-                }
-            })
-            .catch(error => {
-                // AVISO DE ERROR TÉCNICO
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Error de servidor',
-                    text: 'No pudimos conectar con el servidor. Inténtalo más tarde.',
-                    confirmButtonColor: '#d3ab80',
-                    background: '#1e1c22',
-                    color: '#ece4da'
-                });
-                console.error('Error:', error);
-            });
-        });
-    </script>
+    <script src="~/js/Accesos/restaurante-info.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-﻿// wwwroot/js/cupones.js
+﻿// #region Cupones
 function copiarCodigo(texto) {
     navigator.clipboard.writeText(texto).then(() => {
         const Toast = Swal.mixin({

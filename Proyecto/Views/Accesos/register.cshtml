@@ -1,7 +1,7 @@
 ﻿@model RappiDozApp.Models.Usuario
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Registro";
 }
 
 <!DOCTYPE html>
@@ -21,7 +21,7 @@
     <div class="form">
         <h1>Registrarse</h1>
 
-        <form id="registerForm" asp-controller="Usuarios" asp-action="Registrar" method="post" autocomplete="off">
+        <form id="registerForm" asp-controller="Accesos" asp-action="Registrar" method="post" autocomplete="off">
             @Html.AntiForgeryToken()
 
             <section>
@@ -75,86 +75,6 @@
         </form>
     </div>
 
-    <script>
-        document.getElementById('registerForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            const form = this;
-            const pass = document.getElementById('PasswordHash').value;
-            const confirmPass = document.getElementById('confirmarPassword').value;
-            const errorDiv = document.getElementById('error-message');
-            const formData = new FormData(form);
-
-            // Ocultar errores previos
-            errorDiv.classList.add('hidden-feedback');
-
-            // 1. Validación de contraseñas (Aviso de error inmediato si no coinciden)
-            if (pass !== confirmPass) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Contraseñas diferentes',
-                    text: 'Asegúrate de que ambas contraseñas sean idénticas.',
-                    confirmButtonColor: '#d3ab80',
-                    background: '#1e1c22',
-                    color: '#ece4da'
-                });
-                return;
-            }
-
-            // 2. Envío directo por AJAX
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                }
-            })
-            .then(response => {
-                if (response.redirected) {
-                    // AVISO DE ÉXITO: Registro completado
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Cuenta creada!',
-                        text: 'Bienvenido a la familia Rappi\'Doz',
-                        showConfirmButton: false,
-                        timer: 2000,
-                        background: '#1e1c22',
-                        color: '#ece4da'
-                    }).then(() => {
-                        window.location.href = response.url;
-                    });
-                    return;
-                }
-                return response.text();
-            })
-            .then(data => {
-                if (data) {
-                    // AVISO DE ERROR: Fallo en el servidor (ej. correo duplicado)
-                    errorDiv.textContent = "El correo ya está registrado o los datos son inválidos.";
-                    errorDiv.classList.remove('hidden-feedback');
-
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'No se pudo registrar',
-                        text: 'Parece que este correo ya tiene una cuenta activa.',
-                        confirmButtonColor: '#d3ab80',
-                        background: '#1e1c22',
-                        color: '#ece4da'
-                    });
-                }
-            })
-            .catch(error => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error de conexión',
-                    text: 'Inténtalo de nuevo en unos minutos.',
-                    confirmButtonColor: '#d3ab80',
-                    background: '#1e1c22',
-                    color: '#ece4da'
-                });
-                console.error('Error:', error);
-            });
-        });
-    </script>
+    <script src="~/js/Accesos/register.js"></script>
 </body>
 </html>

@@ -17,19 +17,16 @@ namespace RappiDozApp.Controllers
             _context = context;
         }
 
+        #region Perfil
         [HttpGet]
         public async Task<IActionResult> Perfil()
         {
-            // 1. Validar sesión
             int? userId = HttpContext.Session.GetInt32("UsuarioId");
-            if (userId == null) return Unauthorized(); // El JS manejará esto si la sesión expiró
+            if (userId == null) return Unauthorized();
 
-            // 2. Buscar usuario
             var usuario = await _context.Usuarios.FindAsync(userId);
             if (usuario == null) return NotFound();
 
-            // 3. RETORNAR PARTIAL VIEW (Sin Layout)
-            // Esto inyecta solo el formulario dentro del modal
             return PartialView("~/Views/Usuarios/users-form.cshtml", usuario);
         }
 
@@ -42,7 +39,6 @@ namespace RappiDozApp.Controllers
         {
             try
             {
-                // 1. Buscamos al usuario por ID (asegúrate de que el ID no llegue en 0)
                 var usuarioDb = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == model.Id);
 
                 if (usuarioDb == null)
@@ -50,17 +46,14 @@ namespace RappiDozApp.Controllers
                     return Json(new { success = false, message = "No se encontró el usuario con ID: " + model.Id });
                 }
 
-                // 2. Actualizamos los textos básicos
                 usuarioDb.NombreCompleto = model.NombreCompleto;
                 usuarioDb.Email = model.Email;
 
-                // 3. Contraseña (Sin encriptar, tal cual llega)
                 if (!string.IsNullOrEmpty(nuevaPassword))
                 {
                     usuarioDb.PasswordHash = nuevaPassword;
                 }
 
-                // 4. Procesar la imagen si el usuario subió una nueva
                 if (fotoArchivo != null && fotoArchivo.Length > 0)
                 {
                     using (var ms = new MemoryStream())
@@ -71,11 +64,9 @@ namespace RappiDozApp.Controllers
                     }
                 }
 
-                // 5. Guardar y confirmar
                 _context.Usuarios.Update(usuarioDb);
                 await _context.SaveChangesAsync();
 
-                // Actualizar las variables de sesión para que el Navbar sepa el nuevo nombre y foto
                 HttpContext.Session.SetString("NombreUsuario", usuarioDb.NombreCompleto);
 
                 if (usuarioDb.FotoBinaria != null)
@@ -88,13 +79,13 @@ namespace RappiDozApp.Controllers
             }
             catch (Exception ex)
             {
-                // Esto te dirá en la consola si hubo un error de SQL
                 return Json(new { success = false, message = "Error interno: " + ex.Message });
             }
         }
 
-        // ================================================
-        // 1. GUARDAR (CREAR Y EDITAR - AJAX) - Tu lógica intacta
+        #endregion
+
+        #region CRUD
         [HttpPost]
         public async Task<IActionResult> Guardar(Usuario usuario, IFormFile? fotoArchivo)
         {
@@ -111,14 +102,12 @@ namespace RappiDozApp.Controllers
             {
                 Usuario? enBD = usuario.Id > 0 ? await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.Id == usuario.Id) : null;
 
-                // Password
                 if (usuario.Id == 0 && string.IsNullOrEmpty(usuario.PasswordHash))
                     return Json(new { success = false, message = "Contraseña obligatoria." });
 
                 if (usuario.Id != 0 && string.IsNullOrWhiteSpace(usuario.PasswordHash))
                     usuario.PasswordHash = enBD?.PasswordHash;
 
-                // Foto
                 if (fotoArchivo != null)
                 {
                     using var ms = new MemoryStream();
@@ -154,7 +143,8 @@ namespace RappiDozApp.Controllers
             await _context.SaveChangesAsync();
             return Json(new { success = true, message = "Usuario eliminado." });
         }
+        #endregion
 
-        
+
     }
 }
