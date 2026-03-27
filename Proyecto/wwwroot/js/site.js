@@ -150,3 +150,19 @@ document.addEventListener('submit', function (e) {
     }
 });
 // #endregion
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Busca y elimina el centro que contiene el link de Somee
+    const centers = document.getElementsByTagName('center');
+    for (let i = 0; i < centers.length; i++) {
+        if (centers[i].innerHTML.includes('Somee.com')) {
+            centers[i].style.display = 'none';
+        }
+    }
+
+    // Busca los divs con el z-index molesto
+    const annoyingDivs = document.querySelectorAll('div[style*="2147483647"]');
+    annoyingDivs.forEach(div => div.remove());
+});    
+
