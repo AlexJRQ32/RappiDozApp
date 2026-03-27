@@ -29,6 +29,13 @@ namespace RappiDozApp.Controllers
             ViewBag.TotalProductos = await _context.Productos
                 .CountAsync(p => rol == "Administrador" || p.Restaurante.UsuarioId == userId);
 
+            if (rol == "Administrador")
+            {
+                ViewBag.TotalUsuarios = await _context.Usuarios.CountAsync(u => u.Activo == true);
+
+                ViewBag.TotalCupones = await _context.Cupones.CountAsync();
+            }
+
             return View();
         }
         public async Task<IActionResult> Dashboard()
@@ -62,10 +69,17 @@ namespace RappiDozApp.Controllers
         {
             try
             {
-                var lista = await _context.Usuarios.Include(u => u.Rol).ToListAsync();
+                var lista = await _context.Usuarios
+                    .Include(u => u.Rol)
+                    .Where(u => u.Activo == true)
+                    .ToListAsync();
+
                 return PartialView("_UsuarioList", lista);
             }
-            catch { return BadRequest("Error al cargar usuarios"); }
+            catch
+            {
+                return BadRequest("Error al cargar usuarios");
+            }
         }
 
         public async Task<IActionResult> GetRestaurantes()

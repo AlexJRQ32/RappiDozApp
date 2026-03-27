@@ -1,4 +1,10 @@
-﻿/* #region Mapa Full-Screen */
+﻿html[data-theme="dark"] #mapContainer,
+html[data-theme="dark"] #map,
+html[data-theme="dark"] #mapa-final {
+    filter: invert(0.07) hue-rotate(0deg) brightness(0.70) grayscale(0.3);
+}
+
+/* #region Mapa Full-Screen */
 .tracking-wrapper, .main-container, #mapContainer {
     overflow: hidden;
 }

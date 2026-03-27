@@ -133,15 +133,22 @@ namespace RappiDozApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Eliminar(int id)
         {
-            if (HttpContext.Session.GetString("RolUsuario") != "Administrador")
-                return Json(new { success = false, message = "No autorizado." });
+            try
+            {
+                var u = await _context.Usuarios.FindAsync(id);
+                if (u == null) return Json(new { success = false, message = "Usuario no encontrado." });
 
-            var u = await _context.Usuarios.FindAsync(id);
-            if (u == null) return Json(new { success = false, message = "No existe." });
+                u.Activo = false;
 
-            _context.Usuarios.Remove(u);
-            await _context.SaveChangesAsync();
-            return Json(new { success = true, message = "Usuario eliminado." });
+                _context.Usuarios.Update(u);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Usuario ocultado del sistema exitosamente." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error: " + ex.Message });
+            }
         }
         #endregion
 

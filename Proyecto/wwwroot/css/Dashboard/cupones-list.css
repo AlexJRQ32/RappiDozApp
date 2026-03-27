@@ -1,7 +1,25 @@
-/* Dashboard/_CuponesList.cshtml */
-.dashboard-section-root {
-    background: var(--section-bg-primary);
+html[data-theme="light"] {
+    --cpn-left-bg: #c8a882;
+    --cpn-right-bg: #f5efe8;
+    --cpn-notch-bg: #fbf1df;
+    --cpn-val-color: #8b5e2a;
+    --cpn-off-color: #a87840;
+    --cpn-code-color: #7a5228;
+    --cpn-code-bg: #e0d0bc;
+    --cpn-dash-color: rgba(139, 94, 42, 0.3);
 }
+
+html[data-theme="dark"] {
+    --cpn-left-bg: #3d2910;
+    --cpn-right-bg: #2a1d0e;
+    --cpn-notch-bg: var(--dashboard-page-bg);
+    --cpn-val-color: #f0c97a;
+    --cpn-off-color: #c9a86c;
+    --cpn-code-color: #d4aa70;
+    --cpn-code-bg: #1b171d;
+    --cpn-dash-color: rgba(211, 171, 128, 0.25);
+}
+
 
 .dashboard-section-title {
     color: var(--text-main);
@@ -15,24 +33,24 @@
 .coupon-ticket {
     display: flex;
     height: 165px;
-    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.18));
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
     transition: transform 0.3s ease;
     position: relative;
 }
 
-.coupon-ticket:hover {
-    transform: translateY(-5px);
-}
+    .coupon-ticket:hover {
+        transform: translateY(-5px);
+    }
 
 .t-left {
-    background: var(--brown-dark);
+    background: var(--cpn-left-bg);
     width: 125px;
     min-width: 125px;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-right: 2px dashed rgba(211,171,128,0.2);
+    border-right: 2px dashed var(--cpn-dash-color);
     border-radius: 15px 0 0 15px;
 }
 
@@ -40,21 +58,44 @@
     position: absolute;
     width: 24px;
     height: 24px;
-    background: var(--section-bg-secondary);
+    background: var(--cpn-notch-bg);
     border-radius: 50%;
     z-index: 5;
 }
 
-.n-tl { top: -12px; left: -12px; }
-.n-bl { bottom: -12px; left: -12px; }
-.n-tr { top: -12px; right: -13px; }
-.n-br { bottom: -12px; right: -13px; }
-.n-tr-far { top: -12px; right: -12px; }
-.n-br-far { bottom: -12px; right: -12px; }
+.n-tl {
+    top: -12px;
+    left: -12px;
+}
+
+.n-bl {
+    bottom: -12px;
+    left: -12px;
+}
+
+.n-tr {
+    top: -12px;
+    right: -13px;
+}
+
+.n-br {
+    bottom: -12px;
+    right: -13px;
+}
+
+.n-tr-far {
+    top: -12px;
+    right: -12px;
+}
+
+.n-br-far {
+    bottom: -12px;
+    right: -12px;
+}
 
 .t-right {
     flex-grow: 1;
-    background: var(--section-bg-primary);
+    background: var(--cpn-right-bg);
     border-radius: 0 15px 15px 0;
     position: relative;
 }
@@ -74,12 +115,14 @@
     font-size: 1.85rem;
     font-weight: 900;
     line-height: 1;
+    color: var(--cpn-val-color);
 }
 
 .t-off {
     font-size: 0.7rem;
     font-weight: bold;
     letter-spacing: 2px;
+    color: var(--cpn-off-color);
 }
 
 .t-title,
@@ -91,7 +134,7 @@
 .t-code-wrapper {
     display: inline-flex;
     flex-direction: column;
-    background: var(--section-bg-primary);
+    background: var(--cpn-code-bg);
     padding: 5px 12px;
     border-radius: 8px;
     border: 1px solid var(--border-main);
@@ -107,6 +150,7 @@
     font-family: 'Courier New', monospace;
     font-weight: 800;
     font-size: 0.95rem;
+    color: var(--cpn-code-color);
 }
 
 .rd-badge {
@@ -118,9 +162,23 @@
     display: inline-block;
 }
 
-.b-act { background: rgba(39, 174, 96, 0.15); color: #27ae60; }
-.b-exp { background: rgba(220, 38, 38, 0.15); color: #dc2626; }
-.b-ina { background: rgba(217, 119, 6, 0.15); color: #d97706; }
+.b-act {
+    background: rgba(39, 174, 96, 0.2);
+    color: #4ade80;
+    border: 1px solid rgba(74,222,128,0.35);
+}
+
+.b-exp {
+    background: rgba(220, 38, 38, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(248,113,113,0.35);
+}
+
+.b-ina {
+    background: rgba(217, 119, 6, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(251,191,36,0.35);
+}
 
 .btn-i {
     border: none;
@@ -131,8 +189,15 @@
     margin-left: 6px;
 }
 
-.btn-i.edit { background: var(--brown-dark); color: #fff8ef; }
-.btn-i.del { background: rgba(225, 29, 72, 0.15); color: #e11d48; }
+    .btn-i.edit {
+        background: var(--brown-dark);
+        color: #fff8ef;
+    }
+
+    .btn-i.del {
+        background: rgba(225, 29, 72, 0.15);
+        color: #e11d48;
+    }
 
 .btn-circular {
     width: 50px;
@@ -145,12 +210,12 @@
     transition: 0.3s;
 }
 
-.btn-circular:hover {
-    background: var(--gold-light);
-    color: var(--brown-dark);
-    transform: rotate(90deg);
-}
+    .btn-circular:hover {
+        background: var(--gold-light);
+        color: var(--brown-dark);
+        transform: rotate(90deg);
+    }
 
 .expired {
-    opacity: 0.7;
+    opacity: 0.5;
 }

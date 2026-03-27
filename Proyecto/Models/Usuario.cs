@@ -13,8 +13,7 @@
         public string? ContentType { get; set; }  // Aquí guardamos si es .jpg, .png, etc.
         public int RolId { get; set; }
         public virtual Rol? Rol { get; set; }
-
-        // Dentro de la clase Usuario, agrega esta línea:
+        public bool Activo { get; set; } = true;
         public virtual ICollection<Restaurante> Restaurantes { get; set; } = new List<Restaurante>();
     }
 }

@@ -54,7 +54,9 @@
                 icon: 'warning',
                 title: 'Falta un detalle',
                 text: 'Por favor, escribe un nombre para tu dirección.',
-                confirmButtonColor: '#472825'
+                confirmButtonColor: '#472825',
+                background: _swalBg,
+                color: _swalColor
             });
             return;
         }
@@ -69,7 +71,7 @@
             __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
         };
 
-        $.post('/Usuario/GuardarUbicacion', data)
+        $.post('/Ubicaciones/GuardarUbicacion', data)
             .done(function(res) {
                 if (res.success) {
                     Swal.fire({
@@ -78,7 +80,8 @@
                         text: res.message,
                         showConfirmButton: false,
                         timer: 1800,
-                        background: '#fff4e2'
+                        background: _swalBg,
+                        color: _swalColor
                     }).then(() => {
                         window.location.reload();
                     });

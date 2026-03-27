@@ -1,9 +1,13 @@
-$(document).ready(function() {
-    $('#menuToggle, #overlay').click(function() {
+$(document).ready(function () {
+    $('#menuToggle, #overlay').click(function () {
         $('#sidebar').toggleClass('active');
         $('#overlay').toggleClass('show');
     });
 });
+
+// VARIABLES DE COLOR GLOBALES (Para que funcionen en todas las funciones de abajo)
+const getBg = () => getComputedStyle(document.documentElement).getPropertyValue('--modal-shell-bg').trim();
+const getColor = () => getComputedStyle(document.documentElement).getPropertyValue('--modal-text').trim();
 
 function cargarSeccion(tipo) {
     $('#sidebar').removeClass('active');
@@ -12,9 +16,15 @@ function cargarSeccion(tipo) {
     const contenedor = $("#contenedor-dinamico");
     contenedor.html('<div class="text-center p-5"><div class="spinner-border text-warning"></div></div>');
 
-    contenedor.load('/Dashboard/Get' + tipo, function(res, status, xhr) {
+    contenedor.load('/Dashboard/Get' + tipo, function (res, status, xhr) {
         if (status === "error") {
-            Swal.fire('Error', 'No se pudo cargar la sección ' + tipo, 'error');
+            Swal.fire({
+                title: 'Error',
+                text: 'No se pudo cargar la sección ' + tipo,
+                icon: 'error',
+                background: getBg(), // Agregado
+                color: getColor()    // Agregado
+            });
         }
     });
 }
@@ -27,7 +37,7 @@ function abrirForm(entidad, accion, id = 0) {
     const instancia = bootstrap.Modal.getOrCreateInstance(modalEl);
     instancia.show();
 
-    $("#modalContainerBody").load(url, function(res, status, xhr) {
+    $("#modalContainerBody").load(url, function (res, status, xhr) {
         if (status === "error") {
             $("#modalContainerBody").html('<div class="alert alert-danger m-3">Error al cargar formulario.</div>');
         }
@@ -50,7 +60,7 @@ function guardarDatos(entidad) {
 
     const formData = new FormData(form);
     const btn = event?.target;
-    if(btn) btn.disabled = true;
+    if (btn) btn.disabled = true;
     const rutaEntidad = obtenerRutaEntidad(entidad);
 
     $.ajax({
@@ -59,16 +69,29 @@ function guardarDatos(entidad) {
         data: formData,
         processData: false,
         contentType: false,
-        success: function(res) {
-            if(btn) btn.disabled = false;
+        success: function (res) {
+            if (btn) btn.disabled = false;
             if (res.success) {
                 bootstrap.Modal.getOrCreateInstance(document.getElementById('rdModal')).hide();
-                Swal.fire({ title: '¡Éxito!', text: res.message, icon: 'success', confirmButtonColor: '#472825' });
+                Swal.fire({
+                    title: '¡Éxito!',
+                    text: res.message,
+                    icon: 'success',
+                    confirmButtonColor: '#472825',
+                    background: getBg(), // Agregado
+                    color: getColor()    // Agregado
+                });
 
                 let sec = (entidad === 'Producto') ? 'Menus' : (entidad === 'Restaurante') ? 'Restaurantes' : (entidad === 'Usuario') ? 'Usuarios' : entidad + 'es';
                 cargarSeccion(sec);
             } else {
-                Swal.fire('Error', res.message, 'error');
+                Swal.fire({
+                    title: 'Error',
+                    text: res.message,
+                    icon: 'error',
+                    background: getBg(), // Agregado
+                    color: getColor()    // Agregado
+                });
             }
         }
     });
@@ -76,22 +99,44 @@ function guardarDatos(entidad) {
 
 function eliminarRegistro(entidad, id) {
     const rutaEntidad = obtenerRutaEntidad(entidad);
+
     Swal.fire({
         title: '¿Confirmar eliminación?',
         text: "No podrás revertir esto",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#472825',
-        confirmButtonText: 'Sí, eliminar'
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        background: getBg(), // Agregado
+        color: getColor()    // Agregado
     }).then((result) => {
         if (result.isConfirmed) {
-            $.post(`/${rutaEntidad}/Eliminar`, { id: id }, function(res) {
+            $.post(`/${rutaEntidad}/Eliminar`, { id: id }, function (res) {
                 if (res.success) {
-                    Swal.fire('Eliminado', res.message, 'success');
-                    let sec = (entidad === 'Producto') ? 'Menus' : (entidad === 'Restaurante') ? 'Restaurantes' : entidad + 'es';
+                    Swal.fire({
+                        title: 'Eliminado',
+                        text: res.message,
+                        icon: 'success',
+                        background: getBg(), // Agregado
+                        color: getColor()    // Agregado
+                    });
+
+                    let sec;
+                    if (entidad === 'Producto') sec = 'Menus';
+                    else if (entidad === 'Restaurante') sec = 'Restaurantes';
+                    else if (entidad === 'Usuario') sec = 'Usuarios';
+                    else sec = entidad + 'es';
+
                     cargarSeccion(sec);
                 } else {
-                    Swal.fire('Error', res.message, 'error');
+                    Swal.fire({
+                        title: 'Error',
+                        text: res.message,
+                        icon: 'error',
+                        background: getBg(), // Agregado
+                        color: getColor()    // Agregado
+                    });
                 }
             });
         }
