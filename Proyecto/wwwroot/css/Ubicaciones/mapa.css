@@ -1,8 +1,63 @@
-﻿html[data-theme="dark"] #mapContainer,
-html[data-theme="dark"] #map,
-html[data-theme="dark"] #mapa-final {
-    filter: invert(0.07) hue-rotate(0deg) brightness(0.70) grayscale(0.3);
+﻿/* #region Variables y Filtros de Tema */
+:root, html[data-theme="light"] {
+    --map-tiles-filter: saturate(0.85) contrast(0.92) brightness(1.01) hue-rotate(-12deg);
+    --pin-color: #ff0000;
 }
+
+html[data-theme="dark"] {
+    --map-tiles-filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+    --pin-color: #ffcc00;
+}
+
+#mapa-final {
+    height: 380px;
+    width: 100%;
+    background: var(--bg-main);
+    border-radius: 20px;
+    border: 2px solid var(--border-main);
+    z-index: 5;
+}
+
+html[data-theme="dark"] #mapa-final {
+    filter: var(--map-tiles-filter) !important;
+    background: #242424 !important;
+}
+/* #endregion */
+
+/* #region Marcador y Pin */
+.leaflet-marker-pane {
+    filter: none !important;
+    -webkit-filter: none !important;
+    z-index: 600 !important;
+}
+
+html[data-theme="dark"] .leaflet-marker-pane {
+    filter: invert(100%) hue-rotate(-180deg) !important;
+}
+
+.custom-div-icon {
+    background: none !important;
+    border: none !important;
+    width: 30px !important;
+    height: 30px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .custom-div-icon i {
+        font-size: 30px !important;
+        display: block;
+        text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        filter: none !important;
+        -webkit-filter: none !important;
+    }
+
+.leaflet-marker-icon.no-bg {
+    background: none !important;
+    border: none !important;
+}
+/* #endregion */
 
 /* #region Mapa Full-Screen */
 .tracking-wrapper, .main-container, #mapContainer {
@@ -23,9 +78,17 @@ html[data-theme="dark"] #mapa-final {
     background-color: var(--border-main);
 }
 
+.tracking-wrapper #map, .main-container #map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
 /* #endregion */
 
-/* #region Panel de Estado */
+/* #region Panel de Estado y Tracking */
 .status-card {
     position: absolute;
     top: 100px;
@@ -43,6 +106,20 @@ html[data-theme="dark"] #mapa-final {
     animation: slideInLeft 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+.tracking-card {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: rgba(var(--surface-main-rgb), 0.96);
+    width: 300px;
+    max-width: 85%;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(var(--accent-main-rgb), 0.22);
+}
+
 .eta-box {
     background: var(--surface-main);
     color: var(--text-main);
@@ -52,6 +129,8 @@ html[data-theme="dark"] #mapa-final {
     margin-top: 15px;
     box-shadow: var(--shadow-soft);
     transition: var(--transicion, all 0.3s ease);
+    position: relative;
+    overflow: hidden;
 }
 
     .eta-box:hover {
@@ -72,10 +151,115 @@ html[data-theme="dark"] #mapa-final {
         display: block;
     }
 
+.progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: var(--accent-main);
+    width: 0%;
+}
 /* #endregion */
 
-/* #region Animaciones */
-.moto-icon-div i {
+/* #region Elementos de Interfaz y Botones */
+.status-badge {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    transition: all 0.4s ease;
+}
+
+.text-camino {
+    background: #fffde7;
+    color: #fbc02d !important;
+}
+
+.text-llegado {
+    background: #e8f5e9;
+    color: #2e7d32 !important;
+}
+
+html[data-theme="dark"] .text-camino {
+    background: rgba(251, 192, 45, 0.15);
+    color: #fdd835 !important;
+}
+
+html[data-theme="dark"] .text-llegado {
+    background: rgba(46, 125, 50, 0.2);
+    color: #66bb6a !important;
+}
+
+.btn-rappi-confirm {
+    background: var(--accent-main) !important;
+    color: var(--accent-contrast) !important;
+    border: none;
+    border-radius: 15px;
+    padding: 16px;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+    .btn-rappi-confirm:hover {
+        transform: translateY(var(--hover-lift-global));
+        box-shadow: 0 10px 20px rgba(211, 171, 128, 0.2);
+        background: var(--footer-text) !important;
+    }
+
+.btn-back {
+    display: block;
+    width: 100%;
+    background: var(--surface-main);
+    color: var(--text-main) !important;
+    text-align: center;
+    padding: 10px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: bold;
+    border: 1px solid var(--border-main);
+    font-size: 0.9rem;
+}
+/* #endregion */
+
+/* #region Formularios y Texto */
+.form-control {
+    border-radius: 15px !important;
+    border: 2px solid var(--border-main) !important;
+    padding: 12px 20px !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: var(--input-surface) !important;
+    color: var(--text-main) !important;
+}
+
+    .form-control:focus {
+        border-color: var(--accent-main) !important;
+        box-shadow: 0 0 0 0.2rem rgba(var(--accent-main-rgb), 0.25);
+        background: var(--input-surface) !important;
+    }
+
+    .form-control::placeholder {
+        color: var(--text-muted);
+    }
+
+.label-custom {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-main);
+    margin-bottom: 8px;
+    margin-left: 5px;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+/* #endregion */
+
+/* #region Animaciones y Moto */
+.moto-icon-div i, .moto-icon {
     font-size: 35px;
     color: var(--text-main);
     filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
@@ -101,6 +285,18 @@ html[data-theme="dark"] #mapa-final {
     to {
         opacity: 1;
         transform: translateX(0);
+    }
+}
+
+@keyframes slideUpMobile {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
     }
 }
 /* #endregion */
@@ -144,179 +340,15 @@ html[data-theme="dark"] #mapa-final {
         background: rgba(var(--text-main-rgb), 0.1);
         border-radius: 10px;
     }
-}
-
-@keyframes slideUpMobile {
-    from {
-        transform: translateY(100%);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-/* #endregion */
-
-/* #region Markers y Estilos Migrados */
-.custom-marker {
-    background: var(--accent-main);
-    border: 3px solid var(--surface-main);
-    border-radius: 50%;
-    box-shadow: 0 0 15px rgba(var(--accent-main-rgb), 0.6);
-}
-
-.tracking-wrapper .cta-final,
-.tracking-wrapper .footer-content {
-    display: none !important;
-}
-
-.main-container {
-    position: relative;
-    width: 100%;
-    height: calc(100vh - 70px);
-    margin-top: 70px;
-}
-
-#map {
-}
-
-.tracking-wrapper #map,
-.main-container #map {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
-
-.tracking-card {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    z-index: 1000;
-    background: rgba(var(--surface-main-rgb), 0.96);
-    width: 300px;
-    max-width: 85%;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: var(--shadow-soft);
-    border: 1px solid rgba(var(--accent-main-rgb), 0.22);
-}
-
-@media (max-width: 768px) {
-    .tracking-card {
-        top: 15px;
-        left: 15px;
-        padding: 15px;
-        width: 260px;
-    }
 
     .main-container {
         height: calc(100vh - 60px);
         margin-top: 60px;
     }
 }
-
-.status-badge {
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    transition: all 0.4s ease;
-}
-
-.text-camino {
-    background: #fffde7;
-    color: #fbc02d !important;
-}
-.text-llegado {
-    background: #e8f5e9;
-    color: #2e7d32 !important;
-}
-
-html[data-theme="dark"] .text-camino {
-    background: rgba(251, 192, 45, 0.15);
-    color: #fdd835 !important;
-}
-
-html[data-theme="dark"] .text-llegado {
-    background: rgba(46, 125, 50, 0.2);
-    color: #66bb6a !important;
-}
-
-.eta-box {
-    background: var(--surface-main);
-    color: var(--text-main);
-    border-radius: 15px;
-    padding: 15px;
-    text-align: center;
-    margin: 12px 0;
-    position: relative;
-    overflow: hidden;
-}
-
-.progress-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 4px;
-    background: var(--accent-main);
-    width: 0%;
-}
-
-.client-info {
-    margin: 15px 0;
-    padding-top: 10px;
-    border-top: 1px dashed var(--border-main);
-    color: var(--text-muted);
-    font-size: 0.85rem;
-}
-
-.info-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 5px;
-}
-
-    .info-row i {
-        color: var(--accent-main);
-        width: 18px;
-        text-align: center;
-    }
-
-.btn-back {
-    display: block;
-    width: 100%;
-    background: var(--surface-main);
-    color: var(--text-main) !important;
-    text-align: center;
-    padding: 10px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: bold;
-    border: 1px solid var(--border-main);
-    font-size: 0.9rem;
-}
-
-.moto-icon {
-    color: var(--text-main);
-    font-size: 28px !important;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-}
-
-.leaflet-marker-icon.no-bg {
-    background: none !important;
-    border: none !important;
-}
 /* #endregion */
 
-/* #region Modal Mapa */
+/* #region Estilos de Modal y Leaflet UI */
 .modal-content-custom {
     background: var(--surface-main) !important;
     border-radius: 28px;
@@ -328,7 +360,7 @@ html[data-theme="dark"] .text-llegado {
 
 .btn-close-custom {
     position: absolute;
-    top: 16px;
+    top: 166px;
     right: 18px;
     background: none;
     border: none;
@@ -337,27 +369,6 @@ html[data-theme="dark"] .text-llegado {
     line-height: 1;
     cursor: pointer;
     z-index: 10;
-}
-
-.mapa-handle {
-    width: 50px;
-    height: 5px;
-    background: var(--border-main);
-    border-radius: 10px;
-    margin: 0 auto 15px;
-}
-
-.mapa-title {
-    color: var(--text-main);
-}
-
-#mapa-final {
-    height: 380px;
-    width: 100%;
-    background: var(--bg-main);
-    border-radius: 20px;
-    border: 2px solid var(--border-main);
-    z-index: 5;
 }
 
 #mapa-final .leaflet-control-zoom a,
@@ -380,46 +391,4 @@ html[data-theme="dark"] .text-llegado {
     font-size: 10px;
     font-weight: bold;
 }
-
-.input-rappi {
-    border-radius: 15px !important;
-    border: 2px solid var(--border-main) !important;
-    padding: 12px 20px !important;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    background: var(--bg-main) !important;
-    color: var(--text-main) !important;
-}
-
-.input-rappi:focus {
-    border-color: var(--accent-main) !important;
-    box-shadow: 0 0 0 0.2rem rgba(var(--accent-main-rgb), 0.25);
-}
-
-.btn-rappi-confirm {
-    background: var(--accent-main) !important;
-    color: var(--accent-contrast) !important;
-    border: none;
-    border-radius: 15px;
-    padding: 16px;
-    font-weight: 800;
-    font-size: 1rem;
-    letter-spacing: 1px;
-    transition: 0.3s;
-}
-
-.btn-rappi-confirm:hover {
-    transform: translateY(var(--hover-lift-global));
-    box-shadow: 0 10px 20px rgba(211, 171, 128, 0.2);
-    background: var(--footer-text) !important;
-}
-
-.label-custom {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--accent-main);
-    margin-bottom: 8px;
-    margin-left: 5px;
-}
 /* #endregion */
-

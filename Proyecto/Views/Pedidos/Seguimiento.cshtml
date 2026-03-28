@@ -1,52 +1,52 @@
 ﻿@model RappiDozApp.Models.Pedido
 @{
     ViewData["Title"] = "Seguimiento | RappiDoz";
+    // Forzamos el Layout a no usar contenedores restrictivos si es posible
 }
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
-<div class="main-container">
-    <div id="map"
-         data-repartidor-lat="@ViewBag.RepartidorLat"
-         data-repartidor-lng="@ViewBag.RepartidorLng"
-         data-usuario-lat="@ViewBag.UsuarioLat"
-         data-usuario-lng="@ViewBag.UsuarioLng"></div>
+<div class="tracking-wrapper">
+    <div id="mapa-final"
+         data-lat="@ViewBag.RepartidorLat"
+         data-lng="@ViewBag.RepartidorLng"
+         data-dest-lat="@ViewBag.UsuarioLat"
+         data-dest-lng="@ViewBag.UsuarioLng">
+    </div>
 
-    <div class="tracking-card">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h5 style="margin:0; color:#472825; font-weight:800;">RappiDoz</h5>
-            <span id="status-tag" class="status-badge text-camino">En camino</span>
+    <div class="status-card">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="label-custom" style="margin:0;">RappiDoz</h5>
+            <span id="status-tag" class="status-badge text-camino">En Camino</span>
         </div>
 
         <div class="eta-box">
-            <h2 id="timer" style="margin:0; font-size: 2rem; font-weight:900; color: white;">10 seg</h2>
+            <h4>Tiempo Estimado</h4>
+            <span id="timer">10 seg</span>
             <div id="bar" class="progress-bar"></div>
         </div>
 
-        <div class="client-info">
-            <div class="info-row">
-                <i class="fas fa-user"></i>
-                <span><strong>@ViewBag.NombreCliente</strong></span>
+        <div class="client-info mt-3">
+            <div class="info-row mb-1">
+                <i class="fas fa-user text-muted"></i>
+                <span class="text-muted ms-2">@ViewBag.NombreCliente</span>
             </div>
             <div class="info-row">
-                <i class="fas fa-hashtag"></i>
-                <span>Orden: <strong>#@ViewBag.PedidoId</strong></span>
-            </div>
-            <div class="info-row">
-                <i class="fas fa-wallet"></i>
-                <span>Pago: <strong>Efectivo</strong></span>
+                <i class="fas fa-hashtag text-muted"></i>
+                <span class="text-muted ms-2">Orden #@ViewBag.PedidoId</span>
             </div>
         </div>
 
-        <a asp-controller="Home" asp-action="Index" class="btn-back">Regresar</a>
+        <div class="mt-4">
+            <a asp-action="Index" asp-controller="Home" class="btn-back">Regresar</a>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-
     <script src="~/js/Pedidos/seguimiento.js"></script>
 }

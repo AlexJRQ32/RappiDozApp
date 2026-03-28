@@ -157,39 +157,49 @@ namespace RappiDozApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> GuardarRestaurante(Restaurante restaurante)
+        public async Task<IActionResult> GuardarRestaurante(Restaurante restaurante, string LatitudStr, string LongitudStr)
         {
-            ModelState.Remove("Usuarios");
-            ModelState.Remove("Productos");
-            ModelState.Remove("Categoria");
+            // Limpiar validaciones automáticas que fallan por el formato del punto decimal
+            ModelState.Remove("Latitud");
+            ModelState.Remove("Longitud");
+
+            if (decimal.TryParse(LatitudStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal lat))
+                restaurante.Latitud = lat;
+
+            if (decimal.TryParse(LongitudStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal lng))
+                restaurante.Longitud = lng;
+
+            if (restaurante.Latitud == 0 || restaurante.Longitud == 0)
+                return Json(new { success = false, message = "Ubicación no válida" });
 
             if (ModelState.IsValid)
             {
                 _context.Restaurantes.Add(restaurante);
                 await _context.SaveChangesAsync();
-
-                var usuarioConRol = await _context.Usuarios
-                    .Include(u => u.Rol)
-                    .Include(u => u.Restaurantes)
-                    .FirstOrDefaultAsync(u => u.Id == restaurante.UsuarioId);
-
-                if (usuarioConRol != null)
-                {
-                    EstablecerSesion(usuarioConRol);
-                }
-
-                TempData["MensajeExito"] = "¡Negocio registrado con éxito!";
-                return RedirectToAction("Index", "Home");
+                return Json(new { success = true, redirectUrl = Url.Action("Login", "Accesos") });
             }
 
-            ViewBag.UsuarioId = restaurante.UsuarioId;
-            ViewBag.Categorias = new SelectList(await _context.Categorias.ToListAsync(), "Id", "Nombre", restaurante.CategoriaId);
-            return View("~/Views/Accesos/restaurante-info.cshtml", restaurante);
+            var error = string.Join(" ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+            return Json(new { success = false, message = "Datos inválidos: " + error });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerMapaUniversal(int usuarioId)
+        {
+            var usuario = await _context.Usuarios.FindAsync(usuarioId);
+
+            // Validamos el Rol (asumiendo que 2 es Restaurante)
+            bool esRestaurante = (usuario != null && usuario.RolId == 2);
+
+            ViewBag.EsRestaurante = esRestaurante;
+
+            // Retornamos el modelo que prefieras (puedes usar dynamic en la vista)
+            return PartialView("~/Views/Ubicaciones/Mapa.cshtml", new UbicacionUsuario());
         }
         #endregion
 
         #region RECUPERACIÓN DE CONTRASEÑA
-       
+
 
         [HttpGet]
         public IActionResult OlvidastePassword() => View("~/Views/Accesos/olvidaste-contrasena.cshtml");

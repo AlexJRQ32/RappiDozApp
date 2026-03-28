@@ -1,98 +1,85 @@
-(function() {
+(function () {
     var mapFinal = null;
     var markerFinal = null;
 
     function initMap() {
         var $el = $('#mapa-final');
+        // Evitar inicializar si el elemento no existe o el mapa ya está creado
         if ($el.length === 0 || mapFinal !== null) return;
 
-        var lat = parseFloat($el.attr('data-lat'));
-        var lng = parseFloat($el.attr('data-lng'));
+        var lat = parseFloat($el.attr('data-lat')) || 9.9333;
+        var lng = parseFloat($el.attr('data-lng')) || -84.0833;
 
+        // 1. DETECCIÓN DE MODO (Tema)
+        // Leemos el atributo data-theme del HTML para decidir colores
+        var isDark = $('html').attr('data-theme') === 'dark';
+        var pinColor = isDark ? '#FFCC00' : '#FF0000'; // Amarillo en oscuro, Rojo en claro
+
+        // 2. CONFIGURACIÓN DEL MAPA
         mapFinal = L.map('mapa-final', {
             zoomControl: true,
             attributionControl: false
         }).setView([lat, lng], 16);
 
-        RappiDozMap.addTileLayer(mapFinal);
+        // Usamos la capa Voyager que es limpia y reacciona bien a los filtros CSS
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(mapFinal);
 
-        var iconRappi = L.icon({
-            iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-            iconSize: [46, 46],
-            iconAnchor: [23, 46],
-            popupAnchor: [0, -40]
+        // 3. CREACIÓN DEL ICONO PERSONALIZADO (30px)
+        var iconRappi = L.divIcon({
+            className: 'custom-div-icon',
+            // Inyectamos el color dinámico directamente en el style
+            html: '<i class="fas fa-map-marker-alt" style="color: ' + pinColor + ' !important;"></i>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30] // Punto exacto: mitad del ancho y total del alto
         });
 
+        // 4. CREACIÓN DEL MARCADOR
         markerFinal = L.marker([lat, lng], {
             draggable: true,
             icon: iconRappi
         }).addTo(mapFinal);
 
-        markerFinal.on('dragend', function(e) {
+        // Evento al terminar de arrastrar el pin
+        markerFinal.on('dragend', function (e) {
             var pos = markerFinal.getLatLng();
             $('#lat-hidden').val(pos.lat.toFixed(10));
             $('#lng-hidden').val(pos.lng.toFixed(10));
         });
 
-        setTimeout(function() {
+        // Corrección de tamaño para asegurar que cargue bien en modales
+        setTimeout(function () {
             mapFinal.invalidateSize();
         }, 400);
     }
 
+    // DISPARADORES (Triggers)
+    // Si el modal ya está abierto al cargar la página
     if ($('#modalGeneral').hasClass('show')) {
         initMap();
     }
-    $(document).on('shown.bs.modal', '#modalGeneral', function() {
+
+    // Cuando el modal de Bootstrap se termina de mostrar
+    $(document).on('shown.bs.modal', '#modalGeneral', function () {
         initMap();
     });
 
-    $(document).off('click', '#btnConfirmarFinal').on('click', '#btnConfirmarFinal', function() {
+    // BOTÓN DE CONFIRMACIÓN
+    $(document).off('click', '#btnConfirmarFinal').on('click', '#btnConfirmarFinal', function () {
         var nombre = $('#nombre-ubicacion').val();
+        var lat = $('#lat-hidden').val();
+        var lng = $('#lng-hidden').val();
 
         if (!nombre || nombre.trim() === "") {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Falta un detalle',
-                text: 'Por favor, escribe un nombre para tu dirección.',
-                confirmButtonColor: '#472825',
-                background: _swalBg,
-                color: _swalColor
-            });
+            alert("Por favor, escribe un nombre para la ubicación.");
             return;
         }
 
-        var btn = $(this);
-        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
-
-        var data = {
-            Latitud: $('#lat-hidden').val(),
-            Longitud: $('#lng-hidden').val(),
-            nombreUbicacion: nombre,
-            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
-        };
-
-        $.post('/Ubicaciones/GuardarUbicacion', data)
-            .done(function(res) {
-                if (res.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Ubicación lista!',
-                        text: res.message,
-                        showConfirmButton: false,
-                        timer: 1800,
-                        background: _swalBg,
-                        color: _swalColor
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    Swal.fire('Error', res.message, 'error');
-                    btn.prop('disabled', false).text('CONFIRMAR Y GUARDAR');
-                }
-            })
-            .fail(function() {
-                Swal.fire('Error', 'No se pudo conectar con el servidor. Verifica tu conexión.', 'error');
-                btn.prop('disabled', false).text('CONFIRMAR Y GUARDAR');
-            });
+        // Aquí iría tu lógica de guardado AJAX
+        console.log("Datos listos para guardar:", {
+            nombre: nombre,
+            latitud: lat,
+            longitud: lng
+        });
     });
+
 })();

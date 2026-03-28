@@ -21,6 +21,7 @@ namespace RappiDozApp.Data
         public DbSet<Valoracion> Valoraciones { get; set; }
         public DbSet<CuponApartado> CuponesApartados { get; set; }
         public DbSet<UbicacionUsuario> UbicacionUsuario { get; set; }
+        public DbSet<MetodoPago> MetodosPago { get; set; }
 
         #region Configuración
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -36,6 +37,14 @@ namespace RappiDozApp.Data
             modelBuilder.Entity<UbicacionUsuario>().Property(u => u.Longitud).HasPrecision(18, 10);
             modelBuilder.Entity<Pedido>().Property(p => p.EntregaLatitud).HasPrecision(18, 10);
             modelBuilder.Entity<Pedido>().Property(p => p.EntregaLongitud).HasPrecision(18, 10);
+            modelBuilder.Entity<Restaurante>().Property(r => r.Latitud).HasPrecision(18, 10);
+            modelBuilder.Entity<Restaurante>().Property(r => r.Longitud).HasPrecision(18, 10);
+
+            modelBuilder.Entity<Pedido>()
+                .HasOne(p => p.MetodoPago)
+                .WithMany(m => m.Pedidos)
+                .HasForeignKey(p => p.MetodoPagoId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
         #endregion
     }

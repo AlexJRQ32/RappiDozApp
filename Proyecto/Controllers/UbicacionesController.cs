@@ -17,26 +17,32 @@ namespace RappiDozApp.Controllers
 
         #region Vistas
         [HttpGet]
-        public async Task<IActionResult> Mapa()
+        public async Task<IActionResult> Mapa(int? usuarioIdRegistro)
         {
-            int? userId = HttpContext.Session.GetInt32("UsuarioId");
-            if (userId == null) return Unauthorized();
+            // 1. Intentamos sacar el ID de la sesión
+            int? userIdSesion = HttpContext.Session.GetInt32("UsuarioId");
+
+            // 2. ¿Es registro o es un usuario logueado?
+            // Si usuarioIdRegistro tiene valor, es porque viene de la pantalla de Subway (Registro)
+            bool esRegistro = usuarioIdRegistro != null;
+            ViewBag.EsRegistro = esRegistro;
+
+            // 3. Buscamos la ubicación (o creamos una vacía)
+            int targetId = usuarioIdRegistro ?? userIdSesion ?? 0;
+            if (targetId == 0) return Unauthorized();
 
             var ultimaUbicacion = await _context.UbicacionUsuario
-                .Where(u => u.IdUsuario == userId)
+                .Where(u => u.IdUsuario == targetId)
                 .OrderByDescending(u => u.IdUbicacion)
                 .FirstOrDefaultAsync();
 
-            if (ultimaUbicacion == null)
+            ultimaUbicacion ??= new UbicacionUsuario
             {
-                ultimaUbicacion = new UbicacionUsuario
-                {
-                    IdUsuario = userId.Value,
-                    Latitud = 9.9333m,
-                    Longitud = -84.0833m,
-                    NombreUbicacion = "Nueva Ubicación"
-                };
-            }
+                IdUsuario = targetId,
+                Latitud = 9.9333m,
+                Longitud = -84.0833m,
+                NombreUbicacion = esRegistro ? null : "Mi Ubicación" // Clave aquí
+            };
 
             return PartialView("~/Views/Ubicaciones/Mapa.cshtml", ultimaUbicacion);
         }
@@ -50,8 +56,9 @@ namespace RappiDozApp.Controllers
             int? userId = HttpContext.Session.GetInt32("UsuarioId");
             if (userId == null) return Json(new { success = false, message = "Sesión expirada" });
 
-            bool latOk = decimal.TryParse(Latitud, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out decimal lat);
-            bool lngOk = decimal.TryParse(Longitud, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out decimal lng);
+            // Uso de InvariantCulture para evitar errores de punto/coma decimal
+            bool latOk = decimal.TryParse(Latitud, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal lat);
+            bool lngOk = decimal.TryParse(Longitud, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal lng);
 
             if (latOk && lngOk)
             {
@@ -68,8 +75,9 @@ namespace RappiDozApp.Controllers
                     _context.UbicacionUsuario.Add(nuevaUbicacion);
                     await _context.SaveChangesAsync();
 
-                    HttpContext.Session.SetString("Latitud", lat.ToString(CultureInfo.InvariantCulture));
-                    HttpContext.Session.SetString("Longitud", lng.ToString(CultureInfo.InvariantCulture));
+                    // Guardar en sesión para persistencia inmediata en la UI
+                    HttpContext.Session.SetString("Latitud", lat.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                    HttpContext.Session.SetString("Longitud", lng.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
                     return Json(new { success = true, message = $"¡Dirección '{nombreUbicacion}' guardada!" });
                 }

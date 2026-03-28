@@ -1,78 +1,79 @@
-document.addEventListener("DOMContentLoaded", function () {
-    var mapEl = document.getElementById('map');
-    if (!mapEl) return;
+(function () {
+    var mapFinal = null;
+    var markerMoto = null;
+    var routingControl = null;
 
-    const latO = parseFloat(mapEl.dataset.repartidorLat);
-    const lngO = parseFloat(mapEl.dataset.repartidorLng);
-    const latD = parseFloat(mapEl.dataset.usuarioLat);
-    const lngD = parseFloat(mapEl.dataset.usuarioLng);
+    function initTracking() {
+        var $el = $('#mapa-final');
+        if ($el.length === 0 || mapFinal !== null) return;
 
-    const map = L.map('map', { zoomControl: false, attributionControl: false }).setView([latO, lngO], 15);
-    RappiDozMap.addTileLayer(map);
+        // Leer coordenadas
+        var latO = parseFloat($el.attr('data-lat'));
+        var lngO = parseFloat($el.attr('data-lng'));
+        var latD = parseFloat($el.attr('data-dest-lat'));
+        var lngD = parseFloat($el.attr('data-dest-lng'));
 
-    setTimeout(() => { try { map.invalidateSize(); } catch(e) { console.warn('invalidateSize failed', e); } }, 100);
+        // Inicializar Leaflet
+        mapFinal = L.map('mapa-final', { zoomControl: false, attributionControl: false }).setView([latO, lngO], 15);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(mapFinal);
 
-    const iconM = L.divIcon({
-        html: '<i class="fas fa-motorcycle moto-icon"></i>',
-        className: 'no-bg', iconSize: [40, 40], iconAnchor: [20, 20]
-    });
+        // Iconos
+        var iconMoto = L.divIcon({
+            className: 'custom-icon',
+            html: '<i class="fas fa-motorcycle" style="color: #FFCC00; font-size: 32px;"></i>',
+            iconSize: [32, 32], iconAnchor: [16, 16]
+        });
+        var iconDest = L.divIcon({
+            className: 'custom-icon',
+            html: '<i class="fas fa-map-marker-alt" style="color: #FF0000; font-size: 32px;"></i>',
+            iconSize: [32, 32], iconAnchor: [16, 32]
+        });
 
-    const markerM = L.marker([latO, lngO], { icon: iconM }).addTo(map);
-    L.marker([latD, lngD]).addTo(map);
+        markerMoto = L.marker([latO, lngO], { icon: iconMoto }).addTo(mapFinal);
+        L.marker([latD, lngD], { icon: iconDest }).addTo(mapFinal);
 
-    function iniciar(puntos) {
-        const duracion = 10000;
-        const inicio = performance.now();
+        // Routing
+        routingControl = L.Routing.control({
+            waypoints: [L.latLng(latO, lngO), L.latLng(latD, lngD)],
+            createMarker: function () { return null; },
+            lineOptions: { addWaypoints: false, styles: [{ color: '#FFCC00', weight: 6, opacity: 0.8 }] },
+            show: false
+        }).addTo(mapFinal);
 
-        map.fitBounds([[latO, lngO], [latD, lngD]], { padding: [60, 60] });
+        routingControl.on('routesfound', function (e) {
+            var points = e.routes[0].coordinates;
+            setTimeout(function () {
+                mapFinal.invalidateSize();
+                mapFinal.fitBounds([[latO, lngO], [latD, lngD]], { padding: [100, 100] });
+            }, 300);
+            startAnimation(points);
+        });
+    }
+
+    function startAnimation(puntos) {
+        var duracion = 10000;
+        var inicio = performance.now();
 
         function frame(ahora) {
-            const t = Math.min((ahora - inicio) / duracion, 1);
-            const idx = Math.floor(t * (puntos.length - 1));
+            var progreso = Math.min((ahora - inicio) / duracion, 1);
+            var idx = Math.floor(progreso * (puntos.length - 1));
 
-            const p = puntos[idx];
-            if (p) {
-                const curLat = p.lat !== undefined ? p.lat : p[0];
-                const curLng = p.lng !== undefined ? p.lng : p[1];
-                markerM.setLatLng([curLat, curLng]);
+            if (puntos[idx]) {
+                markerMoto.setLatLng([puntos[idx].lat, puntos[idx].lng]);
             }
 
-            document.getElementById('bar').style.width = (t * 100) + "%";
-            document.getElementById('timer').innerText = Math.ceil(10 - (t * 10)) + " seg";
+            $('#bar').css('width', (progreso * 100) + '%');
+            $('#timer').text(Math.ceil(10 - (progreso * 10)) + " seg");
 
-            if (t < 1) {
+            if (progreso < 1) {
                 requestAnimationFrame(frame);
             } else {
-                const tag = document.getElementById('status-tag');
-                tag.innerText = "¡Llegó!";
-                tag.classList.remove('text-camino');
-                tag.classList.add('text-llegado');
-
-                confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
+                $('#status-tag').text('¡LLEGÓ!').removeClass('text-camino').addClass('text-llegado');
+                if (typeof confetti === 'function') confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
             }
         }
         requestAnimationFrame(frame);
     }
 
-    const control = L.Routing.control({
-        waypoints: [L.latLng(latO, lngO), L.latLng(latD, lngD)],
-        createMarker: () => null,
-        lineOptions: { addWaypoints: false, styles: [{ color: '#472825', weight: 4, opacity: 0.1 }] },
-        show: false
-    }).addTo(map);
-
-    let ok = false;
-    control.on('routesfound', (e) => {
-        console.log('routesfound event', e);
-        if(!ok) { ok = true; iniciar(e.routes[0].coordinates); }
-    });
-
-    setTimeout(() => {
-        if(!ok) {
-            ok = true;
-            let r = [];
-            for(let i=0; i<=100; i++) r.push([latO+(latD-latO)*(i/100), lngO+(lngD-lngO)*(i/100)]);
-            iniciar(r);
-        }
-    }, 1200);
-});
+    $(document).ready(initTracking);
+})();

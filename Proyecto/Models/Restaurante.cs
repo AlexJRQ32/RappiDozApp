@@ -21,12 +21,13 @@ namespace RappiDozApp.Models
         [ForeignKey("CategoriaId")]
         public virtual Categoria? Categoria { get; set; }
 
-        // --- COLUMNAS DE TIEMPO ---
         [Required]
         public TimeSpan HoraApertura { get; set; }
 
         [Required]
         public TimeSpan HoraCierre { get; set; }
+        public decimal? Latitud { get; set; }
+        public decimal? Longitud { get; set; }
 
         [NotMapped]
         public bool EstaAbierto

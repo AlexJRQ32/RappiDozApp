@@ -1,301 +1,176 @@
-﻿/* #region Mapa Full-Screen */
-.tracking-wrapper, .main-container, #mapContainer {
-    overflow: hidden;
+﻿/* 1. RESET DE PANTALLA COMPLETA 
+   Forzamos a que el navegador use el 100% del espacio visual */
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100vh !important;
+    width: 100vw !important;
+    overflow: hidden !important; /* Elimina cualquier posibilidad de scroll */
+    background-color: #121212; /* Color base para evitar destellos blancos */
 }
 
+/* 2. CONTENEDOR MAESTRO (WRAPPER)
+   Usamos 'fixed' para que se ancle a las 4 esquinas del monitor */
 .tracking-wrapper {
-    position: relative;
-    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100vw;
-    margin-top: calc(-1 * var(--navbar-height, 20px));
-}
-
-#mapContainer {
     height: 100vh;
-    width: 100%;
     z-index: 1;
-    background-color: var(--border-main);
+    display: flex;
+    flex-direction: column;
 }
 
-/* #endregion */
-
-/* #region Panel de Estado */
-.status-card {
-    position: absolute;
-    top: 100px;
-    left: 20px;
-    z-index: 1000;
-    width: 320px;
-    background: rgba(var(--surface-main-rgb), 0.88);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    padding: 25px;
-    border-radius: 25px;
-    box-shadow: var(--shadow-standard);
-    border: 1px solid rgba(var(--accent-main-rgb), 0.4);
-    font-family: 'Poppins', sans-serif;
-    animation: slideInLeft 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.eta-box {
-    background: var(--surface-main);
-    color: var(--text-main);
-    padding: 18px;
-    border-radius: 18px;
-    text-align: center;
-    margin-top: 15px;
-    box-shadow: var(--shadow-soft);
-    transition: var(--transicion, all 0.3s ease);
-}
-
-    .eta-box:hover {
-        transform: translateY(-3px);
-        background: var(--surface-elevated);
-    }
-
-    .eta-box h4 {
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        opacity: 0.8;
-        margin-bottom: 5px;
-    }
-
-    .eta-box span {
-        font-size: 1.5rem;
-        font-weight: 800;
-        display: block;
-    }
-
-/* #endregion */
-
-/* #region Animaciones */
-.moto-icon-div i {
-    font-size: 35px;
-    color: var(--text-main);
-    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
-    animation: motoVibration 0.3s infinite alternate;
-}
-
-@keyframes motoVibration {
-    from {
-        transform: translateY(0) rotate(-2deg);
-    }
-
-    to {
-        transform: translateY(-2px) rotate(2deg);
-    }
-}
-
-@keyframes slideInLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-50px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-/* #endregion */
-
-/* #region Responsivo */
-@media (max-width: 768px) {
-    .status-card {
-        top: auto;
-        bottom: 30px;
-        left: 5%;
-        right: 5%;
-        width: 90%;
-        padding: 20px;
-        animation: slideUpMobile 0.5s ease-out;
-    }
-
-    .tracking-wrapper {
-        margin-top: 0;
-    }
-
-    .eta-box {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        text-align: left;
-        padding: 12px 20px;
-    }
-
-        .eta-box h4 {
-            margin-bottom: 0;
-        }
-
-    .status-card::before {
-        content: '';
-        position: absolute;
-        top: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 40px;
-        height: 4px;
-        background: rgba(var(--text-main-rgb), 0.1);
-        border-radius: 10px;
-    }
-}
-
-@keyframes slideUpMobile {
-    from {
-        transform: translateY(100%);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-/* #endregion */
-
-/* #region Markers y Estilos Migrados */
-.custom-marker {
-    background: var(--accent-main);
-    border: 3px solid var(--surface-main);
-    border-radius: 50%;
-    box-shadow: 0 0 15px rgba(var(--accent-main-rgb), 0.6);
-}
-
-.tracking-wrapper .cta-final,
-.tracking-wrapper .footer-content {
-    display: none !important;
-}
-
-.main-container {
-    position: relative;
-    width: 100%;
-    height: calc(100vh - 70px);
-    margin-top: 70px;
-}
-
-#map {
-}
-
-.tracking-wrapper #map,
-.main-container #map {
+/* 3. EL MAPA 
+   Ocupa la totalidad del wrapper */
+#mapa-final {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
+    z-index: 5;
 }
 
-.tracking-card {
+/* 4. FILTROS DE MODO OSCURO (Psicología y Usabilidad)
+   Invertimos los colores de los tiles de Voyager para el tema Dark */
+html[data-theme="dark"] #mapa-final {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%) !important;
+    background: #1a1a1a !important;
+}
+
+/* IMPORTANTE: Evitamos que los iconos (moto/pin) se vean con colores raros */
+html[data-theme="dark"] .leaflet-marker-pane,
+html[data-theme="dark"] .leaflet-shadow-pane {
+    filter: invert(100%) hue-rotate(-180deg) !important;
+}
+
+/* 5. TARJETA DE ESTADO (STATUS CARD)
+   Flota sobre el mapa a la izquierda */
+.status-card {
     position: absolute;
-    top: 20px;
+    top: 100px; /* Ajustado para que no lo tape el Navbar */
     left: 20px;
     z-index: 1000;
-    background: rgba(var(--surface-main-rgb), 0.96);
-    width: 300px;
-    max-width: 85%;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: var(--shadow-soft);
-    border: 1px solid rgba(var(--accent-main-rgb), 0.22);
+    width: 320px;
+    background: rgba(26, 26, 26, 0.92); /* Transparencia elegante */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 25px;
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+    border: 1px solid rgba(212, 175, 55, 0.4); /* Bordes dorados RappiDoz */
+    font-family: 'Poppins', sans-serif;
 }
 
-@media (max-width: 768px) {
-    .tracking-card {
-        top: 15px;
-        left: 15px;
-        padding: 15px;
-        width: 260px;
-    }
-
-    .main-container {
-        height: calc(100vh - 60px);
-        margin-top: 60px;
-    }
-}
-
-.status-badge {
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    transition: all 0.4s ease;
-}
-
-.text-camino {
-    background: #fffde7;
-    color: #fbc02d !important;
-}
-.text-llegado {
-    background: #1a302a;
-    color: #2e7d32 !important;
-}
-
+/* 6. ELEMENTOS INTERNOS DE LA TARJETA */
 .eta-box {
-    background: #ece4da;
-    color: #ece4da;
-    border-radius: 15px;
-    padding: 15px;
+    background: #000;
+    padding: 20px;
+    border-radius: 20px;
     text-align: center;
-    margin: 12px 0;
+    margin-top: 15px;
     position: relative;
     overflow: hidden;
+    border: 1px solid #333;
 }
+
+    .eta-box h4 {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        color: #888;
+        margin-bottom: 5px;
+        letter-spacing: 1px;
+    }
+
+    .eta-box span {
+        font-size: 2rem;
+        font-weight: 900;
+        color: #fff;
+        display: block;
+    }
 
 .progress-bar {
     position: absolute;
     bottom: 0;
     left: 0;
-    height: 4px;
-    background: #d3ab80;
+    height: 5px;
+    background: #d4af37; /* Amarillo/Dorado RappiDoz */
     width: 0%;
+    transition: width 0.4s linear;
 }
 
-.client-info {
-    margin: 15px 0;
-    padding-top: 10px;
-    border-top: 1px dashed var(--border-main);
-    color: #444;
-    font-size: 0.85rem;
+/* 7. BADGES Y TEXTO */
+.status-badge {
+    font-size: 10px;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
 }
 
-.info-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 5px;
+.text-camino {
+    background: rgba(251, 192, 45, 0.15);
+    color: #fdd835 !important;
 }
 
-    .info-row i {
-        color: #d3ab80;
-        width: 18px;
-        text-align: center;
-    }
+.text-llegado {
+    background: rgba(46, 125, 50, 0.2);
+    color: #66bb6a !important;
+}
 
+.label-custom {
+    color: #d4af37;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* 8. BOTONES */
 .btn-back {
     display: block;
     width: 100%;
-    background: #fdfaf6;
-    color: #ece4da !important;
+    background: #222;
+    color: #d4af37 !important;
     text-align: center;
-    padding: 10px;
-    border-radius: 12px;
+    padding: 12px;
+    border-radius: 15px;
     text-decoration: none;
     font-weight: bold;
-    border: 1px solid var(--border-main);
+    border: 1px solid #d4af37;
+    margin-top: 20px;
+    transition: all 0.3s ease;
 }
 
-.moto-icon {
-    color: #ece4da;
-    font-size: 28px !important;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-}
+    .btn-back:hover {
+        background: #d4af37;
+        color: #000 !important;
+        transform: translateY(-2px);
+    }
 
-.leaflet-marker-icon.no-bg {
+/* 9. ICONOS DE MAPA (Leaflet Fix) */
+.custom-div-icon {
     background: none !important;
     border: none !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-/* #endregion */
 
+    .custom-div-icon i {
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+    }
+
+/* 10. RESPONSIVO PARA MÓVILES */
+@media (max-width: 768px) {
+    .status-card {
+        top: auto;
+        bottom: 20px;
+        left: 5%;
+        right: 5%;
+        width: 90%;
+        padding: 20px;
+    }
+}

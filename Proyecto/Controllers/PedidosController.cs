@@ -4,6 +4,7 @@ using RappiDozApp.Data;
 using RappiDozApp.Models;
 using System.Globalization;
 using System.Text.Json;
+
 namespace RappiDozApp.Controllers
 {
     public class PedidosController : Controller
@@ -16,59 +17,61 @@ namespace RappiDozApp.Controllers
         }
 
         #region Vistas
+
+        // FIX: Evita el error 404 cuando se accede a /Pedidos
         [HttpGet]
+        public IActionResult Index()
+        {
+            return RedirectToAction("Movimientos");
+        }
+
         public async Task<IActionResult> Seguimiento(int id)
         {
-            var usuarioSesionId = HttpContext.Session.GetInt32("UsuarioId");
-            if (usuarioSesionId == null) return RedirectToAction("Login", "Accesos");
+            var pedido = await _context.Pedidos
+                .Include(p => p.Usuario)
+                .Include(p => p.Restaurante)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            var pedido = await _context.Pedidos.FindAsync(id);
             if (pedido == null) return NotFound();
 
-            var ubicacionEntrega = await _context.UbicacionUsuario
-                .Where(u => u.IdUsuario == usuarioSesionId)
-                .OrderByDescending(u => u.IdUbicacion)
-                .FirstOrDefaultAsync();
+            // Cascada de ubicación: Restaurante > San José Centro (Default)
+            decimal latO = 9.9331m;
+            decimal lngO = -84.0768m;
 
-            if (ubicacionEntrega == null)
+            if (pedido.Restaurante != null && pedido.Restaurante.Latitud != 0)
             {
-                ubicacionEntrega = new UbicacionUsuario { Latitud = 9.9333m, Longitud = -84.0833m };
+                latO = (decimal)pedido.Restaurante.Latitud;
+                lngO = (decimal)pedido.Restaurante.Longitud;
             }
 
-            if (pedido.Estado == "Pendiente" || pedido.Estado == "Preparando")
-            {
-                pedido.Estado = "En Camino";
-                await _context.SaveChangesAsync();
-            }
+            // Enviamos datos limpios al ViewBag con punto decimal
+            ViewBag.RepartidorLat = latO.ToString(CultureInfo.InvariantCulture);
+            ViewBag.RepartidorLng = lngO.ToString(CultureInfo.InvariantCulture);
+            ViewBag.UsuarioLat = (pedido.EntregaLatitud ?? 9.9350m).ToString(CultureInfo.InvariantCulture);
+            ViewBag.UsuarioLng = (pedido.EntregaLongitud ?? -84.0850m).ToString(CultureInfo.InvariantCulture);
 
-            var cultura = CultureInfo.InvariantCulture;
-
-            decimal latDest = ubicacionEntrega.Latitud;
-            decimal lngDest = ubicacionEntrega.Longitud;
-
-            decimal latOrig = 9.9600m;
-            decimal lngOrig = -84.0800m;
-
-            ViewBag.UsuarioLat = latDest.ToString(cultura);
-            ViewBag.UsuarioLng = lngDest.ToString(cultura);
-            ViewBag.RepartidorLat = latOrig.ToString(cultura);
-            ViewBag.RepartidorLng = lngOrig.ToString(cultura);
-
+            ViewBag.NombreCliente = pedido.Usuario?.NombreCompleto ?? "Cliente";
             ViewBag.PedidoId = pedido.Id;
-            ViewBag.EstadoActual = pedido.Estado;
 
-            return View("~/Views/Pedidos/Seguimiento.cshtml");
+            return View(pedido);
         }
 
         [HttpGet]
         public async Task<IActionResult> Factura(int id)
         {
+            // IMPORTANTE: Cargamos el pedido con sus hijos (Detalles -> Producto) y (MetodoPago)
             var pedido = await _context.Pedidos
+                .Include(p => p.MetodoPago)
                 .Include(p => p.Detalles)
                     .ThenInclude(d => d.Producto)
+                .Include(p => p.Usuario) // Opcional, si quieres mostrar el nombre del cliente
                 .FirstOrDefaultAsync(p => p.Id == id);
 
-            if (pedido == null) return RedirectToAction("Index");
+            if (pedido == null)
+            {
+                TempData["MensajeError"] = "No se encontró la factura solicitada.";
+                return RedirectToAction("Movimientos");
+            }
 
             return View("~/Views/Pedidos/factura.cshtml", pedido);
         }
@@ -77,15 +80,10 @@ namespace RappiDozApp.Controllers
         public async Task<IActionResult> Movimientos()
         {
             int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
-
-            if (usuarioId == null)
-            {
-                return RedirectToAction("Login", "Accesos");
-            }
+            if (usuarioId == null) return RedirectToAction("Login", "Accesos");
 
             var historial = await _context.Pedidos
-                .Include(p => p.Detalles)
-                    .ThenInclude(d => d.Producto)
+                .Include(p => p.Detalles).ThenInclude(d => d.Producto)
                 .Where(p => p.UsuarioId == usuarioId)
                 .OrderByDescending(p => p.FechaHora)
                 .ToListAsync();
@@ -95,43 +93,45 @@ namespace RappiDozApp.Controllers
         #endregion
 
         #region Procesos
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmarPedido()
+        public async Task<IActionResult> ConfirmarPedido(int UbicacionId, int MetodoPagoId)
         {
             int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
             var emailUsuario = HttpContext.Session.GetString("EmailUsuario");
-            if (usuarioId == null || string.IsNullOrEmpty(emailUsuario)) return RedirectToAction("Login", "Accesos");
+
+            if (usuarioId == null) return RedirectToAction("Login", "Accesos");
 
             var listaCarritoJson = HttpContext.Session.GetString("CarritoRappiDoz");
-            if (string.IsNullOrEmpty(listaCarritoJson))
-            {
-                TempData["MensajeError"] = "El carrito está vacío.";
-                return RedirectToAction("Index");
-            }
+            if (string.IsNullOrEmpty(listaCarritoJson)) return RedirectToAction("Index", "Carritos");
 
             var listaCarrito = JsonSerializer.Deserialize<List<CarritoItem>>(listaCarritoJson) ?? new List<CarritoItem>();
+
+            // Obtener coordenadas de la ubicación seleccionada
+            var ubicacion = await _context.UbicacionUsuario.FindAsync(UbicacionId);
+
+            // Cálculos
             decimal subtotal = listaCarrito.Sum(x => x.Precio * x.Cantidad);
             decimal descuentoFinal = 0;
-
             var descuentoStr = HttpContext.Session.GetString("DescuentoValor");
-            var esPorcStr = HttpContext.Session.GetString("EsPorcentaje");
-            var codigoAplicado = HttpContext.Session.GetString("CuponAplicado");
-
             if (!string.IsNullOrEmpty(descuentoStr))
             {
-                decimal.TryParse(descuentoStr, out decimal valorDescuento);
-                bool esPorc = esPorcStr == "true";
-                descuentoFinal = esPorc ? (subtotal * (valorDescuento / 100)) : valorDescuento;
+                decimal.TryParse(descuentoStr, out decimal valor);
+                bool esPorc = HttpContext.Session.GetString("EsPorcentaje") == "true";
+                descuentoFinal = esPorc ? (subtotal * (valor / 100)) : valor;
             }
 
             var nuevoPedido = new Pedido
             {
                 UsuarioId = usuarioId.Value,
+                MetodoPagoId = MetodoPagoId > 0 ? MetodoPagoId : 1, // Por defecto 1 (Efectivo) si no viene
                 FechaHora = DateTime.Now,
                 Estado = "Pendiente",
                 MontoDescuento = descuentoFinal,
                 Total = (subtotal + 2000) - descuentoFinal,
+                EntregaLatitud = ubicacion?.Latitud,
+                EntregaLongitud = ubicacion?.Longitud,
                 Detalles = listaCarrito.Select(item => new DetallePedido
                 {
                     ProductoId = item.ProductoId,
@@ -142,37 +142,23 @@ namespace RappiDozApp.Controllers
 
             try
             {
-                if (!string.IsNullOrEmpty(codigoAplicado))
-                {
-                    var cuponAEliminar = await _context.CuponesApartados
-                        .FirstOrDefaultAsync(c => c.Codigo == codigoAplicado && c.UsuarioEmail == emailUsuario);
-
-                    if (cuponAEliminar != null)
-                    {
-                        _context.CuponesApartados.Remove(cuponAEliminar);
-                    }
-                }
-
                 _context.Pedidos.Add(nuevoPedido);
                 await _context.SaveChangesAsync();
 
+                // Limpieza de sesión
                 HttpContext.Session.Remove("CarritoRappiDoz");
                 HttpContext.Session.Remove("CuponAplicado");
-                HttpContext.Session.Remove("CuponActivo");
-                HttpContext.Session.Remove("DescuentoValor");
-                HttpContext.Session.Remove("EsPorcentaje");
                 HttpContext.Session.SetString("CarritoCount", "0");
 
                 return RedirectToAction("Factura", new { id = nuevoPedido.Id });
             }
             catch (Exception ex)
             {
-                TempData["MensajeError"] = "Error al procesar el pedido: " + ex.Message;
-                return RedirectToAction("Index");
+                TempData["MensajeError"] = "Error al procesar pedido: " + ex.Message;
+                return RedirectToAction("Index", "Carritos");
             }
         }
         #endregion
-
 
         #region API
         [HttpGet]
@@ -181,38 +167,7 @@ namespace RappiDozApp.Controllers
             var pedido = await _context.Pedidos
                 .Select(p => new { p.Id, p.Estado })
                 .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (pedido == null) return NotFound();
-
-            return Json(new { estado = pedido.Estado });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AvanzarEstado(int id)
-        {
-            var pedido = await _context.Pedidos.FindAsync(id);
-            if (pedido == null) return NotFound();
-
-            if (pedido.Estado == "En Camino")
-                pedido.Estado = "Entregado";
-            else
-                pedido.Estado = "En Camino";
-
-            await _context.SaveChangesAsync();
-            return Json(new { nuevoEstado = pedido.Estado });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> MarcarEntregado(int id)
-        {
-            var pedido = await _context.Pedidos.FindAsync(id);
-            if (pedido != null)
-            {
-                pedido.Estado = "Entregado";
-                await _context.SaveChangesAsync();
-                return Ok(new { message = "Entrega confirmada en sistema." });
-            }
-            return NotFound();
+            return pedido == null ? NotFound() : Json(new { estado = pedido.Estado });
         }
         #endregion
     }

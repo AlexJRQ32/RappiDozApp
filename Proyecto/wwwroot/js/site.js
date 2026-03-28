@@ -59,7 +59,9 @@ function openSharedModal(url) {
 }
 
 window.abrirMapa = function () {
-    openSharedModal('/Ubicaciones/Mapa');
+    // Obtenemos el ID del usuario desde el input hidden o la URL
+    const userId = $('input[name="UsuarioId"]').val();
+    openSharedModal('/Ubicaciones/Mapa?usuarioIdRegistro=' + userId);
 };
 
 window.abrirPerfil = function () {

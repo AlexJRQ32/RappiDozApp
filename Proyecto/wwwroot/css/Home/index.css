@@ -43,10 +43,10 @@ html[data-theme="dark"] .hero {
     transition: all 0.3s ease;
 }
 
-.search-container:focus-within {
-    border-color: var(--medium-green);
-    box-shadow: 0 15px 35px rgba(211, 171, 128, 0.2);
-}
+    .search-container:focus-within {
+        border-color: var(--medium-green);
+        box-shadow: 0 15px 35px rgba(211, 171, 128, 0.2);
+    }
 
 .input-wrapper {
     flex: 1;
@@ -56,25 +56,25 @@ html[data-theme="dark"] .hero {
     border: none;
 }
 
-.input-wrapper i {
-    color: var(--medium-green);
-    font-size: 18px;
-}
+    .input-wrapper i {
+        color: var(--medium-green);
+        font-size: 18px;
+    }
 
-.input-wrapper input {
-    border: none !important;
-    outline: none;
-    width: 100%;
-    padding: 12px;
-    font-size: 17px;
-    color: var(--text-main);
-    background: transparent;
-}
+    .input-wrapper input {
+        border: none !important;
+        outline: none;
+        width: 100%;
+        padding: 12px;
+        font-size: 17px;
+        color: var(--text-main);
+        background: transparent;
+    }
 
-.input-wrapper input::placeholder {
-    color: var(--dark-green);
-    opacity: 0.7;
-}
+        .input-wrapper input::placeholder {
+            color: var(--dark-green);
+            opacity: 0.7;
+        }
 
 .btn-buscar {
     background-color: var(--accent-main);
@@ -87,10 +87,10 @@ html[data-theme="dark"] .hero {
     transition: all 0.3s ease;
 }
 
-.btn-buscar:hover {
-    background-color: var(--footer-text);
-    transform: translateY(var(--hover-lift-global));
-}
+    .btn-buscar:hover {
+        background-color: var(--footer-text);
+        transform: translateY(var(--hover-lift-global));
+    }
 
 .contenido-principal,
 .zona-restringida {
@@ -108,15 +108,15 @@ html[data-theme="dark"] .hero {
     z-index: 3;
 }
 
-.categorias h2,
-.restaurantes h2,
-.como-funciona h2,
-.map-title {
-    font-size: 28px;
-    margin-bottom: 30px;
-    color: var(--text-main);
-    font-weight: 700;
-}
+    .categorias h2,
+    .restaurantes h2,
+    .como-funciona h2,
+    .map-title {
+        font-size: 28px;
+        margin-bottom: 30px;
+        color: var(--text-main);
+        font-weight: 700;
+    }
 
 .grid-categorias {
     display: flex;
@@ -180,22 +180,22 @@ html[data-theme="dark"] .hero {
     transition: all 0.3s ease;
 }
 
-.section-link:hover,
-.locked-login-link:hover,
-.btn-confirmar-mapa:hover,
-.link-restaurante-horizontal:hover .restaurant-card {
-    transform: translateY(var(--hover-lift-global));
-}
+    .section-link:hover,
+    .locked-login-link:hover,
+    .btn-confirmar-mapa:hover,
+    .link-restaurante-horizontal:hover .restaurant-card {
+        transform: translateY(var(--hover-lift-global));
+    }
 
-.section-link:hover {
-    color: var(--text-main);
-}
+    .section-link:hover {
+        color: var(--text-main);
+    }
 
-.locked-login-link:hover,
-.btn-confirmar-mapa:hover {
-    background: var(--footer-text);
-    color: var(--accent-contrast);
-}
+    .locked-login-link:hover,
+    .btn-confirmar-mapa:hover {
+        background: var(--footer-text);
+        color: var(--accent-contrast);
+    }
 
 .categoria-card:hover .category-icon,
 .categoria-card:hover .category-label {
@@ -230,24 +230,24 @@ html[data-theme="dark"] .hero {
     scrollbar-width: thin;
 }
 
-.scroll-horizontal-wrapper::-webkit-scrollbar {
-    height: 10px;
-}
+    .scroll-horizontal-wrapper::-webkit-scrollbar {
+        height: 10px;
+    }
 
-.scroll-horizontal-wrapper::-webkit-scrollbar-track {
-    background: var(--bg-main);
-    border-radius: 999px;
-}
+    .scroll-horizontal-wrapper::-webkit-scrollbar-track {
+        background: var(--bg-main);
+        border-radius: 999px;
+    }
 
-.scroll-horizontal-wrapper::-webkit-scrollbar-thumb {
-    background: var(--border-main);
-    border-radius: 999px;
-    border: 2px solid var(--bg-main);
-}
+    .scroll-horizontal-wrapper::-webkit-scrollbar-thumb {
+        background: var(--border-main);
+        border-radius: 999px;
+        border: 2px solid var(--bg-main);
+    }
 
-.scroll-horizontal-wrapper::-webkit-scrollbar-thumb:hover {
-    background: var(--surface-elevated);
-}
+        .scroll-horizontal-wrapper::-webkit-scrollbar-thumb:hover {
+            background: var(--surface-elevated);
+        }
 
 .grid-restaurantes-dinamico {
     display: flex;
@@ -273,11 +273,11 @@ html[data-theme="dark"] .hero {
     margin-top: 10px;
 }
 
-.restaurant-card:hover {
-    transform: translateY(var(--hover-lift-global));
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-    border-color: var(--medium-green);
-}
+    .restaurant-card:hover {
+        transform: translateY(var(--hover-lift-global));
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+        border-color: var(--medium-green);
+    }
 
 .card-img-wrapper {
     position: relative;
@@ -355,7 +355,32 @@ html[data-theme="dark"] .hero {
     overflow: hidden;
     border: 1px solid var(--border-main);
     background: var(--bg-main);
+    transition: filter 0.3s ease;
 }
+
+/* --- AJUSTES MODO OSCURO MAPA --- */
+html[data-theme="dark"] #map {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%) !important;
+}
+
+/* Des-invertir el PIN y Controles en modo oscuro */
+html[data-theme="dark"] .leaflet-marker-pane,
+html[data-theme="dark"] .leaflet-control-zoom {
+    filter: invert(100%) hue-rotate(-180deg) !important;
+}
+
+/* Estilo del Pin Custom */
+.custom-div-icon {
+    background: none !important;
+    border: none !important;
+}
+
+    .custom-div-icon i {
+        font-size: 30px !important;
+        display: block;
+        text-align: center;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    }
 
 #map .leaflet-control-zoom a,
 #map .leaflet-popup-content-wrapper,
@@ -462,23 +487,25 @@ html[data-theme="dark"] .hero {
     padding: 30px;
 }
 
-.paso i {
-    font-size: 45px;
-    color: var(--medium-green);
-    margin-bottom: 20px;
-}
+    .paso i {
+        font-size: 45px;
+        color: var(--medium-green);
+        margin-bottom: 20px;
+    }
 
-.paso h3 {
-    margin-bottom: 10px;
-    color: var(--text-main);
-    font-size: 19px;
-}
+    .paso h3 {
+        margin-bottom: 10px;
+        color: var(--text-main);
+        font-size: 19px;
+    }
 
-.paso p {
-    font-size: 14px;
-    color: var(--dark-green);
-    line-height: 1.5;
-}
+    .paso p {
+        font-size: 14px;
+        color: var(--dark-green);
+        line-height: 1.5;
+    }
+
+/* --- RESPONSIVO --- */
 
 @media (max-width: 992px) {
     .grid-categorias {
@@ -534,18 +561,18 @@ html[data-theme="dark"] .hero {
         padding: 24px 20px;
     }
 
-    .paso i {
-        font-size: 38px;
-        margin-bottom: 16px;
-    }
+        .paso i {
+            font-size: 38px;
+            margin-bottom: 16px;
+        }
 
-    .paso h3 {
-        font-size: 17px;
-    }
+        .paso h3 {
+            font-size: 17px;
+        }
 
-    .paso p {
-        font-size: 13px;
-    }
+        .paso p {
+            font-size: 13px;
+        }
 }
 
 @media (max-width: 768px) {
@@ -638,18 +665,18 @@ html[data-theme="dark"] .hero {
         padding: 20px 16px;
     }
 
-    .paso i {
-        font-size: 32px;
-        margin-bottom: 14px;
-    }
+        .paso i {
+            font-size: 32px;
+            margin-bottom: 14px;
+        }
 
-    .paso h3 {
-        font-size: 16px;
-    }
+        .paso h3 {
+            font-size: 16px;
+        }
 
-    .paso p {
-        font-size: 12px;
-    }
+        .paso p {
+            font-size: 12px;
+        }
 
     .locked-overlay {
         inset: 90px 16px 16px;
@@ -714,17 +741,17 @@ html[data-theme="dark"] .hero {
         padding: 18px 14px;
     }
 
-    .paso i {
-        font-size: 28px;
-        margin-bottom: 12px;
-    }
+        .paso i {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
 
-    .paso h3 {
-        font-size: 15px;
-    }
+        .paso h3 {
+            font-size: 15px;
+        }
 
-    .paso p {
-        font-size: 11px;
-    }
+        .paso p {
+            font-size: 11px;
+        }
 }
 /* #endregion */

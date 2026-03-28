@@ -3,20 +3,14 @@
 @{
     ViewData["Title"] = "Registrar Restaurante";
     int userId = ViewBag.UsuarioId ?? 0;
-}
-
-<!DOCTYPE html>
-<html lang="es">
-<head>
+}<!DOCTYPE html><html lang="es"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Restaurante - Rappi'Doz</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="~/css/Accesos/restaurante-info.css">
     @* Agregado SweetAlert2 *@
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
-<body>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script></head><body>
 
 
     <div class="form">
@@ -29,7 +23,8 @@
         <form id="restaurantForm" asp-controller="Accesos" asp-action="GuardarRestaurante" method="post">
             @Html.AntiForgeryToken()
 
-            <input type="hidden" asp-for="UsuarioId" value="@userId" />
+            @* ESTA ES LA CLAVE: El ID del usuario que viene del selector *@
+            <input type="hidden" name="UsuarioId" value="@userId" />
 
             <section class="container-translucid">
                 <input type="text" asp-for="NombreComercial" id="NombreComercial" placeholder="Nombre del negocio" required>
@@ -65,6 +60,18 @@
                 <i class="fa-solid fa-utensils"></i>
             </section>
 
+            <div class="mb-3">
+                <label class="label-custom">UBICACIÓN DEL LOCAL</label>
+                @* Mantenemos tu función original abrirMapa() *@
+                <a href="javascript:void(0);" onclick="abrirMapa()" class="btn-mapa-link">
+                    <span id="texto-ubicacion"><i class="fas fa-map-marker-alt"></i> Seleccionar en el mapa</span>
+                </a>
+            </div>
+
+            @* Campos que el JS llenará al confirmar el mapa *@
+            <input type="hidden" id="Latitud" name="Latitud" value="" />
+            <input type="hidden" id="Longitud" name="Longitud" value="" />
+
             <div id="error-message" class="feedback-error hidden-feedback"></div>
 
             <div class="container-button">
@@ -79,6 +86,4 @@
         </form>
     </div>
 
-    <script src="~/js/Accesos/restaurante-info.js"></script>
-</body>
-</html>
+    <script src="~/js/Accesos/restaurante-info.js"></script></body></html>

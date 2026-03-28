@@ -30,7 +30,9 @@ namespace RappiDozApp.Controllers
 
             ViewBag.TieneUbicacion = tieneUbicacion;
 
-            var restaurantes = await _context.Restaurantes.ToListAsync();
+            var restaurantes = await _context.Restaurantes
+                    .AsNoTracking()
+                    .ToListAsync();
 
             return View(restaurantes.OrderByDescending(r => r.EstaAbierto).ToList());
         }

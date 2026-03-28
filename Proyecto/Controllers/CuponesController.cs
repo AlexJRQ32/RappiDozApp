@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RappiDozApp.Data;
 using RappiDozApp.Models;
@@ -16,7 +15,7 @@ namespace RappiDozApp.Controllers
             _context = context;
         }
 
-        #region Vistas
+        // --- 1. VISTA DE LA TIENDA DE CUPONES ---
         public async Task<IActionResult> Index()
         {
             var emailUsuario = HttpContext.Session.GetString("EmailUsuario");
@@ -37,38 +36,22 @@ namespace RappiDozApp.Controllers
             return View("~/Views/Cupones/cupones.cshtml", cuponesVisibles);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Detalles(int id)
-        {
-            var cupon = await _context.Cupones
-                .Include(c => c.Categoria)
-                .FirstOrDefaultAsync(c => c.Id == id);
-
-            if (cupon == null) return NotFound();
-
-            return View("~/Views/Cupones/cupones.cshtml", cupon);
-        }
-
-        #endregion
-
-        #region Acciones
+        // --- 2. ACCIÓN PARA RECLAMAR/APARTAR (Desde la tienda) ---
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Apartar(string codigo)
         {
             var emailUsuario = HttpContext.Session.GetString("EmailUsuario");
-
             if (string.IsNullOrEmpty(emailUsuario))
             {
-                TempData["Error"] = "Debes iniciar sesión para arrancar cupones.";
+                TempData["Error"] = "Inicia sesión para reclamar cupones.";
                 return RedirectToAction("Index");
             }
 
             var cuponMaestro = await _context.Cupones.FirstOrDefaultAsync(c => c.Codigo == codigo);
-
             if (cuponMaestro == null || cuponMaestro.Stock <= 0)
             {
-                TempData["Error"] = "Este cupón ya no está disponible.";
+                TempData["Error"] = "Cupón agotado.";
                 return RedirectToAction("Index");
             }
 
@@ -82,10 +65,9 @@ namespace RappiDozApp.Controllers
             }
 
             cuponMaestro.Stock--;
-
             var nuevoApartado = new CuponApartado
             {
-                Codigo = cuponMaestro.Codigo,
+                Codigo = cuponMaestro.Codigo.Trim().ToUpper(),
                 Descuento = cuponMaestro.Descuento,
                 EsPorcentaje = cuponMaestro.EsPorcentaje,
                 UsuarioEmail = emailUsuario,
@@ -96,45 +78,55 @@ namespace RappiDozApp.Controllers
             _context.Update(cuponMaestro);
             await _context.SaveChangesAsync();
 
-            TempData["Exito"] = "¡Cupón guardado correctamente!";
+            TempData["Exito"] = "¡Cupón guardado!";
             return RedirectToAction("Index");
         }
 
+        // --- 3. ACCIÓN PARA APLICAR (Desde el Carrito) ---
         [HttpPost]
-        public async Task<IActionResult> Guardar(Cupon cupon)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AplicarCupon(string codigo)
         {
-            try
+            var emailUsuario = HttpContext.Session.GetString("EmailUsuario");
+            if (string.IsNullOrEmpty(emailUsuario))
             {
-                cupon.Codigo = cupon.Codigo?.ToUpper().Trim();
-
-                if (cupon.CategoriaId == 0) cupon.CategoriaId = null;
-
-                if (cupon.FechaExpiracion == DateTime.MinValue)
-                {
-                    cupon.FechaExpiracion = DateTime.Now.AddDays(30);
-                }
-
-                if (cupon.Id == 0) _context.Add(cupon);
-                else _context.Update(cupon);
-
-                await _context.SaveChangesAsync();
-                return Json(new { success = true, message = "Cupón guardado con éxito." });
+                TempData["MensajeError"] = "Sesión expirada.";
+                return RedirectToAction("Index", "Carritos");
             }
-            catch (Exception ex)
+
+            if (string.IsNullOrEmpty(codigo)) return RedirectToAction("Index", "Carritos");
+
+            string codLimpio = codigo.Trim().ToUpper();
+
+            var cupón = await _context.CuponesApartados
+                .FirstOrDefaultAsync(ca => ca.UsuarioEmail.ToLower() == emailUsuario.ToLower()
+                                     && ca.Codigo == codLimpio);
+
+            if (cupón == null)
             {
-                return Json(new { success = false, message = "Error: " + ex.Message });
+                TempData["MensajeError"] = "El cupón no es válido o no está en tu billetera.";
+                return RedirectToAction("Index", "Carritos");
             }
+
+            // --- IMPORTANTE: LLAVES SINCRONIZADAS CON CARRITOSCONTROLLER ---
+            HttpContext.Session.SetString("CuponAplicado", cupón.Codigo); // Antes era "CodigoCupon"
+            HttpContext.Session.SetString("DescuentoValor", cupón.Descuento.ToString()); // Antes era "MontoDescuento"
+            HttpContext.Session.SetString("EsPorcentaje", cupón.EsPorcentaje.ToString().ToLower());
+
+            TempData["MensajeExito"] = "Cupón " + codLimpio + " aplicado.";
+            return RedirectToAction("Index", "Carritos");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Eliminar(int id)
+        // --- 4. ACCIÓN PARA QUITAR EL CUPÓN ---
+        public IActionResult QuitarCupon()
         {
-            var c = await _context.Cupones.FindAsync(id);
-            if (c == null) return Json(new { success = false, message = "Cupón no existe." });
-            _context.Cupones.Remove(c);
-            await _context.SaveChangesAsync();
-            return Json(new { success = true, message = "Cupón eliminado." });
+            // Limpiamos las llaves correctas
+            HttpContext.Session.Remove("CuponAplicado");
+            HttpContext.Session.Remove("DescuentoValor");
+            HttpContext.Session.Remove("EsPorcentaje");
+
+            TempData["MensajeExito"] = "Cupón removido.";
+            return RedirectToAction("Index", "Carritos");
         }
-        #endregion
     }
 }

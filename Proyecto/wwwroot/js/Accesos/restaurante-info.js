@@ -1,65 +1,69 @@
+// Obtenemos estilos de la raíz para SweetAlert
 const _cs = getComputedStyle(document.documentElement);
-const _swalBg = _cs.getPropertyValue('--section-bg-primary').trim();
-const _swalColor = _cs.getPropertyValue('--text-main').trim();
-const _swalBtn = _cs.getPropertyValue('--accent-main').trim();
+const _swalBg = _cs.getPropertyValue('--section-bg-primary').trim() || '#1a1a1a';
+const _swalColor = _cs.getPropertyValue('--text-main').trim() || '#ffffff';
+const _swalBtn = _cs.getPropertyValue('--accent-main').trim() || '#472825';
+
+// ... (Tus variables de estilo _swalBg, etc.)
 
 document.getElementById('restaurantForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     const form = this;
-    const errorDiv = document.getElementById('error-message');
+    const btn = document.getElementById('button');
     const formData = new FormData(form);
 
-    errorDiv.classList.add('hidden-feedback');
+    // CAPTURA MANUAL PARA EVITAR ERRORES DE PUNTO/COMA
+    formData.append('LatitudStr', document.getElementById('Latitud').value);
+    formData.append('LongitudStr', document.getElementById('Longitud').value);
 
-    fetch(form.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-        }
-    })
-    .then(response => {
-        if (response.redirected) {
-            Swal.fire({
-                icon: 'success',
-                title: '¡Negocio Registrado!',
-                text: 'Tu restaurante se ha creado correctamente.',
-                showConfirmButton: false,
-                timer: 2000,
-                background: _swalBg,
-                color: _swalColor
-            }).then(() => {
-                window.location.href = response.url;
-            });
-            return;
-        }
-        return response.text();
-    })
-    .then(data => {
-        if (data) {
-            errorDiv.textContent = "Hubo un error al guardar los datos del restaurante.";
-            errorDiv.classList.remove('hidden-feedback');
-
-            Swal.fire({
-                icon: 'error',
-                title: 'No se pudo registrar',
-                text: 'Verifica que todos los campos sean válidos e inténtalo de nuevo.',
-                confirmButtonColor: _swalBtn,
-                background: _swalBg,
-                color: _swalColor
-            });
-        }
-    })
-    .catch(error => {
+    if (!formData.get('LatitudStr') || formData.get('LatitudStr') == "0") {
         Swal.fire({
             icon: 'warning',
-            title: 'Error de servidor',
-            text: 'No pudimos conectar con el servidor. Inténtalo más tarde.',
+            title: 'Ubicación vacía',
+            text: 'Debes marcar el local en el mapa.',
             confirmButtonColor: _swalBtn,
             background: _swalBg,
             color: _swalColor
         });
-        console.error('Error:', error);
-    });
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Negocio Registrado!',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    background: _swalBg,
+                    color: _swalColor
+                }).then(() => {
+                    window.location.href = data.redirectUrl;
+                });
+            } else {
+                throw new Error(data.message);
+            }
+        })
+        .catch(error => {
+            btn.disabled = false;
+            btn.textContent = 'Registrar Negocio';
+
+            Swal.fire({
+                icon: 'error',
+                title: 'No se pudo registrar',
+                text: error.message || 'Verifica los campos e intenta de nuevo.',
+                confirmButtonColor: _swalBtn,
+                background: _swalBg,
+                color: _swalColor
+            });
+        });
 });

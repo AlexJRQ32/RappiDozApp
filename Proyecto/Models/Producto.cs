@@ -12,7 +12,6 @@ namespace RappiDozApp.Models
         public int CategoriaId { get; set; }
         public byte[]? FotoBinaria { get; set; }
         public string? ContentType { get; set; }
-        public bool Activo { get; set; } = true;
 
         public virtual Restaurante? Restaurante { get; set; }
         public virtual Categoria? Categoria { get; set; }

@@ -215,8 +215,11 @@
 }
 
 .movimiento-breakdown {
-    max-width: 420px;
-    margin-left: auto;
+    display: flex;
+    margin: 0 auto;
+    justify-content: center;
+    flex-direction: column;
+    width: 80%;
     font-family: sans-serif;
 }
 

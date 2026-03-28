@@ -2,17 +2,29 @@ document.addEventListener("DOMContentLoaded", function () {
     var mapEl = document.getElementById('map');
     if (!mapEl) return;
 
-    const latIni = parseFloat(mapEl.dataset.lat);
-    const lngIni = parseFloat(mapEl.dataset.lng);
+    // 1. OBTENER COORDENADAS INICIALES
+    const latIni = parseFloat(mapEl.dataset.lat) || 9.9333;
+    const lngIni = parseFloat(mapEl.dataset.lng) || -84.0833;
 
-    const map = L.map('map').setView([latIni, lngIni], 15);
-    RappiDozMap.addTileLayer(map);
+    // 2. DETECCIÓN DE MODO Y COLOR DEL PIN
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const pinColor = isDark ? '#FFCC00' : '#FF0000';
 
-    const iconRappi = L.icon({
-        iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-        iconSize: [46, 46],
-        iconAnchor: [23, 46],
-        popupAnchor: [0, -40]
+    // 3. INICIALIZACIÓN DEL MAPA
+    const map = L.map('map', {
+        zoomControl: true,
+        attributionControl: false
+    }).setView([latIni, lngIni], 15);
+
+    // Usamos el TileLayer estándar que reacciona a tu filtro CSS
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
+
+    // 4. ICONO PERSONALIZADO (FontAwesome)
+    const iconRappi = L.divIcon({
+        className: 'custom-div-icon',
+        html: `<i class="fas fa-map-marker-alt" style="color: ${pinColor} !important;"></i>`,
+        iconSize: [30, 30],
+        iconAnchor: [15, 30]
     });
 
     const marker = L.marker([latIni, lngIni], {
@@ -20,9 +32,12 @@ document.addEventListener("DOMContentLoaded", function () {
         icon: iconRappi
     }).addTo(map);
 
+    // 5. FUNCIONES DE ACTUALIZACIÓN
     function actualizarInputs(lat, lng) {
-        document.getElementById("Latitud").value = lat;
-        document.getElementById("Longitud").value = lng;
+        const inputLat = document.getElementById("Latitud");
+        const inputLng = document.getElementById("Longitud");
+        if (inputLat) inputLat.value = lat.toFixed(10);
+        if (inputLng) inputLng.value = lng.toFixed(10);
     }
 
     marker.on('dragend', function (e) {
@@ -35,45 +50,53 @@ document.addEventListener("DOMContentLoaded", function () {
         actualizarInputs(e.latlng.lat, e.latlng.lng);
     });
 
+    // 6. GESTIÓN DEL FORMULARIO
     const formUbi = document.getElementById('formUbicacion');
     if (formUbi) {
         formUbi.addEventListener('submit', function (e) {
             e.preventDefault();
 
             const btn = document.getElementById('btn-confirmar-mapa');
+            const originalHTML = btn.innerHTML;
+
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
 
             const formData = new FormData(this);
+            const token = document.querySelector('input[name="__RequestVerificationToken"]');
 
             fetch(this.action, {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    'RequestVerificationToken': token ? token.value : ''
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Dirección Guardada!',
-                        text: data.message,
-                        confirmButtonColor: '#472825'
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Dirección Guardada!',
+                            text: data.message,
+                            confirmButtonColor: '#472825'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+                        btn.disabled = false;
+                        btn.innerHTML = originalHTML;
+                    }
+                })
+                .catch(err => {
+                    console.error("Error:", err);
                     btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-map-pin me-2"></i> GUARDAR ESTA DIRECCIÓN';
-                }
-            })
-            .catch(err => {
-                console.error("Error:", err);
-                btn.disabled = false;
-            });
+                    btn.innerHTML = originalHTML;
+                });
         });
     }
+
+    // Ajuste de tamaño por si está dentro de un modal o contenedor dinámico
+    setTimeout(() => { map.invalidateSize(); }, 400);
 });
