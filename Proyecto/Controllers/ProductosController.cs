@@ -67,5 +67,23 @@ namespace RappiDozApp.Controllers
             return Json(new { success = true, message = "Platillo eliminado." });
         }
         #endregion
+
+        #region Imagen
+        [HttpGet]
+        [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Client)]
+        public async Task<IActionResult> Imagen(int id)
+        {
+            var data = await _context.Productos
+                .AsNoTracking()
+                .Where(p => p.Id == id)
+                .Select(p => new { p.FotoBinaria, p.ContentType })
+                .FirstOrDefaultAsync();
+
+            if (data?.FotoBinaria == null || data.FotoBinaria.Length == 0)
+                return NotFound();
+
+            return File(data.FotoBinaria, data.ContentType ?? "image/png");
+        }
+        #endregion
     }
 }

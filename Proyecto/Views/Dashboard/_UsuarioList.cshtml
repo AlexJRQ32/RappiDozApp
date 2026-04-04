@@ -17,12 +17,9 @@
                 @* LADO IZQUIERDO: Información del usuario *@
                 <div class="user-info">
                     <div class="user-avatar">
-                        @if (item.FotoBinaria != null && item.FotoBinaria.Length > 0)
+                        @if (item.ContentType != null)
                         {
-                            @* MOSTRAMOS FOTO REAL *@
-                            var base64 = Convert.ToBase64String(item.FotoBinaria);
-                            var imgSrc = $"data:{item.ContentType ?? "image/png"};base64,{base64}";
-                            <img src="@imgSrc" alt="Avatar" />
+                            <img src="/Usuarios/Foto/@item.Id" alt="Avatar" loading="lazy" />
                         }
                         else
                         {

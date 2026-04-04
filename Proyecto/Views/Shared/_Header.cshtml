@@ -5,7 +5,6 @@
 
 @{
     var nombreUsuario = HttpContextAccessor.HttpContext.Session.GetString("NombreUsuario");
-    var fotoUsuario = HttpContextAccessor.HttpContext.Session.GetString("FotoUsuario");
     var rolUsuario = HttpContextAccessor.HttpContext.Session.GetString("RolUsuario");
     var carritoCount = HttpContextAccessor.HttpContext.Session.GetString("CarritoCount");
     int? idUsuarioSesion = HttpContextAccessor.HttpContext.Session.GetInt32("UsuarioId");
@@ -13,7 +12,7 @@
     bool tieneUbicacion = false;
     if (idUsuarioSesion.HasValue)
     {
-        tieneUbicacion = _context.UbicacionUsuario.Any(u => u.IdUsuario == idUsuarioSesion.Value);
+        tieneUbicacion = await _context.UbicacionUsuario.AnyAsync(u => u.IdUsuario == idUsuarioSesion.Value);
     }
 
     var controller = ViewContext.RouteData.Values["Controller"]?.ToString();
@@ -88,8 +87,10 @@
 
             <div class="dropdown">
                 <div class="user-pill">
-                    @if (!string.IsNullOrEmpty(fotoUsuario)) {
-                        <img src="data:image/png;base64,@fotoUsuario" alt="User">
+                    @if (idUsuarioSesion.HasValue) {
+                        <img src="/Usuarios/Foto/@idUsuarioSesion.Value" alt="User"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display=''">
+                        <i class="fa-solid fa-circle-user user-icon-fallback" style="display:none"></i>
                     } else {
                         <i class="fa-solid fa-circle-user user-icon-fallback"></i>
                     }

@@ -19,30 +19,27 @@ namespace RappiDozApp.Controllers
         #region Vistas
         public async Task<IActionResult> Index()
         {
-            int? userId = HttpContext.Session.GetInt32("UsuarioId");
-            bool tieneUbicacion = false;
-
-            if (userId.HasValue)
-            {
-                tieneUbicacion = await _context.UbicacionUsuario
-                    .AnyAsync(u => u.IdUsuario == userId.Value);
-            }
-
-            ViewBag.TieneUbicacion = tieneUbicacion;
-
             var restaurantes = await _context.Restaurantes
-                    .AsNoTracking()
-                    .ToListAsync();
+                .AsNoTracking()
+                .Select(r => new Restaurante
+                {
+                    Id = r.Id,
+                    NombreComercial = r.NombreComercial,
+                    Direccion = r.Direccion,
+                    HoraApertura = r.HoraApertura,
+                    HoraCierre = r.HoraCierre,
+                    ContentType = r.ContentType,
+                    CategoriaId = r.CategoriaId,
+                    UsuarioId = r.UsuarioId
+                })
+                .ToListAsync();
 
             return View(restaurantes.OrderByDescending(r => r.EstaAbierto).ToList());
         }
 
         public async Task<IActionResult> Explorar(string buscar)
         {
-            var consulta = _context.Restaurantes
-                .Include(r => r.Categoria)
-                .Include(r => r.Productos)
-                .AsQueryable();
+            var consulta = _context.Restaurantes.AsNoTracking().AsQueryable();
 
             if (!string.IsNullOrEmpty(buscar))
             {
@@ -56,7 +53,19 @@ namespace RappiDozApp.Controllers
                 );
             }
 
-            var resultados = await consulta.ToListAsync();
+            var resultados = await consulta
+                .Select(r => new Restaurante
+                {
+                    Id = r.Id,
+                    NombreComercial = r.NombreComercial,
+                    Direccion = r.Direccion,
+                    HoraApertura = r.HoraApertura,
+                    HoraCierre = r.HoraCierre,
+                    ContentType = r.ContentType,
+                    CategoriaId = r.CategoriaId,
+                    UsuarioId = r.UsuarioId
+                })
+                .ToListAsync();
 
             var listaOrdenada = resultados
                 .OrderByDescending(r => r.EstaAbierto)

@@ -81,15 +81,45 @@ namespace RappiDozApp.Controllers
         #region Vista Pública
         public async Task<IActionResult> Menu(int id)
         {
-            var restaurante = await _context.Restaurantes
-                .Include(r => r.Productos)
-                .ThenInclude(p => p.Categoria)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var data = await _context.Restaurantes
+                .AsNoTracking()
+                .Where(m => m.Id == id)
+                .Select(r => new
+                {
+                    r.NombreComercial,
+                    Productos = r.Productos.Select(p => new Producto
+                    {
+                        Id = p.Id,
+                        Nombre = p.Nombre,
+                        Descripcion = p.Descripcion,
+                        Precio = p.Precio,
+                        ContentType = p.ContentType
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
 
-            if (restaurante == null) return NotFound();
+            if (data == null) return NotFound();
 
-            ViewBag.RestauranteNombre = restaurante.NombreComercial;
-            return View("~/Views/Restaurantes/Restaurante.cshtml", restaurante.Productos);
+            ViewBag.RestauranteNombre = data.NombreComercial;
+            return View("~/Views/Restaurantes/Restaurante.cshtml", data.Productos);
+        }
+        #endregion
+
+        #region Logo
+        [HttpGet]
+        [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Client)]
+        public async Task<IActionResult> Logo(int id)
+        {
+            var data = await _context.Restaurantes
+                .AsNoTracking()
+                .Where(r => r.Id == id)
+                .Select(r => new { r.LogoBinario, r.ContentType })
+                .FirstOrDefaultAsync();
+
+            if (data?.LogoBinario == null || data.LogoBinario.Length == 0)
+                return NotFound();
+
+            return File(data.LogoBinario, data.ContentType ?? "image/png");
         }
         #endregion
     }

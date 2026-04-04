@@ -69,12 +69,6 @@ namespace RappiDozApp.Controllers
 
                 HttpContext.Session.SetString("NombreUsuario", usuarioDb.NombreCompleto);
 
-                if (usuarioDb.FotoBinaria != null)
-                {
-                    string fotoBase64 = Convert.ToBase64String(usuarioDb.FotoBinaria);
-                    HttpContext.Session.SetString("FotoUsuario", fotoBase64);
-                }
-
                 return Json(new { success = true, message = "¡Cambios guardados con éxito!" });
             }
             catch (Exception ex)
@@ -153,5 +147,22 @@ namespace RappiDozApp.Controllers
         #endregion
 
 
+        #region Foto
+        [HttpGet]
+        [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Client)]
+        public async Task<IActionResult> Foto(int id)
+        {
+            var data = await _context.Usuarios
+                .AsNoTracking()
+                .Where(u => u.Id == id)
+                .Select(u => new { u.FotoBinaria, u.ContentType })
+                .FirstOrDefaultAsync();
+
+            if (data?.FotoBinaria == null || data.FotoBinaria.Length == 0)
+                return NotFound();
+
+            return File(data.FotoBinaria, data.ContentType ?? "image/png");
+        }
+        #endregion
     }
 }

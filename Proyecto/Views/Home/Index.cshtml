@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using System.Globalization
+@using Microsoft.EntityFrameworkCore
 @inject IHttpContextAccessor HttpContextAccessor
 @inject RappiDozApp.Data.ApplicationDbContext _context
 @model IEnumerable<RappiDozApp.Models.Restaurante>
@@ -18,10 +19,10 @@
         try 
         {
             // Buscamos la última ubicación guardada
-            var ultimaUbi = _context.UbicacionUsuario
+            var ultimaUbi = await _context.UbicacionUsuario
                 .Where(u => u.IdUsuario == userId.Value)
-                .OrderByDescending(u => u.IdUbicacion) // Asegúrate que el nombre sea Id o IdUbicacion según tu clase
-                .FirstOrDefault();
+                .OrderByDescending(u => u.IdUbicacion)
+                .FirstOrDefaultAsync();
 
             if (ultimaUbi != null)
             {
@@ -88,7 +89,7 @@
                             <a asp-controller="Restaurantes" asp-action="Menu" asp-route-id="@restaurante.Id" class="link-restaurante-horizontal">
                                 <div class="restaurant-card @(restaurante.EstaAbierto ? "" : "cerrado-filtro")">
                                     <div class="card-img-wrapper">
-                                        <img src="data:@(restaurante.ContentType ?? "image/png");base64,@Convert.ToBase64String(restaurante.LogoBinario ?? new byte[0])" class="restaurant-logo">
+                                        <img src="/Restaurantes/Logo/@restaurante.Id" class="restaurant-logo" loading="lazy">
                                         @if (!restaurante.EstaAbierto)
                                         {
                                             <div class="card-closed-overlay">

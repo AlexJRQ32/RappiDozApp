@@ -16,7 +16,7 @@
                 <div class="card-principal">
                     <label for="zoom-@item.Id" class="btn-lupa"><i class="fas fa-search-plus"></i></label>
                     <div class="card-contenido">
-                        <img src="@(item.FotoBinaria != null ? $"data:{item.ContentType};base64,{Convert.ToBase64String(item.FotoBinaria)}" : "/img/placeholder-food.png")" alt="Foto">
+                        <img src="@(item.ContentType != null ? $"/Productos/Imagen/{item.Id}" : "/img/placeholder-food.png")" alt="Foto" loading="lazy">
                         <div class="info-basica">
                             <h3>@item.Nombre</h3>
                             <p class="product-price-text">₡@item.Precio.ToString("N0")</p>

@@ -39,7 +39,7 @@
                     foreach (var item in Model)
                     {
                         <div class="item-carrito">
-                            <img src="@item.ImagenBase64" class="img-carrito" alt="@item.Nombre">
+                            <img src="/Productos/Imagen/@item.ProductoId" class="img-carrito" alt="@item.Nombre" loading="lazy">
                             
                             <div class="item-main-info">
                                 <h5 class="item-name">@item.Nombre</h5>

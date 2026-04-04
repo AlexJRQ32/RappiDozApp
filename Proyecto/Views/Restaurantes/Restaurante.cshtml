@@ -23,7 +23,7 @@
         {
             <div class="card-platillo-moderno">
                 <div class="visual-section">
-                    <img src="@producto.ImagenBase64" class="foto-circular">
+                    <img src="/Productos/Imagen/@producto.Id" class="foto-circular" loading="lazy">
                 </div>
 
                 <div class="info-section">
@@ -39,7 +39,6 @@
                         <input type="hidden" name="productoId" value="@producto.Id" />
                         <input type="hidden" name="nombre" value="@producto.Nombre" />
                         <input type="hidden" name="precio" value="@producto.Precio" />
-                        <input type="hidden" name="imagen" value="@producto.ImagenBase64" />
                         <input type="hidden" name="cantidad" value="1" />
 
                         <button type="button" class="btn-añadir-premium" onclick="agregarConAnimacion(this)">

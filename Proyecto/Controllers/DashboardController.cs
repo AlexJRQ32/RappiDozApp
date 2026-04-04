@@ -24,42 +24,25 @@ namespace RappiDozApp.Controllers
             if (userId == null) return RedirectToAction("Login", "Accesos");
 
             ViewBag.TotalRestaurantes = await _context.Restaurantes
+                .AsNoTracking()
                 .CountAsync(r => rol == "Administrador" || r.UsuarioId == userId);
 
             ViewBag.TotalProductos = await _context.Productos
+                .AsNoTracking()
                 .CountAsync(p => rol == "Administrador" || p.Restaurante.UsuarioId == userId);
 
             if (rol == "Administrador")
             {
-                ViewBag.TotalUsuarios = await _context.Usuarios.CountAsync(u => u.Activo == true);
-
-                ViewBag.TotalCupones = await _context.Cupones.CountAsync();
+                ViewBag.TotalUsuarios = await _context.Usuarios.AsNoTracking().CountAsync(u => u.Activo == true);
+                ViewBag.TotalCupones = await _context.Cupones.AsNoTracking().CountAsync();
             }
 
             return View();
         }
-        public async Task<IActionResult> Dashboard()
+
+        public IActionResult Dashboard()
         {
-            int? userId = HttpContext.Session.GetInt32("UsuarioId");
-            string? rol = HttpContext.Session.GetString("RolUsuario");
-
-            if (userId == null) return RedirectToAction("Login", "Accesos");
-
-            ViewBag.ListaUsuarios = new List<Usuario>();
-            ViewBag.ListaRestaurantes = new List<Restaurante>();
-            ViewBag.RolUsuario = rol;
-
-            if (rol == "Administrador")
-            {
-                ViewBag.ListaUsuarios = await _context.Usuarios.Include(u => u.Rol).OrderByDescending(u => u.Id).ToListAsync();
-                ViewBag.ListaRestaurantes = await _context.Restaurantes.Include(r => r.Usuario).Include(r => r.Categoria).ToListAsync();
-            }
-            else if (rol == "Restaurantes")
-            {
-                ViewBag.ListaRestaurantes = await _context.Restaurantes.Include(r => r.Categoria).Where(r => r.UsuarioId == userId).ToListAsync();
-            }
-
-            return View("~/Views/Dashboard/index.cshtml");
+            return RedirectToAction(nameof(Index));
         }
 
         #endregion
@@ -70,8 +53,20 @@ namespace RappiDozApp.Controllers
             try
             {
                 var lista = await _context.Usuarios
+                    .AsNoTracking()
                     .Include(u => u.Rol)
                     .Where(u => u.Activo == true)
+                    .Select(u => new Usuario
+                    {
+                        Id = u.Id,
+                        NombreCompleto = u.NombreCompleto,
+                        Email = u.Email,
+                        Telefono = u.Telefono,
+                        RolId = u.RolId,
+                        Rol = u.Rol,
+                        Activo = u.Activo,
+                        ContentType = u.ContentType
+                    })
                     .ToListAsync();
 
                 return PartialView("_UsuarioList", lista);
@@ -88,8 +83,20 @@ namespace RappiDozApp.Controllers
             var userId = HttpContext.Session.GetInt32("UsuarioId");
 
             var restaurantes = await _context.Restaurantes
-                .Include(r => r.Categoria)
+                .AsNoTracking()
                 .Where(r => rol == "Administrador" || r.UsuarioId == userId)
+                .Select(r => new Restaurante
+                {
+                    Id = r.Id,
+                    NombreComercial = r.NombreComercial,
+                    Direccion = r.Direccion,
+                    CategoriaId = r.CategoriaId,
+                    Categoria = r.Categoria,
+                    HoraApertura = r.HoraApertura,
+                    HoraCierre = r.HoraCierre,
+                    UsuarioId = r.UsuarioId,
+                    ContentType = r.ContentType
+                })
                 .ToListAsync();
 
             return PartialView("_RestaurantesList", restaurantes);
@@ -101,9 +108,18 @@ namespace RappiDozApp.Controllers
             var userId = HttpContext.Session.GetInt32("UsuarioId");
 
             var productos = await _context.Productos
-                .Include(p => p.Restaurante)
-                .Include(p => p.Categoria)
+                .AsNoTracking()
                 .Where(p => rol == "Administrador" || p.Restaurante.UsuarioId == userId)
+                .Select(p => new Producto
+                {
+                    Id = p.Id,
+                    Nombre = p.Nombre,
+                    Descripcion = p.Descripcion,
+                    Precio = p.Precio,
+                    RestauranteId = p.RestauranteId,
+                    CategoriaId = p.CategoriaId,
+                    ContentType = p.ContentType
+                })
                 .ToListAsync();
 
             return PartialView("_MenusList", productos);
@@ -114,7 +130,7 @@ namespace RappiDozApp.Controllers
             var rol = HttpContext.Session.GetString("RolUsuario");
             if (rol != "Administrador") return Forbid();
 
-            var lista = await _context.Cupones.ToListAsync();
+            var lista = await _context.Cupones.AsNoTracking().ToListAsync();
             return PartialView("_CuponesList", lista);
         }
 

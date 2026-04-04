@@ -1,13 +1,4 @@
 /* Dashboard/_RestaurantesList.cshtml */
-.seccion-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid var(--border-main);
-    padding-bottom: 15px;
-    margin-bottom: 30px;
-}
-
 .card-sede {
     background: var(--surface-card);
     border-radius: 20px;
@@ -31,38 +22,11 @@
     border-radius: 15px;
     object-fit: cover;
     border: 2px solid var(--border-main);
-    width: 70px;
-    height: 70px;
-    border-radius: 15px;
     background: var(--brown-dark);
     color: var(--accent-main);
     display: grid;
     place-items: center;
     font-size: 1.5rem;
-}
-
-.btn-circular {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    border: none;
-    background: var(--brown-dark);
-    color: #fff8ef;
-    transition: 0.3s;
-}
-
-.btn-circular:hover {
-    background: var(--gold-light);
-    color: var(--brown-dark);
-    transform: scale(1.1) rotate(90deg);
-}
-
-.btn-accion {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    border: none;
-    transition: 0.2s;
 }
 
 .btn-edit {

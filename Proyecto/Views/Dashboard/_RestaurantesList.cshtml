@@ -10,9 +10,9 @@
     {
         <div class="card-sede">
             <div class="d-flex align-items-center gap-4">
-                @if (item.LogoBinario != null)
+                @if (item.ContentType != null)
                 {
-                    <img src="data:@item.ContentType;base64,@Convert.ToBase64String(item.LogoBinario)" class="sede-img" />
+                    <img src="/Restaurantes/Logo/@item.Id" class="sede-img" loading="lazy" />
                 }
                 else
                 {

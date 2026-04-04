@@ -21,22 +21,16 @@ namespace RappiDozApp.Controllers
         }
 
         #region MÉTODOS DE SESIÓN
-        private void EstablecerSesion(Usuario usuario)
+        private void EstablecerSesion(Usuario usuario, int? restauranteId = null)
         {
             HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
             HttpContext.Session.SetString("NombreUsuario", usuario.NombreCompleto);
             HttpContext.Session.SetString("RolUsuario", usuario.Rol?.NombreRol ?? "Cliente");
             HttpContext.Session.SetString("EmailUsuario", usuario.Email);
 
-            var primerRestaurante = usuario.Restaurantes?.FirstOrDefault();
-            if (primerRestaurante != null)
+            if (restauranteId.HasValue && restauranteId.Value > 0)
             {
-                HttpContext.Session.SetInt32("IdRestaurante", primerRestaurante.Id);
-            }
-
-            if (usuario.FotoBinaria != null)
-            {
-                HttpContext.Session.SetString("FotoUsuario", Convert.ToBase64String(usuario.FotoBinaria));
+                HttpContext.Session.SetInt32("IdRestaurante", restauranteId.Value);
             }
         }
         #endregion
@@ -59,12 +53,16 @@ namespace RappiDozApp.Controllers
 
             var usuario = await _context.Usuarios
                 .Include(u => u.Rol)
-                .Include(u => u.Restaurantes)
                 .FirstOrDefaultAsync(u => u.Email.ToLower() == correo.Trim().ToLower() && u.PasswordHash == password.Trim());
 
             if (usuario != null)
             {
-                EstablecerSesion(usuario);
+                var primerRestauranteId = await _context.Restaurantes
+                    .Where(r => r.UsuarioId == usuario.Id)
+                    .Select(r => (int?)r.Id)
+                    .FirstOrDefaultAsync();
+
+                EstablecerSesion(usuario, primerRestauranteId);
                 return RedirectToAction("Index", "Home");
             }
 

@@ -75,7 +75,7 @@ namespace RappiDozApp.Controllers
 
         #region Acciones
         [HttpPost]
-        public IActionResult Agregar(int productoId, string nombre, decimal precio, string imagen)
+        public IActionResult Agregar(int productoId, string nombre, decimal precio)
         {
             if (productoId == 0) return Json(new { success = false, message = "ID no recibido" });
 
@@ -93,7 +93,6 @@ namespace RappiDozApp.Controllers
                     ProductoId = productoId,
                     Nombre = nombre,
                     Precio = precio,
-                    ImagenBase64 = imagen,
                     Cantidad = 1
                 });
             }
@@ -117,13 +116,13 @@ namespace RappiDozApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AplicarCupon(string codigoCupon)
+        public async Task<IActionResult> AplicarCupon(string codigoCupon)
         {
             var emailSession = HttpContext.Session.GetString("EmailUsuario");
             if (string.IsNullOrEmpty(emailSession)) return RedirectToAction("Login", "Accesos");
 
-            var cupon = _context.CuponesApartados
-                .FirstOrDefault(c => c.Codigo == codigoCupon && c.UsuarioEmail == emailSession);
+            var cupon = await _context.CuponesApartados
+                .FirstOrDefaultAsync(c => c.Codigo == codigoCupon && c.UsuarioEmail == emailSession);
 
             if (cupon != null)
             {
