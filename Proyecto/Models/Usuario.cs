@@ -9,8 +9,8 @@
         public string? Telefono { get; set; }
 
         public virtual ICollection<UbicacionUsuario> Ubicaciones { get; set; } = new List<UbicacionUsuario>();
-        public byte[]? FotoBinaria { get; set; } // Aquí se guarda la imagen real
-        public string? ContentType { get; set; }  // Aquí guardamos si es .jpg, .png, etc.
+        public byte[]? FotoBinaria { get; set; }
+        public string? ContentType { get; set; }
         public int RolId { get; set; }
         public virtual Rol? Rol { get; set; }
         public bool Activo { get; set; } = true;

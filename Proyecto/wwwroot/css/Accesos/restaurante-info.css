@@ -1,17 +1,4 @@
-﻿/* #region Variables Globales  */
-:root {
-    --bg-main: #120b0a;
-    --glass-surface: rgba(255, 255, 255, 0.05);
-    --input-surface: rgba(255, 255, 255, 0.08);
-    --accent-main: #d3ab80;  Dorado Rappi 
-    --text-main: #ece4da;
-    --border-main: rgba(255, 255, 255, 0.1);
-    --shadow-standard: 0 20px 40px rgba(0, 0, 0, 0.4);
-    --auth-bg-gradient: linear-gradient(135deg, #1a0f0e 0%, #2c1816 50%, #120b0a 100%);
-}
-/* #endregion  */ 
-
-/* #region Configuración General */
+﻿/* #region Configuración General */
 .navbar, .cta-final {
     display: none !important;
 }

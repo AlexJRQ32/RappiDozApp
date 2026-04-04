@@ -83,9 +83,10 @@
                         <div class="movimiento-breakdown">
                             @{
                                 decimal cargosFijos = 2000;
+                                decimal descuento = pedido.MontoDescuento ?? 0;
                                 decimal subtotalProductos = pedido.Detalles?.Sum(d => d.PrecioHistorico * d.Cantidad) ?? 0;
-                                decimal baseImponible = (subtotalProductos + cargosFijos - pedido.MontoDescuento) / 1.13m;
-                                decimal iva = (subtotalProductos + cargosFijos - pedido.MontoDescuento) - baseImponible;
+                                decimal baseImponible = (subtotalProductos + cargosFijos - descuento) / 1.13m;
+                                decimal iva = (subtotalProductos + cargosFijos - descuento) - baseImponible;
                             }
 
                             <div class="movimiento-line">
@@ -97,11 +98,11 @@
                                 <span>₡@cargosFijos.ToString("N0")</span>
                             </div>
 
-                            @if (pedido.MontoDescuento > 0)
+                            @if (descuento > 0)
                             {
                                 <div class="movimiento-discount-line">
                                     <span><i class="fa-solid fa-tag"></i> Descuento Cupón:</span>
-                                    <span>-₡@pedido.MontoDescuento.ToString("N0")</span>
+                                    <span>-₡@descuento.ToString("N0")</span>
                                 </div>
                             }
 

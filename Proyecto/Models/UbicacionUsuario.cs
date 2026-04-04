@@ -1,5 +1,4 @@
-﻿using RappiDozApp.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RappiDozApp.Models
@@ -11,8 +10,6 @@ namespace RappiDozApp.Models
         public string NombreUbicacion { get; set; }
         public decimal Latitud { get; set; }
         public decimal Longitud { get; set; }
-
-        // Agrégala aquí para que coincida con tu imagen
         public bool EsPrincipal { get; set; }
 
         public int IdUsuario { get; set; }

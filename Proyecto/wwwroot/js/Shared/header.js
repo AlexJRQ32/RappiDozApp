@@ -57,8 +57,8 @@ function confirmarSalida() {
         confirmButtonColor: colores?.accent || '#d3ab80',
         cancelButtonColor: colores?.danger || '#d33',
         confirmButtonText: 'Sí, salir',
-        background: colores?.surface || '#1e1c22',
-        color: colores?.text || '#ece4da',
+        background: colores?.surface || '#fffdf9',
+        color: colores?.text || '#542f28',
     }).then((result) => {
         if (result.isConfirmed) {
             window.location.href = logoutUrl;

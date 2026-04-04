@@ -34,7 +34,16 @@ function agregarConAnimacion(button) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            console.log("Producto añadido. Total items: " + data.totalItems);
+            let badge = document.querySelector('.cart-badge');
+            if (data.totalItems > 0) {
+                if (!badge) {
+                    badge = document.createElement('span');
+                    badge.className = 'cart-badge';
+                    const cartContainer = document.querySelector('.cart-container');
+                    if (cartContainer) cartContainer.appendChild(badge);
+                }
+                if (badge) badge.textContent = data.totalItems;
+            }
 
             navCarrito.classList.add('fa-bounce');
             setTimeout(() => navCarrito.classList.remove('fa-bounce'), 1000);

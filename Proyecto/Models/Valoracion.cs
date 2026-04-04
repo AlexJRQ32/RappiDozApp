@@ -8,10 +8,8 @@ namespace RappiDozApp.Models
         public int Id { get; set; }
         public int Estrellas { get; set; }
         public string? Comentario { get; set; }
-        public string Recomendacion { get; set; } // si, talvez, no
+        public string Recomendacion { get; set; }
         public DateTime Fecha { get; set; } = DateTime.Now;
-
-        // Relación opcional con el restaurante
         public int? RestauranteId { get; set; }
     }
 }

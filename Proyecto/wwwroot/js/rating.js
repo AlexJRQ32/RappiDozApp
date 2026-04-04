@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         s.classList.add('active');
                     }
                 });
-// #endregion
             });
 
             star.addEventListener('mouseover', () => {

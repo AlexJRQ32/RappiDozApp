@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema; // Necesario para [NotMapped]
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RappiDozApp.Models
 {
@@ -16,7 +16,6 @@ namespace RappiDozApp.Models
         public virtual Restaurante? Restaurante { get; set; }
         public virtual Categoria? Categoria { get; set; }
 
-        // PROPIEDAD NUEVA (No se guarda en la DB, solo vive en la memoria)
         [NotMapped]
         public string ImagenBase64
         {
@@ -27,7 +26,7 @@ namespace RappiDozApp.Models
                     string base64 = Convert.ToBase64String(FotoBinaria);
                     return $"data:{ContentType ?? "image/png"};base64,{base64}";
                 }
-                return "/UI-HTML-CSS/img/default-food.png"; // Imagen por defecto
+                return "/UI-HTML-CSS/img/default-food.png";
             }
         }
     }

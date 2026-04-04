@@ -14,7 +14,6 @@ namespace RappiDozApp.Models
 
         public string Direccion { get; set; }
 
-        // --- CATEGORÍA (NUEVA CONEXIÓN) ---
         [Required(ErrorMessage = "Debes seleccionar una categoría")]
         public int CategoriaId { get; set; }
 

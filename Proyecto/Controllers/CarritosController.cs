@@ -21,14 +21,12 @@ namespace RappiDozApp.Controllers
         #region Vistas
         public async Task<IActionResult> Index()
         {
-            // 1. Verificación de usuario
             int? userId = HttpContext.Session.GetInt32("UsuarioId");
             if (userId == null) return RedirectToAction("Login", "Accesos");
 
             var usuario = await _context.Usuarios.FindAsync(userId);
             if (usuario == null) return RedirectToAction("Login", "Accesos");
 
-            // 2. Cargar Ubicaciones para el Select
             var ubicaciones = await _context.UbicacionUsuario
                 .Where(u => u.IdUsuario == userId.Value)
                 .OrderByDescending(u => u.IdUbicacion)
@@ -36,36 +34,27 @@ namespace RappiDozApp.Controllers
 
             ViewBag.Ubicaciones = ubicaciones;
 
-            // 3. Cargar Billetera de Cupones (para el scroll del aside)
             ViewBag.CuponesApartados = await _context.CuponesApartados
                 .Where(c => c.UsuarioEmail == usuario.Email)
                 .ToListAsync();
 
-            // 4. Obtener productos y calcular Subtotal
             var lista = ObtenerCarritoDeSesion();
             decimal subtotal = lista.Sum(x => x.Precio * x.Cantidad);
 
-            // 5. LÓGICA DE DESCUENTO (Lectura de Sesión)
             string codigoCupon = HttpContext.Session.GetString("CuponAplicado");
             decimal descuentoMonetario = 0;
 
             if (!string.IsNullOrEmpty(codigoCupon))
             {
-                // Intentamos leer el valor guardado por el CuponesController
                 string valorStr = HttpContext.Session.GetString("DescuentoValor");
                 if (decimal.TryParse(valorStr, out decimal valor))
                 {
                     bool esPorc = HttpContext.Session.GetString("EsPorcentaje") == "true";
-
-                    // Calculamos cuánto dinero se resta
                     descuentoMonetario = esPorc ? (subtotal * (valor / 100)) : valor;
-
-                    // Pasamos el código a la vista para activar el banner de "[Remover]"
                     ViewBag.CodigoAplicado = codigoCupon;
                 }
             }
 
-            // 6. Enviar totales finales a la vista
             ViewBag.Subtotal = subtotal;
             ViewBag.Descuento = descuentoMonetario;
 
@@ -150,7 +139,6 @@ namespace RappiDozApp.Controllers
             return RedirectToAction("Index");
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult ActualizarCantidad(int productoId, string accion)
@@ -205,7 +193,5 @@ namespace RappiDozApp.Controllers
             HttpContext.Session.SetString(BADGE_KEY, "0");
         }
         #endregion
-
-
     }
 }

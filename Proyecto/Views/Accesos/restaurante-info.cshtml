@@ -1,16 +1,22 @@
 ﻿@model RappiDozApp.Models.Restaurante
 
 @{
+    Layout = null;
     ViewData["Title"] = "Registrar Restaurante";
     int userId = ViewBag.UsuarioId ?? 0;
-}<!DOCTYPE html><html lang="es"><head>
+}<!DOCTYPE html>
+<html lang="es">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Restaurante - Rappi'Doz</title>
+    <script>!function(){var t=localStorage.getItem('rappidoz-theme')||'light';document.documentElement.setAttribute('data-theme',t)}();</script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="~/css/Accesos/restaurante-info.css">
-    @* Agregado SweetAlert2 *@
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script></head><body>
+    <link rel="stylesheet" href="~/css/Accesos/restaurante-info.css" asp-append-version="true">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
 
 
     <div class="form">
@@ -86,4 +92,7 @@
         </form>
     </div>
 
-    <script src="~/js/Accesos/restaurante-info.js"></script></body></html>
+    <script src="~/js/Accesos/auth-common.js" asp-append-version="true"></script>
+    <script src="~/js/Accesos/restaurante-info.js" asp-append-version="true"></script>
+</body>
+</html>

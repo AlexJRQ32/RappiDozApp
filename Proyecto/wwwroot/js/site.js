@@ -59,7 +59,6 @@ function openSharedModal(url) {
 }
 
 window.abrirMapa = function () {
-    // Obtenemos el ID del usuario desde el input hidden o la URL
     const userId = $('input[name="UsuarioId"]').val();
     openSharedModal('/Ubicaciones/Mapa?usuarioIdRegistro=' + userId);
 };
@@ -74,6 +73,7 @@ window.abrirCalificar = function () {
 // #endregion
 
 // #region Perfil y Valoraciones
+const _swalVar = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 document.addEventListener('change', function (e) {
     if (e.target && e.target.id === 'fotoInput' && e.target.files && e.target.files[0]) {
         const reader = new FileReader();
@@ -117,13 +117,13 @@ document.addEventListener('submit', function (e) {
             .then(res => {
                 if (res.success) {
                     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGeneral')).hide();
-                    Swal.fire({ icon: 'success', title: 'Éxito', text: res.message, confirmButtonColor: '#472825' })
+                    Swal.fire({ icon: 'success', title: 'Éxito', text: res.message, confirmButtonColor: _swalVar('--rd-cafe'), background: _swalVar('--modal-shell-bg'), color: _swalVar('--modal-text') })
                         .then(() => window.location.reload());
                 } else {
-                    Swal.fire('Error', res.message, 'error');
+                    Swal.fire({ icon: 'error', title: 'Error', text: res.message, background: _swalVar('--modal-shell-bg'), color: _swalVar('--modal-text') });
                 }
             })
-            .catch(() => Swal.fire('Error', 'No se pudo guardar tu perfil.', 'error'));
+            .catch(() => Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo guardar tu perfil.', background: _swalVar('--modal-shell-bg'), color: _swalVar('--modal-text') }));
         return;
     }
 
@@ -143,19 +143,18 @@ document.addEventListener('submit', function (e) {
             .then(res => {
                 if (res.success) {
                     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGeneral')).hide();
-                    Swal.fire({ icon: 'success', title: 'Gracias', text: res.message, confirmButtonColor: '#472825' });
+                    Swal.fire({ icon: 'success', title: 'Gracias', text: res.message, confirmButtonColor: _swalVar('--rd-cafe'), background: _swalVar('--modal-shell-bg'), color: _swalVar('--modal-text') });
                 } else {
-                    Swal.fire('Error', res.message || 'No se pudo guardar la valoración.', 'error');
+                    Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'No se pudo guardar la valoración.', background: _swalVar('--modal-shell-bg'), color: _swalVar('--modal-text') });
                 }
             })
-            .catch(() => Swal.fire('Error', 'No se pudo guardar la valoración.', 'error'));
+            .catch(() => Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo guardar la valoración.', background: _swalVar('--modal-shell-bg'), color: _swalVar('--modal-text') }));
     }
 });
 // #endregion
 
-
+// #region Somee Cleanup
 document.addEventListener("DOMContentLoaded", function () {
-    // Busca y elimina el centro que contiene el link de Somee
     const centers = document.getElementsByTagName('center');
     for (let i = 0; i < centers.length; i++) {
         if (centers[i].innerHTML.includes('Somee.com')) {
@@ -163,8 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Busca los divs con el z-index molesto
     const annoyingDivs = document.querySelectorAll('div[style*="2147483647"]');
     annoyingDivs.forEach(div => div.remove());
-});    
-
+});
+// #endregion

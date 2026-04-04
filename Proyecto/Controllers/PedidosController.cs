@@ -17,8 +17,6 @@ namespace RappiDozApp.Controllers
         }
 
         #region Vistas
-
-        // FIX: Evita el error 404 cuando se accede a /Pedidos
         [HttpGet]
         public IActionResult Index()
         {
@@ -34,7 +32,6 @@ namespace RappiDozApp.Controllers
 
             if (pedido == null) return NotFound();
 
-            // Cascada de ubicación: Restaurante > San José Centro (Default)
             decimal latO = 9.9331m;
             decimal lngO = -84.0768m;
 
@@ -44,7 +41,6 @@ namespace RappiDozApp.Controllers
                 lngO = (decimal)pedido.Restaurante.Longitud;
             }
 
-            // Enviamos datos limpios al ViewBag con punto decimal
             ViewBag.RepartidorLat = latO.ToString(CultureInfo.InvariantCulture);
             ViewBag.RepartidorLng = lngO.ToString(CultureInfo.InvariantCulture);
             ViewBag.UsuarioLat = (pedido.EntregaLatitud ?? 9.9350m).ToString(CultureInfo.InvariantCulture);
@@ -59,12 +55,11 @@ namespace RappiDozApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Factura(int id)
         {
-            // IMPORTANTE: Cargamos el pedido con sus hijos (Detalles -> Producto) y (MetodoPago)
             var pedido = await _context.Pedidos
                 .Include(p => p.MetodoPago)
                 .Include(p => p.Detalles)
                     .ThenInclude(d => d.Producto)
-                .Include(p => p.Usuario) // Opcional, si quieres mostrar el nombre del cliente
+                .Include(p => p.Usuario)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (pedido == null)
@@ -108,10 +103,8 @@ namespace RappiDozApp.Controllers
 
             var listaCarrito = JsonSerializer.Deserialize<List<CarritoItem>>(listaCarritoJson) ?? new List<CarritoItem>();
 
-            // Obtener coordenadas de la ubicación seleccionada
             var ubicacion = await _context.UbicacionUsuario.FindAsync(UbicacionId);
 
-            // Cálculos
             decimal subtotal = listaCarrito.Sum(x => x.Precio * x.Cantidad);
             decimal descuentoFinal = 0;
             var descuentoStr = HttpContext.Session.GetString("DescuentoValor");
@@ -125,7 +118,7 @@ namespace RappiDozApp.Controllers
             var nuevoPedido = new Pedido
             {
                 UsuarioId = usuarioId.Value,
-                MetodoPagoId = MetodoPagoId > 0 ? MetodoPagoId : 1, // Por defecto 1 (Efectivo) si no viene
+                MetodoPagoId = MetodoPagoId > 0 ? MetodoPagoId : 1,
                 FechaHora = DateTime.Now,
                 Estado = "Pendiente",
                 MontoDescuento = descuentoFinal,
@@ -145,7 +138,6 @@ namespace RappiDozApp.Controllers
                 _context.Pedidos.Add(nuevoPedido);
                 await _context.SaveChangesAsync();
 
-                // Limpieza de sesión
                 HttpContext.Session.Remove("CarritoRappiDoz");
                 HttpContext.Session.Remove("CuponAplicado");
                 HttpContext.Session.SetString("CarritoCount", "0");

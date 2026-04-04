@@ -7,36 +7,36 @@
         var $el = $('#mapa-final');
         if ($el.length === 0 || mapFinal !== null) return;
 
-        // Leer coordenadas
         var latO = parseFloat($el.attr('data-lat'));
         var lngO = parseFloat($el.attr('data-lng'));
         var latD = parseFloat($el.attr('data-dest-lat'));
         var lngD = parseFloat($el.attr('data-dest-lng'));
 
-        // Inicializar Leaflet
+        var isDark = $('html').attr('data-theme') === 'dark';
+        var pinColor = isDark ? '#FFCC00' : '#FF0000';
+        var routeColor = '#FFCC00';
+
         mapFinal = L.map('mapa-final', { zoomControl: false, attributionControl: false }).setView([latO, lngO], 15);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(mapFinal);
 
-        // Iconos
         var iconMoto = L.divIcon({
             className: 'custom-icon',
-            html: '<i class="fas fa-motorcycle" style="color: #FFCC00; font-size: 32px;"></i>',
+            html: '<i class="fas fa-motorcycle" style="color: ' + routeColor + '; font-size: 32px;"></i>',
             iconSize: [32, 32], iconAnchor: [16, 16]
         });
         var iconDest = L.divIcon({
             className: 'custom-icon',
-            html: '<i class="fas fa-map-marker-alt" style="color: #FF0000; font-size: 32px;"></i>',
+            html: '<i class="fas fa-map-marker-alt" style="color: ' + pinColor + '; font-size: 32px;"></i>',
             iconSize: [32, 32], iconAnchor: [16, 32]
         });
 
         markerMoto = L.marker([latO, lngO], { icon: iconMoto }).addTo(mapFinal);
         L.marker([latD, lngD], { icon: iconDest }).addTo(mapFinal);
 
-        // Routing
         routingControl = L.Routing.control({
             waypoints: [L.latLng(latO, lngO), L.latLng(latD, lngD)],
             createMarker: function () { return null; },
-            lineOptions: { addWaypoints: false, styles: [{ color: '#FFCC00', weight: 6, opacity: 0.8 }] },
+            lineOptions: { addWaypoints: false, styles: [{ color: routeColor, weight: 6, opacity: 0.8 }] },
             show: false
         }).addTo(mapFinal);
 

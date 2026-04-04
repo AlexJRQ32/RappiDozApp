@@ -59,11 +59,11 @@
                 <span>₡@tarifa.ToString("N0")</span>
             </div>
 
-            @if (Model.MontoDescuento > 0)
+            @if ((Model.MontoDescuento ?? 0) > 0)
             {
                 <div class="fila-total fila-total-descuento">
                     <span>Descuento</span>
-                    <span>-₡@Model.MontoDescuento.ToString("N0")</span>
+                    <span>-₡@((Model.MontoDescuento ?? 0).ToString("N0"))</span>
                 </div>
             }
 

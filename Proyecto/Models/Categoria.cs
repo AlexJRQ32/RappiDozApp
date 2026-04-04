@@ -9,9 +9,8 @@ namespace RappiDozApp.Models
 
         [Required]
         [StringLength(50)]
-        public string Nombre { get; set; } // Ejemplo: "Pizza", "Hamburguesas"
+        public string Nombre { get; set; }
 
-        // Relación inversa: Una categoría tiene muchos restaurantes
         public virtual ICollection<Restaurante> Restaurantes { get; set; } = new List<Restaurante>();
     }
 }

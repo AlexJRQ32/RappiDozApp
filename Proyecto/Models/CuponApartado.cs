@@ -11,7 +11,7 @@ namespace RappiDozApp.Models
         public int Id { get; set; }
 
         [Required]
-        public string UsuarioEmail { get; set; } // El dueño del cupón
+        public string UsuarioEmail { get; set; }
 
         [Required]
         [StringLength(50)]

@@ -2,24 +2,21 @@ document.addEventListener("DOMContentLoaded", function () {
     var mapEl = document.getElementById('map');
     if (!mapEl) return;
 
-    // 1. OBTENER COORDENADAS INICIALES
+    const _v = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
     const latIni = parseFloat(mapEl.dataset.lat) || 9.9333;
     const lngIni = parseFloat(mapEl.dataset.lng) || -84.0833;
 
-    // 2. DETECCIÓN DE MODO Y COLOR DEL PIN
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     const pinColor = isDark ? '#FFCC00' : '#FF0000';
 
-    // 3. INICIALIZACIÓN DEL MAPA
     const map = L.map('map', {
         zoomControl: true,
         attributionControl: false
     }).setView([latIni, lngIni], 15);
 
-    // Usamos el TileLayer estándar que reacciona a tu filtro CSS
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
 
-    // 4. ICONO PERSONALIZADO (FontAwesome)
     const iconRappi = L.divIcon({
         className: 'custom-div-icon',
         html: `<i class="fas fa-map-marker-alt" style="color: ${pinColor} !important;"></i>`,
@@ -32,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
         icon: iconRappi
     }).addTo(map);
 
-    // 5. FUNCIONES DE ACTUALIZACIÓN
     function actualizarInputs(lat, lng) {
         const inputLat = document.getElementById("Latitud");
         const inputLng = document.getElementById("Longitud");
@@ -50,7 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
         actualizarInputs(e.latlng.lat, e.latlng.lng);
     });
 
-    // 6. GESTIÓN DEL FORMULARIO
     const formUbi = document.getElementById('formUbicacion');
     if (formUbi) {
         formUbi.addEventListener('submit', function (e) {
@@ -79,12 +74,14 @@ document.addEventListener("DOMContentLoaded", function () {
                             icon: 'success',
                             title: '¡Dirección Guardada!',
                             text: data.message,
-                            confirmButtonColor: '#472825'
+                            confirmButtonColor: _v('--rd-cafe'),
+                            background: _v('--modal-shell-bg'),
+                            color: _v('--modal-text')
                         }).then(() => {
                             window.location.reload();
                         });
                     } else {
-                        Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+                        Swal.fire({ icon: 'error', title: 'Error', text: data.message, background: _v('--modal-shell-bg'), color: _v('--modal-text') });
                         btn.disabled = false;
                         btn.innerHTML = originalHTML;
                     }
@@ -97,6 +94,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Ajuste de tamaño por si está dentro de un modal o contenedor dinámico
     setTimeout(() => { map.invalidateSize(); }, 400);
 });

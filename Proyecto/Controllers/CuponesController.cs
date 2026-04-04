@@ -15,7 +15,7 @@ namespace RappiDozApp.Controllers
             _context = context;
         }
 
-        // --- 1. VISTA DE LA TIENDA DE CUPONES ---
+        #region Tienda
         public async Task<IActionResult> Index()
         {
             var emailUsuario = HttpContext.Session.GetString("EmailUsuario");
@@ -36,7 +36,9 @@ namespace RappiDozApp.Controllers
             return View("~/Views/Cupones/cupones.cshtml", cuponesVisibles);
         }
 
-        // --- 2. ACCIÓN PARA RECLAMAR/APARTAR (Desde la tienda) ---
+        #endregion
+
+        #region Apartar
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Apartar(string codigo)
@@ -82,7 +84,9 @@ namespace RappiDozApp.Controllers
             return RedirectToAction("Index");
         }
 
-        // --- 3. ACCIÓN PARA APLICAR (Desde el Carrito) ---
+        #endregion
+
+        #region Aplicar
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AplicarCupon(string codigo)
@@ -108,19 +112,19 @@ namespace RappiDozApp.Controllers
                 return RedirectToAction("Index", "Carritos");
             }
 
-            // --- IMPORTANTE: LLAVES SINCRONIZADAS CON CARRITOSCONTROLLER ---
-            HttpContext.Session.SetString("CuponAplicado", cupón.Codigo); // Antes era "CodigoCupon"
-            HttpContext.Session.SetString("DescuentoValor", cupón.Descuento.ToString()); // Antes era "MontoDescuento"
+            HttpContext.Session.SetString("CuponAplicado", cupón.Codigo);
+            HttpContext.Session.SetString("DescuentoValor", cupón.Descuento.ToString());
             HttpContext.Session.SetString("EsPorcentaje", cupón.EsPorcentaje.ToString().ToLower());
 
             TempData["MensajeExito"] = "Cupón " + codLimpio + " aplicado.";
             return RedirectToAction("Index", "Carritos");
         }
 
-        // --- 4. ACCIÓN PARA QUITAR EL CUPÓN ---
+        #endregion
+
+        #region Quitar
         public IActionResult QuitarCupon()
         {
-            // Limpiamos las llaves correctas
             HttpContext.Session.Remove("CuponAplicado");
             HttpContext.Session.Remove("DescuentoValor");
             HttpContext.Session.Remove("EsPorcentaje");
@@ -128,5 +132,6 @@ namespace RappiDozApp.Controllers
             TempData["MensajeExito"] = "Cupón removido.";
             return RedirectToAction("Index", "Carritos");
         }
+        #endregion
     }
 }

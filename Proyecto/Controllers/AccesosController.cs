@@ -138,11 +138,9 @@ namespace RappiDozApp.Controllers
                 return RedirectToAction("RegistroRestaurante", "Accesos", new { id = usuarioId });
             }
 
-            var usuarioFinal = await _context.Usuarios
-                .Include(u => u.Rol)
-                .FirstOrDefaultAsync(u => u.Id == usuarioId);
+            await _context.Entry(usuario).Reference(u => u.Rol).LoadAsync();
 
-            EstablecerSesion(usuarioFinal);
+            EstablecerSesion(usuario);
             return RedirectToAction("Index", "Home");
         }
 
@@ -157,7 +155,6 @@ namespace RappiDozApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GuardarRestaurante(Restaurante restaurante, string LatitudStr, string LongitudStr)
         {
-            // Limpiar validaciones automáticas que fallan por el formato del punto decimal
             ModelState.Remove("Latitud");
             ModelState.Remove("Longitud");
 
@@ -184,21 +181,19 @@ namespace RappiDozApp.Controllers
         [HttpGet]
         public async Task<IActionResult> ObtenerMapaUniversal(int usuarioId)
         {
-            var usuario = await _context.Usuarios.FindAsync(usuarioId);
+            var rolId = await _context.Usuarios
+                .AsNoTracking()
+                .Where(u => u.Id == usuarioId)
+                .Select(u => (int?)u.RolId)
+                .FirstOrDefaultAsync();
 
-            // Validamos el Rol (asumiendo que 2 es Restaurante)
-            bool esRestaurante = (usuario != null && usuario.RolId == 2);
+            ViewBag.EsRestaurante = (rolId == 2);
 
-            ViewBag.EsRestaurante = esRestaurante;
-
-            // Retornamos el modelo que prefieras (puedes usar dynamic en la vista)
             return PartialView("~/Views/Ubicaciones/Mapa.cshtml", new UbicacionUsuario());
         }
         #endregion
 
         #region RECUPERACIÓN DE CONTRASEÑA
-
-
         [HttpGet]
         public IActionResult OlvidastePassword() => View("~/Views/Accesos/olvidaste-contrasena.cshtml");
 
@@ -206,7 +201,12 @@ namespace RappiDozApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OlvidastePassword(string correo)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == correo);
+            var usuario = await _context.Usuarios
+                .AsNoTracking()
+                .Where(u => u.Email == correo)
+                .Select(u => new { u.Email, u.PasswordHash })
+                .FirstOrDefaultAsync();
+
             if (usuario != null)
             {
                 bool enviado = EnviarEmail(usuario.Email, usuario.PasswordHash);
@@ -226,14 +226,14 @@ namespace RappiDozApp.Controllers
                 string correoEmisor = "tu-correo@gmail.com";
                 string claveAplicacion = "tu-clave";
 
-                MailMessage mail = new MailMessage();
+                using var mail = new MailMessage();
                 mail.To.Add(correoDestino);
                 mail.From = new MailAddress(correoEmisor, "Soporte Rappi'Doz");
                 mail.Subject = "Recuperación de Contraseña";
                 mail.Body = $"Tu contraseña actual es: {passwordRecuperada}";
                 mail.IsBodyHtml = true;
 
-                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)
+                using var smtp = new SmtpClient("smtp.gmail.com", 587)
                 {
                     EnableSsl = true,
                     UseDefaultCredentials = false,

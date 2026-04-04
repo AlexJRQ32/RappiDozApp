@@ -1,10 +1,7 @@
-// Obtenemos estilos de la raíz para SweetAlert
 const _cs = getComputedStyle(document.documentElement);
 const _swalBg = _cs.getPropertyValue('--section-bg-primary').trim() || '#1a1a1a';
 const _swalColor = _cs.getPropertyValue('--text-main').trim() || '#ffffff';
 const _swalBtn = _cs.getPropertyValue('--accent-main').trim() || '#472825';
-
-// ... (Tus variables de estilo _swalBg, etc.)
 
 document.getElementById('restaurantForm').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -13,8 +10,7 @@ document.getElementById('restaurantForm').addEventListener('submit', function (e
     const btn = document.getElementById('button');
     const formData = new FormData(form);
 
-    // CAPTURA MANUAL PARA EVITAR ERRORES DE PUNTO/COMA
-    formData.append('LatitudStr', document.getElementById('Latitud').value);
+    formData.append
     formData.append('LongitudStr', document.getElementById('Longitud').value);
 
     if (!formData.get('LatitudStr') || formData.get('LatitudStr') == "0") {

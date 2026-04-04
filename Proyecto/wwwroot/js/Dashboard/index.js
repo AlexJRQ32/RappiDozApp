@@ -5,9 +5,9 @@ $(document).ready(function () {
     });
 });
 
-// VARIABLES DE COLOR GLOBALES (Para que funcionen en todas las funciones de abajo)
 const getBg = () => getComputedStyle(document.documentElement).getPropertyValue('--modal-shell-bg').trim();
 const getColor = () => getComputedStyle(document.documentElement).getPropertyValue('--modal-text').trim();
+const getBtn = () => getComputedStyle(document.documentElement).getPropertyValue('--rd-cafe').trim();
 
 function cargarSeccion(tipo) {
     $('#sidebar').removeClass('active');
@@ -22,8 +22,8 @@ function cargarSeccion(tipo) {
                 title: 'Error',
                 text: 'No se pudo cargar la sección ' + tipo,
                 icon: 'error',
-                background: getBg(), // Agregado
-                color: getColor()    // Agregado
+                background: getBg(),
+                color: getColor()   
             });
         }
     });
@@ -77,9 +77,9 @@ function guardarDatos(entidad) {
                     title: '¡Éxito!',
                     text: res.message,
                     icon: 'success',
-                    confirmButtonColor: '#472825',
-                    background: getBg(), // Agregado
-                    color: getColor()    // Agregado
+                    confirmButtonColor: getBtn(),
+                    background: getBg(),
+                    color: getColor()
                 });
 
                 let sec = (entidad === 'Producto') ? 'Menus' : (entidad === 'Restaurante') ? 'Restaurantes' : (entidad === 'Usuario') ? 'Usuarios' : entidad + 'es';
@@ -89,8 +89,8 @@ function guardarDatos(entidad) {
                     title: 'Error',
                     text: res.message,
                     icon: 'error',
-                    background: getBg(), // Agregado
-                    color: getColor()    // Agregado
+                    background: getBg(),
+                    color: getColor()   
                 });
             }
         }
@@ -105,11 +105,11 @@ function eliminarRegistro(entidad, id) {
         text: "No podrás revertir esto",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#472825',
-        confirmButtonText: 'Sí, eliminar',
+        confirmButtonColor: getBtn(),
         cancelButtonText: 'Cancelar',
-        background: getBg(), // Agregado
-        color: getColor()    // Agregado
+        confirmButtonText: 'Sí, eliminar',
+        background: getBg(),
+        color: getColor()
     }).then((result) => {
         if (result.isConfirmed) {
             $.post(`/${rutaEntidad}/Eliminar`, { id: id }, function (res) {
@@ -118,8 +118,8 @@ function eliminarRegistro(entidad, id) {
                         title: 'Eliminado',
                         text: res.message,
                         icon: 'success',
-                        background: getBg(), // Agregado
-                        color: getColor()    // Agregado
+                        background: getBg(),
+                        color: getColor()   
                     });
 
                     let sec;
@@ -134,8 +134,8 @@ function eliminarRegistro(entidad, id) {
                         title: 'Error',
                         text: res.message,
                         icon: 'error',
-                        background: getBg(), // Agregado
-                        color: getColor()    // Agregado
+                        background: getBg(),
+                        color: getColor()   
                     });
                 }
             });

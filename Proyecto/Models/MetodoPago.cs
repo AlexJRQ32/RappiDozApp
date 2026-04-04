@@ -9,7 +9,7 @@ namespace RappiDozApp.Models
 
         [Required]
         [StringLength(50)]
-        public string Nombre { get; set; } // 'Efectivo', 'Tarjeta', 'Sinpe Móvil'
+        public string Nombre { get; set; }
         public virtual ICollection<Pedido> Pedidos { get; set; }
     }
 }

@@ -1,6 +1,14 @@
 function ejecutarArranque(contenedor) {
     if (contenedor.dataset.requiresLogin === 'true') {
-        Swal.fire({ title: '¡Sesión Requerida!', text: 'Inicia sesión para arrancar cupones.', icon: 'info' });
+        const _v = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+        Swal.fire({
+            title: '¡Sesión Requerida!',
+            text: 'Inicia sesión para arrancar cupones.',
+            icon: 'info',
+            confirmButtonColor: _v('--accent-main'),
+            background: _v('--modal-shell-bg'),
+            color: _v('--modal-text')
+        });
         return;
     }
 

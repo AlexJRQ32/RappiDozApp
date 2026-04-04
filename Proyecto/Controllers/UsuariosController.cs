@@ -30,9 +30,6 @@ namespace RappiDozApp.Controllers
             return PartialView("~/Views/Usuarios/users-form.cshtml", usuario);
         }
 
-        
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GuardarPerfil(Usuario model, IFormFile? fotoArchivo, string? nuevaPassword)
@@ -145,7 +142,6 @@ namespace RappiDozApp.Controllers
             }
         }
         #endregion
-
 
         #region Foto
         [HttpGet]

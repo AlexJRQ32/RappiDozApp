@@ -33,4 +33,11 @@
             loader.classList.remove('loader-active');
         }
     });
+
+    window.addEventListener("pageshow", function(e) {
+        if (e.persisted) {
+            sessionStorage.removeItem('showLoader');
+            loader.classList.remove('loader-active');
+        }
+    });
 })();
