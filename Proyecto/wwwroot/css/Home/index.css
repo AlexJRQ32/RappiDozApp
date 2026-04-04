@@ -358,18 +358,15 @@ html[data-theme="dark"] .hero {
     transition: filter 0.3s ease;
 }
 
-/* --- AJUSTES MODO OSCURO MAPA --- */
 html[data-theme="dark"] #map {
     filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%) !important;
 }
 
-/* Des-invertir el PIN y Controles en modo oscuro */
 html[data-theme="dark"] .leaflet-marker-pane,
 html[data-theme="dark"] .leaflet-control-zoom {
     filter: invert(100%) hue-rotate(-180deg) !important;
 }
 
-/* Estilo del Pin Custom */
 .custom-div-icon {
     background: none !important;
     border: none !important;
@@ -504,8 +501,6 @@ html[data-theme="dark"] .leaflet-control-zoom {
         color: var(--dark-green);
         line-height: 1.5;
     }
-
-/* --- RESPONSIVO --- */
 
 @media (max-width: 992px) {
     .grid-categorias {

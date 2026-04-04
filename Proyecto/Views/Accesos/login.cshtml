@@ -21,7 +21,6 @@
     <div class="form">
         <h1>Iniciar Sesión</h1>
 
-        @* Usamos ID para procesar por AJAX *@
         <form id="loginForm" asp-controller="Accesos" asp-action="Login" method="post">
             @Html.AntiForgeryToken()
 
@@ -45,7 +44,6 @@
                 </div>
             </section>
 
-            @* Contenedor dinámico para errores sin recargar *@
             <div id="error-message"></div>
 
             <section>

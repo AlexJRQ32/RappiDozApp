@@ -16,8 +16,7 @@
         <div class="wallet-list">
             @foreach (var cupon in Model)
             {
-                @* CARD DE CUPÓN CLARO *@
-                <div onclick="activarCuponParaCompra('@cupon.Codigo', @cupon.Descuento, @(cupon.EsPorcentaje.ToString().ToLower()))"
+                <div onclick="activarCuponParaCompra
                      class="wallet-card">
 
                     <div class="wallet-card-main">
@@ -38,4 +37,3 @@
     }
 </div>
 
-<!-- Styles moved to ~/css/_StylesShared.css -->

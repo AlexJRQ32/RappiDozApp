@@ -1,21 +1,17 @@
-﻿/* ============================================================
-   ESTILOS PARA EL COMPROBANTE DE PAGO (TICKET)
-   ============================================================ */
 
-/* 1. Contenedor Padre: Centra todo y baja el contenido del Navbar */
+
 .factura-container {
     display: flex !important;
     justify-content: center !important;
-    align-items: flex-start !important; /* Alinea arriba para controlar el margen */
+    align-items: flex-start !important; 
     min-height: 100vh !important;
-    background-color: var(--bg-main) !important; /* Fondo oscuro de la app */
-    padding-top: 120px !important; /* AJUSTE VITAL: Baja el ticket para que no se corte */
+    background-color: var(--bg-main) !important; 
+    padding-top: 120px !important; 
     padding-bottom: 50px !important;
     width: 100% !important;
     box-sizing: border-box !important;
 }
 
-/* 2. El Ticket: Tarjeta blanca centrada */
 .ticket {
     background-color: var(--white) !important;
     color: var(--text-main) !important;
@@ -30,7 +26,6 @@
     position: relative !important;
 }
 
-/* 3. Encabezado del Ticket */
 .header-ticket {
     text-align: center !important;
     border-bottom: 2px dashed var(--border-main) !important;
@@ -45,7 +40,6 @@
     color: var(--text-main) !important;
 }
 
-/* 4. Líneas de Productos: Izquierda <---> Derecha */
 .linea-producto, .fila-total, .gran-total {
     display: flex !important;
     justify-content: space-between !important;
@@ -58,7 +52,6 @@
     padding: 5px 0 !important;
 }
 
-/* 5. Sección de Totales */
 .seccion-totales {
     border-top: 2px dashed var(--border-main) !important;
     padding-top: 15px !important;
@@ -75,7 +68,6 @@
     font-weight: 900 !important;
 }
 
-/* 6. Footer y Botones */
 .ticket-footer {
     text-align: center !important;
     display: flex !important;

@@ -2,10 +2,8 @@
 @{
     ViewData["Title"] = "Comprobante de Pago | Rappi'Doz";
 
-    // Calculamos el subtotal real sumando Cantidad * Precio de los detalles guardados
     decimal subtotalCalculado = Model.Detalles?.Sum(x => x.PrecioHistorico * x.Cantidad) ?? 0;
 
-    // Definimos los costos fijos que sumamos en el controlador (Total 2000)
     decimal envio = 1500;
     decimal tarifa = 500;
 }

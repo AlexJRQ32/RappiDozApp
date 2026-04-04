@@ -9,7 +9,6 @@
     ViewData["Title"] = "Inicio | RappiDoz";
     var userId = HttpContextAccessor.HttpContext.Session.GetInt32("UsuarioId");
 
-    // VALORES POR DEFECTO (San José)
     bool tieneUbicacion = false;
     double latActual = 9.9331; 
     double lngActual = -84.1112;
@@ -18,7 +17,6 @@
     {
         try 
         {
-            // Buscamos la última ubicación guardada
             var ultimaUbi = await _context.UbicacionUsuario
                 .Where(u => u.IdUsuario == userId.Value)
                 .OrderByDescending(u => u.IdUbicacion)
@@ -27,14 +25,12 @@
             if (ultimaUbi != null)
             {
                 tieneUbicacion = true;
-                // USAMOS CONVERT PARA EVITAR EL ERROR DE CAST (Double vs Single)
                 latActual = Convert.ToDouble(ultimaUbi.Latitud);
                 lngActual = Convert.ToDouble(ultimaUbi.Longitud);
             }
         }
         catch (Exception) 
         {
-            // Si hay error de casteo o base de datos, mantenemos los valores por defecto
             tieneUbicacion = false;
         }
     }
@@ -42,7 +38,6 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-@* HERO SECCIÓN *@
 <section class="hero">
     <div class="hero-content">
         <h1 class="hero-title">Entrega de comida hasta tu puerta</h1>
@@ -59,7 +54,6 @@
 <main class="contenido-principal">
     <div class="zona-restringida">
 
-        @* CATEGORÍAS *@
         <section class="categorias categorias-section">
             <h2 class="section-title-centered">Explorar por categoría</h2>
             <div class="grid-categorias">
@@ -73,7 +67,6 @@
             </div>
         </section>
 
-        @* RESTAURANTES *@
         <section class="restaurantes restaurantes-section">
             <div class="container-header">
                 <h2>Restaurantes populares</h2>
@@ -110,7 +103,6 @@
             </div>
         </section>
 
-        @* SECCIÓN MAPA ACTUALIZADA *@
         <section id="seccion-mapa" class="seccion-mapa">
             <div class="map-card">
                 <h2 class="map-title">¿A dónde enviamos hoy?</h2>
@@ -146,7 +138,6 @@
             </div>
         </section>
 
-        @* PASOS *@
         <section class="como-funciona">
             <div class="pasos">
                 <div class="paso">

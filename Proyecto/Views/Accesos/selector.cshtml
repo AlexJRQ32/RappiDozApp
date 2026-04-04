@@ -1,7 +1,6 @@
 ﻿@{
     Layout = null;
     ViewData["Title"] = "Selección de Perfil";
-    // Capturamos el ID del usuario que viene del controlador
     int userId = ViewBag.UsuarioId ?? 0;
 }
 
@@ -28,8 +27,7 @@
         <h1>¿Quién eres?</h1>
 
         <div class="cards-wrapper">
-            @* FORMULARIO PARA USUARIO COMÚN (ROL 1) *@
-        <form asp-controller="Accesos" asp-action="AsignarRol" method="post">
+            <form asp-controller="Accesos" asp-action="AsignarRol" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="usuarioId" value="@userId" />
                 <input type="hidden" name="rolId" value="1" />
@@ -40,7 +38,6 @@
                 </button>
             </form>
 
-            @* FORMULARIO PARA RESTAURANTE (ROL 2) *@
             <form asp-controller="Accesos" asp-action="AsignarRol" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="usuarioId" value="@userId" />

@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<RappiDozApp.Models.Cupon>
 
 <div class="animate__animated animate__fadeIn dashboard-section-root">
-    @* --- CABECERA --- *@
     <div class="d-flex justify-content-between align-items-center mb-5">
         <div>
             <h1 class="fw-800 mb-1 dashboard-section-title">Gestión de Cupones</h1>
@@ -16,15 +15,12 @@
         @foreach (var item in Model)
         {
             var estaVencido = item.FechaExpiracion < DateTime.Now;
-            // Quitamos decimales
             var descuentoEntero = Math.Floor(item.Descuento);
 
             <div class="col-md-6 col-lg-4">
                 <div class="coupon-ticket @(estaVencido ? "expired" : "")">
 
-                    @* LADO IZQUIERDO (CAFÉ) *@
                     <div class="t-left">
-                        @* Muescas del color del fondo (#fdfaf6) para que no se noten *@
                         <div class="notch n-tl"></div>
                         <div class="notch n-bl"></div>
                         <div class="notch n-tr"></div>
@@ -36,9 +32,7 @@
                         </div>
                     </div>
 
-                    @* LADO DERECHO (BLANCO) *@
                     <div class="t-right">
-                        @* Muescas en la extrema derecha *@
                         <div class="notch n-tr-far"></div>
                         <div class="notch n-br-far"></div>
 

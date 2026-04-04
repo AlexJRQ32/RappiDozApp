@@ -1,16 +1,12 @@
-﻿/* 1. RESET DE PANTALLA COMPLETA 
-   Forzamos a que el navegador use el 100% del espacio visual */
-html, body {
+﻿html, body {
     margin: 0 !important;
     padding: 0 !important;
     height: 100vh !important;
     width: 100vw !important;
-    overflow: hidden !important; /* Elimina cualquier posibilidad de scroll */
-    background-color: #121212; /* Color base para evitar destellos blancos */
+    overflow: hidden !important;
+    background-color: #121212;
 }
 
-/* 2. CONTENEDOR MAESTRO (WRAPPER)
-   Usamos 'fixed' para que se ancle a las 4 esquinas del monitor */
 .tracking-wrapper {
     position: fixed;
     top: 0;
@@ -24,8 +20,6 @@ html, body {
     flex-direction: column;
 }
 
-/* 3. EL MAPA 
-   Ocupa la totalidad del wrapper */
 #mapa-final {
     position: absolute;
     top: 0;
@@ -35,38 +29,32 @@ html, body {
     z-index: 5;
 }
 
-/* 4. FILTROS DE MODO OSCURO (Psicología y Usabilidad)
-   Invertimos los colores de los tiles de Voyager para el tema Dark */
 html[data-theme="dark"] #mapa-final {
     filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%) !important;
     background: #1a1a1a !important;
 }
 
-/* IMPORTANTE: Evitamos que los iconos (moto/pin) se vean con colores raros */
 html[data-theme="dark"] .leaflet-marker-pane,
 html[data-theme="dark"] .leaflet-shadow-pane {
     filter: invert(100%) hue-rotate(-180deg) !important;
 }
 
-/* 5. TARJETA DE ESTADO (STATUS CARD)
-   Flota sobre el mapa a la izquierda */
 .status-card {
     position: absolute;
-    top: 100px; /* Ajustado para que no lo tape el Navbar */
+    top: 100px;
     left: 20px;
     z-index: 1000;
     width: 320px;
-    background: rgba(26, 26, 26, 0.92); /* Transparencia elegante */
+    background: rgba(26, 26, 26, 0.92);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     padding: 25px;
     border-radius: 25px;
     box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-    border: 1px solid rgba(212, 175, 55, 0.4); /* Bordes dorados RappiDoz */
+    border: 1px solid rgba(212, 175, 55, 0.4);
     font-family: 'Poppins', sans-serif;
 }
 
-/* 6. ELEMENTOS INTERNOS DE LA TARJETA */
 .eta-box {
     background: #000;
     padding: 20px;
@@ -87,7 +75,7 @@ html[data-theme="dark"] .leaflet-shadow-pane {
     }
 
     .eta-box span {
-        font-size: 2rem;
+        font-size: clamp(1rem, 4vw, 2rem);
         font-weight: 900;
         color: #fff;
         display: block;
@@ -98,12 +86,11 @@ html[data-theme="dark"] .leaflet-shadow-pane {
     bottom: 0;
     left: 0;
     height: 5px;
-    background: #d4af37; /* Amarillo/Dorado RappiDoz */
+    background: #d4af37;
     width: 0%;
     transition: width 0.4s linear;
 }
 
-/* 7. BADGES Y TEXTO */
 .status-badge {
     font-size: 10px;
     padding: 5px 12px;
@@ -128,7 +115,6 @@ html[data-theme="dark"] .leaflet-shadow-pane {
     font-size: 1.1rem;
 }
 
-/* 8. BOTONES */
 .btn-back {
     display: block;
     width: 100%;
@@ -150,7 +136,6 @@ html[data-theme="dark"] .leaflet-shadow-pane {
         transform: translateY(-2px);
     }
 
-/* 9. ICONOS DE MAPA (Leaflet Fix) */
 .custom-div-icon {
     background: none !important;
     border: none !important;
@@ -163,7 +148,6 @@ html[data-theme="dark"] .leaflet-shadow-pane {
         filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
     }
 
-/* 10. RESPONSIVO PARA MÓVILES */
 @media (max-width: 768px) {
     .status-card {
         top: auto;

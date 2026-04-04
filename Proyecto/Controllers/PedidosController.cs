@@ -10,10 +10,12 @@ namespace RappiDozApp.Controllers
     public class PedidosController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public PedidosController(ApplicationDbContext context)
+        public PedidosController(ApplicationDbContext context, IHttpClientFactory httpClientFactory)
         {
             _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
         #region Vistas
@@ -50,6 +52,90 @@ namespace RappiDozApp.Controllers
             ViewBag.PedidoId = pedido.Id;
 
             return View(pedido);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRuta(double latO, double lngO, double latD, double lngD)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.Timeout = TimeSpan.FromSeconds(10);
+
+            // Intento 1: OSRM
+            try
+            {
+                var osrmUrl = string.Format(
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    "https://router.project-osrm.org/route/v1/driving/{0},{1};{2},{3}?overview=full&geometries=geojson",
+                    lngO, latO, lngD, latD);
+
+                var res = await client.GetAsync(osrmUrl);
+                if (res.IsSuccessStatusCode)
+                {
+                    using var doc = JsonDocument.Parse(await res.Content.ReadAsStringAsync());
+                    var root = doc.RootElement;
+                    if (root.GetProperty("code").GetString() == "Ok")
+                    {
+                        var pts = root.GetProperty("routes")[0]
+                            .GetProperty("geometry").GetProperty("coordinates")
+                            .EnumerateArray()
+                            .Select(c => new { lat = c[1].GetDouble(), lng = c[0].GetDouble() })
+                            .ToList();
+                        return Json(pts);
+                    }
+                }
+            }
+            catch { }
+
+            // Intento 2: Valhalla (server-side, sin CORS)
+            try
+            {
+                var body = new StringContent(
+                    JsonSerializer.Serialize(new
+                    {
+                        locations = new[]
+                        {
+                            new { lon = lngO, lat = latO },
+                            new { lon = lngD, lat = latD }
+                        },
+                        costing = "auto",
+                        directions_options = new { units = "km" }
+                    }),
+                    System.Text.Encoding.UTF8, "application/json");
+
+                var res = await client.PostAsync("https://valhalla1.openstreetmap.de/route", body);
+                if (res.IsSuccessStatusCode)
+                {
+                    using var doc = JsonDocument.Parse(await res.Content.ReadAsStringAsync());
+                    var root = doc.RootElement;
+                    if (root.TryGetProperty("trip", out var trip) &&
+                        trip.TryGetProperty("legs", out var legs) &&
+                        legs.GetArrayLength() > 0)
+                    {
+                        var shape = legs[0].GetProperty("shape").GetString()!;
+                        return Json(DecodePolyline6(shape));
+                    }
+                }
+            }
+            catch { }
+
+            return StatusCode(503);
+        }
+
+        private static List<object> DecodePolyline6(string encoded)
+        {
+            var points = new List<object>();
+            int index = 0, len = encoded.Length, lat = 0, lng = 0;
+            while (index < len)
+            {
+                int b, shift = 0, result = 0;
+                do { b = encoded[index++] - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+                lat += ((result & 1) != 0) ? ~(result >> 1) : (result >> 1);
+                shift = 0; result = 0;
+                do { b = encoded[index++] - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+                lng += ((result & 1) != 0) ? ~(result >> 1) : (result >> 1);
+                points.Add(new { lat = lat / 1e6, lng = lng / 1e6 });
+            }
+            return points;
         }
 
         [HttpGet]

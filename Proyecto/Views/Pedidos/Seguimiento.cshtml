@@ -1,11 +1,9 @@
 ﻿@model RappiDozApp.Models.Pedido
 @{
     ViewData["Title"] = "Seguimiento | RappiDoz";
-    // Forzamos el Layout a no usar contenedores restrictivos si es posible
 }
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
 <div class="tracking-wrapper">
@@ -47,6 +45,5 @@
 
 @section Scripts {
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
     <script src="~/js/Pedidos/seguimiento.js"></script>
 }

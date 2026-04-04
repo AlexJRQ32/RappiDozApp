@@ -29,8 +29,7 @@
         <form id="restaurantForm" asp-controller="Accesos" asp-action="GuardarRestaurante" method="post">
             @Html.AntiForgeryToken()
 
-            @* ESTA ES LA CLAVE: El ID del usuario que viene del selector *@
-            <input type="hidden" name="UsuarioId" value="@userId" />
+            <input type="hidden" name="UsuarioId"
 
             <section class="container-translucid">
                 <input type="text" asp-for="NombreComercial" id="NombreComercial" placeholder="Nombre del negocio" required>
@@ -68,14 +67,12 @@
 
             <div class="mb-3">
                 <label class="label-custom">UBICACIÓN DEL LOCAL</label>
-                @* Mantenemos tu función original abrirMapa() *@
-                <a href="javascript:void(0);" onclick="abrirMapa()" class="btn-mapa-link">
+                <a href="javascript:void(0);"
                     <span id="texto-ubicacion"><i class="fas fa-map-marker-alt"></i> Seleccionar en el mapa</span>
                 </a>
             </div>
 
-            @* Campos que el JS llenará al confirmar el mapa *@
-            <input type="hidden" id="Latitud" name="Latitud" value="" />
+            <input type="hidden" id="Latitud"
             <input type="hidden" id="Longitud" name="Longitud" value="" />
 
             <div id="error-message" class="feedback-error hidden-feedback"></div>

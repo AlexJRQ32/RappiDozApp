@@ -1,4 +1,4 @@
-﻿/* Oculta el banner publicitario y el fondo oscuro */
+
 div[style*="z-index: 2147483647"],
 div[style*="opacity: 0.9"],
 center {
@@ -8,12 +8,10 @@ center {
     opacity: 0 !important;
 }
 
-/* Elimina el espacio de 65px que Somee reserva arriba o abajo */
 div[style*="height: 65px"] {
     display: none !important;
 }
 
-/* Asegura que el body no tenga margen extra al final */
 body {
     margin-bottom: 0 !important;
     padding-bottom: 0 !important;
@@ -329,7 +327,7 @@ html[data-theme="dark"] {
     }
 /* #endregion */
 
-/* #region Cards de Gestión */
+/* #region Cards de Gesti�n */
 .card-gestion-crud {
     background: var(--section-bg-tertiary);
     border-radius: 20px;

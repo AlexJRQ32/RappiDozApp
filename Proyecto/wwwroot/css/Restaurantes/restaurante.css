@@ -37,20 +37,18 @@ body {
 .restaurante-main {
     background-color: var(--bg-main);
     min-height: 100vh;
-    /* Añadimos un padding extra para separar el título del nav */
     padding-top: 20px;
 }
 
 .restaurante-header {
     text-align: center;
     margin-bottom: 40px;
-    /* Esto empuja el título hacia abajo de la barra nav */
     padding-top: 10px;
 }
 
 .restaurante-title {
     color: var(--text-main);
-    font-size: 3rem; /* Un poco más grande para que destaque */
+    font-size: 3rem;
     font-weight: 900;
     margin: 0;
     line-height: 1.2;
@@ -65,7 +63,6 @@ body {
     margin-top: 5px;
 }
 
-/* Card de Platillo */
 .card-platillo-moderno {
     background: var(--white);
     border-radius: 30px;
@@ -149,7 +146,6 @@ body {
         transform: scale(1.05);
     }
 
-/* Esta es la parte que le falta a tu JS para que se vea la animación */
 .bolsa-fancy-vuelo {
     position: fixed;
     display: none;
@@ -160,7 +156,6 @@ body {
 }
 
 .vuelo-kraft {
-    /* Bajamos de 0.9s a 0.6s para que sea más dinámico */
     animation: volarAlCarrito 0.6s cubic-bezier(0.42, 0, 0.58, 1) forwards;
     display: block !important;
     position: fixed;
@@ -174,12 +169,10 @@ body {
     }
 
     50% {
-        /* Efecto de arco: sube un poco antes de bajar al carrito */
         opacity: 0.8;
     }
 
     100% {
-        /* Variables inyectadas por tu JS */
         transform: translate(var(--x-dist), var(--y-dist)) scale(0.1) rotate(720deg);
         opacity: 0;
     }

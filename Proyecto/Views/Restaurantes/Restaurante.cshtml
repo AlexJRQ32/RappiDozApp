@@ -6,7 +6,6 @@
 
 <link href="./css/Restaurantes/restaurante.css" rel="stylesheet" />
 
-@* ELEMENTO PARA LA ANIMACIÓN (Bolsita voladora) *@
 <div id="bolsa-fancy-vuelo" class="bolsa-fancy-vuelo">
     <i class="fa-solid fa-bag-shopping"></i>
 </div>
@@ -33,7 +32,6 @@
                 </div>
 
                 <div class="action-section">
-                    @* Formulario manejado por AJAX *@
                     <form class="form-agregar-carrito" asp-controller="Carritos" asp-action="Agregar" method="post">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="productoId" value="@producto.Id" />

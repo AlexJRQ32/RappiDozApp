@@ -11,10 +11,8 @@
     <div class="user-list">
         @foreach (var item in Model)
         {
-            @* RESTAURADA LA CLASE user-card PARA EL DISEÑO DE CARTITA *@
             <div class="user-card animate__animated animate__fadeIn">
 
-                @* LADO IZQUIERDO: Información del usuario *@
                 <div class="user-info">
                     <div class="user-avatar">
                         @if (item.ContentType != null)
@@ -23,13 +21,11 @@
                         }
                         else
                         {
-                            @* MOSTRAMOS LA INICIAL (Tus estilos originales) *@
                             <span>@item.NombreCompleto.Substring(0, 1).ToUpper()</span>
                         }
                     </div>
 
                     <div class="user-details">
-                        @* Título e Email (Tus estilos originales) *@
                         <h3>
                             @item.NombreCompleto
                             <span class="badge-rol">@item.Rol?.NombreRol</span>
@@ -38,7 +34,6 @@
                     </div>
                 </div>
 
-                @* LADO DERECHO: Acciones (Tus estilos originales) *@
                 <div class="acciones-der">
                     <button onclick="abrirForm('Usuario', 'Editar', @item.Id)" class="btn-accion edit" title="Editar">
                         <i class="fas fa-pencil-alt"></i>

@@ -1,4 +1,4 @@
-﻿/*#region Logo*/
+/*#region Logo*/
 .logo-dark-theme {
     display: none !important;
 }
@@ -7,7 +7,6 @@
     display: block !important;
 }
 
-
 [data-theme='dark'] .logo-light-theme {
     display: none !important;
 }
@@ -15,8 +14,6 @@
 [data-theme='dark'] .logo-dark-theme {
     display: block !important;
 }
-
-/*# endregion */
 
 /* #region Calificanos */
 .rd-card-main {

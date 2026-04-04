@@ -15,7 +15,6 @@
 }
 
 <div class="super-contenedor-carrito">
-    @* Inputs para SweetAlert2 *@
     <input type="hidden" id="errorMsg" value="@TempData["MensajeError"]" />
     <input type="hidden" id="successMsg" value="@TempData["MensajeExito"]" />
 
@@ -31,8 +30,7 @@
         </header>
 
         <div class="carrito-grid">
-            
-            @* --- COLUMNA IZQUIERDA: PRODUCTOS --- *@
+
             <section>
                 @if (Model != null && Model.Any())
                 {
@@ -76,11 +74,9 @@
                 }
             </section>
 
-            @* --- COLUMNA DERECHA: PANEL DE RESUMEN --- *@
             <aside>
                 <div class="resumen-panel">
-                    
-                    @* DIRECCIÓN DE ENVÍO *@
+
                     <div class="shipping-box">
                         <p class="section-label"><i class="fas fa-map-marker-alt section-icon"></i> Dirección de Envío</p>
                         <div class="ubicacion-row">
@@ -105,7 +101,6 @@
                         </div>
                     </div>
 
-                    @* MÉTODO DE PAGO *@
                     <div class="shipping-box">
                         <p class="section-label"><i class="fas fa-credit-card section-icon"></i> Método de Pago</p>
                         <select id="selectMetodoPago" name="MetodoPagoId" form="formCheckout" class="ubicacion-select">
@@ -115,7 +110,6 @@
                         </select>
                     </div>
 
-                    @* SECCIÓN DE CUPONES *@
                     <div class="carrito-cupones-section">
                         <p class="section-label"><i class="fas fa-ticket-alt section-icon"></i> Billetera de Cupones</p>
                         
@@ -125,7 +119,7 @@
                                 foreach (var c in cuponesBilletera)
                                 {
                                     bool esActivo = (codigoAplicado == c.Codigo);
-                                    if (esActivo) continue; @* Ocultamos el que ya está puesto para evitar confusión *@
+                                    if (esActivo) continue;
 
                                     <div class="card-cupon" onclick="aplicar('@c.Codigo')">
                                         <span><i class="fas fa-tag"></i> @c.Codigo</span>
@@ -146,7 +140,6 @@
                                     <i class="fas fa-check-circle"></i> @codigoAplicado APLICADO
                                 </span>
                                 <br />
-                                @* IMPORTANTE: Asegúrate de que el controller sea "Cupones" *@
                                 <a asp-controller="Cupones" asp-action="QuitarCupon" class="cupon-remove-link">
                                     [ELIMINAR CUPÓN]
                                 </a>
@@ -154,7 +147,6 @@
                         }
                     </div>
 
-                    @* DESGLOSE DE TOTALES *@
                     <div class="resumen-detalle">
                         <div class="resumen-line">
                             <span>Subtotal</span>
@@ -178,7 +170,6 @@
                         <span>₡@total.ToString("N0")</span>
                     </div>
 
-                    @* FORMULARIO DE CHECKOUT *@
                     <form id="formCheckout" asp-controller="Pedidos" asp-action="ConfirmarPedido" method="post" class="checkout-form">
                         <button type="submit" class="checkout-btn">
                             CONFIRMAR PEDIDO
@@ -191,7 +182,6 @@
     </div>
 </div>
 
-@* FORMULARIO OCULTO PARA PROCESAR CUPÓN *@
 <form id="formCuponHidden" asp-controller="Cupones" asp-action="AplicarCupon" method="post" style="display:none;">
     @Html.AntiForgeryToken()
     <input type="hidden" name="codigo" id="valCupon" />

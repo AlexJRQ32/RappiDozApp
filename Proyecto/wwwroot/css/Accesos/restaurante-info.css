@@ -1,4 +1,4 @@
-ï»¿/* #region ConfiguraciÃ³n General */
+/* #region Configuración General */
 .navbar, .cta-final {
     display: none !important;
 }
@@ -103,10 +103,10 @@ body {
         color: var(--text-main);
         outline: none;
         transition: all 0.4s ease;
-        appearance: none; /* Quita estilo nativo del select */
+        appearance: none; 
     }
 
-    /* Iconos dentro de los inputs */
+    
     .container-translucid i {
         position: absolute;
         right: 22px;
@@ -125,7 +125,6 @@ body {
         box-shadow: 0 0 15px rgba(211, 171, 128, 0.2);
     }
 
-/* Estilo para las opciones del Select */
 select option {
     background: #2c1816;
     color: var(--text-main);
@@ -181,7 +180,7 @@ select option {
     }
 /* #endregion */
 
-/* #region BotÃ³n y Links Finales */
+/* #region Botón y Links Finales */
 #button {
     width: 100%;
     background: var(--accent-main);

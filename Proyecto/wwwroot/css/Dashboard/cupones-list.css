@@ -20,7 +20,6 @@ html[data-theme="dark"] {
     --cpn-dash-color: rgba(211, 171, 128, 0.25);
 }
 
-
 .dashboard-section-title {
     color: var(--text-main);
     font-weight: 800;
