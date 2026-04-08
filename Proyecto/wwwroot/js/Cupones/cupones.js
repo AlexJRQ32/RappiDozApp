@@ -5,7 +5,7 @@ function ejecutarArranque(contenedor) {
             title: '¡Sesión Requerida!',
             text: 'Inicia sesión para arrancar cupones.',
             icon: 'info',
-            confirmButtonColor: _v('--accent-main'),
+            confirmButtonColor: _v('--swal-btn'),
             background: _v('--modal-shell-bg'),
             color: _v('--modal-text')
         });

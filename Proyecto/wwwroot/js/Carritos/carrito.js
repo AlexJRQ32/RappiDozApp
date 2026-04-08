@@ -2,7 +2,7 @@
 const _cs = getComputedStyle(document.documentElement);
 const _swalBg = _cs.getPropertyValue('--section-bg-primary').trim() || '#1a1a1a';
 const _swalColor = _cs.getPropertyValue('--text-main').trim() || '#ffffff';
-const _swalBtn = _cs.getPropertyValue('--accent-main').trim() || '#d4af37';
+const _swalBtn = _cs.getPropertyValue('--swal-btn').trim() || '#d4af37';
 const _swalDanger = _cs.getPropertyValue('--danger-strong').trim() || '#d33';
 // #endregion
 
@@ -45,7 +45,7 @@ window.onload = function () {
         });
     }
 
-    var selUbi
+    var selUbi = document.getElementById('selectUbicacionPedido');
     var selPago = document.getElementById('selectMetodoPago');
     var savedUbi = sessionStorage.getItem('carritoUbicacionId');
     var savedPago = sessionStorage.getItem('carritoMetodoPagoId');

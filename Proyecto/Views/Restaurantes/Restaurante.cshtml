@@ -1,10 +1,12 @@
-﻿@model IEnumerable<RappiDozApp.Models.Producto>
+@model IEnumerable<RappiDozApp.Models.Producto>
 
 @{
     ViewData["Title"] = "Menú de " + (ViewBag.RestauranteNombre ?? "Restaurante");
+    var categoriaMap = ViewBag.CategoriaMap as Dictionary<int, string> ?? new Dictionary<int, string>();
+    var grupos = Model?.GroupBy(p => p.CategoriaId).ToList();
 }
 
-<link href="./css/Restaurantes/restaurante.css" rel="stylesheet" />
+<link href="~/css/Restaurantes/restaurante.css" rel="stylesheet" />
 
 <div id="bolsa-fancy-vuelo" class="bolsa-fancy-vuelo">
     <i class="fa-solid fa-bag-shopping"></i>
@@ -18,34 +20,42 @@
             <p class="restaurante-subtitle">Toque para añadir</p>
         </div>
 
-        @foreach (var producto in Model)
+        @if (grupos != null)
         {
-            <div class="card-platillo-moderno">
-                <div class="visual-section">
-                    <img src="/Productos/Imagen/@producto.Id" class="foto-circular" loading="lazy">
-                </div>
+            foreach (var grupo in grupos)
+            {
+                string catNombre = categoriaMap.ContainsKey(grupo.Key) ? categoriaMap[grupo.Key] : "General";
+                <h2 class="menu-category-title">@catNombre</h2>
+                foreach (var producto in grupo)
+                {
+                    <div class="card-platillo-moderno">
+                        <div class="visual-section">
+                            <img src="/Productos/Imagen/@producto.Id" class="foto-circular" loading="lazy">
+                        </div>
 
-                <div class="info-section">
-                    <h3>@producto.Nombre</h3>
-                    <p class="producto-descripcion">@producto.Descripcion</p>
-                    <div class="precio-badge">₡@producto.Precio.ToString("N0")</div>
-                </div>
+                        <div class="info-section">
+                            <h3>@producto.Nombre</h3>
+                            <p class="producto-descripcion">@producto.Descripcion</p>
+                            <div class="precio-badge">₡@producto.Precio.ToString("N0")</div>
+                        </div>
 
-                <div class="action-section">
-                    <form class="form-agregar-carrito" asp-controller="Carritos" asp-action="Agregar" method="post">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="productoId" value="@producto.Id" />
-                        <input type="hidden" name="nombre" value="@producto.Nombre" />
-                        <input type="hidden" name="precio" value="@producto.Precio" />
-                        <input type="hidden" name="cantidad" value="1" />
+                        <div class="action-section">
+                            <form class="form-agregar-carrito" asp-controller="Carritos" asp-action="Agregar" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productoId" value="@producto.Id" />
+                                <input type="hidden" name="nombre" value="@producto.Nombre" />
+                                <input type="hidden" name="precio" value="@producto.Precio" />
+                                <input type="hidden" name="cantidad" value="1" />
 
-                        <button type="button" class="btn-añadir-premium" onclick="agregarConAnimacion(this)">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Añadir</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
+                                <button type="button" class="btn-añadir-premium" onclick="agregarConAnimacion(this)">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span>Añadir</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            }
         }
     </div>
 </main>

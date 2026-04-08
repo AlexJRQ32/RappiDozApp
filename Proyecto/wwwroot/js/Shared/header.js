@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    if(btnMenu && navbarMenu) {
+    if (btnMenu && navbarMenu) {
         btnMenu.onclick = function() {
             navbarMenu.classList.toggle('active');
         };
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.obtenerColoresTema = function() {
         return {
-            accent: obtenerVarCss('--accent-main'),
+            accent: obtenerVarCss('--swal-btn'),
             surface: obtenerVarCss('--surface-main'),
             text: obtenerVarCss('--text-main'),
             danger: obtenerVarCss('--danger-strong') || '#d33'
@@ -54,7 +54,7 @@ function confirmarSalida() {
         title: '¿Cerrar sesión?',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: colores?.accent || '#d3ab80',
+        confirmButtonColor: colores?.accent || '#5a322d',
         cancelButtonColor: colores?.danger || '#d33',
         confirmButtonText: 'Sí, salir',
         background: colores?.surface || '#fffdf9',

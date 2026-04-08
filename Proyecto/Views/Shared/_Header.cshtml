@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http
 @using Microsoft.EntityFrameworkCore
 @inject IHttpContextAccessor HttpContextAccessor
 @inject RappiDozApp.Data.ApplicationDbContext _context
@@ -35,14 +35,12 @@
     </button>
 
     <div class="sesion" id="navbar-menu">
-        
-
         @if (!string.IsNullOrEmpty(nombreUsuario))
         {
             <a asp-controller="Home" asp-action="Index" class="@ClaseActiva("Home", "Index")">
                 <i class="fa-solid fa-house"></i> Inicio
             </a>
-            
+
             <a asp-controller="Home" asp-action="Explorar" class="@ClaseActiva("Home", "Explorar")">
                 <i class="fa-solid fa-magnifying-glass"></i> Búsqueda
             </a>
@@ -56,9 +54,10 @@
                 <a asp-controller="Carritos" asp-action="Index" class="@ClaseActiva("Carritos")">
                     <i class="fa-solid fa-cart-shopping"></i> Carrito
                 </a>
-                @if (!string.IsNullOrEmpty(carritoCount) && carritoCount != "0") {
-                    <span class="cart-badge">@carritoCount</span>
-                }
+                @if (!string.IsNullOrEmpty(carritoCount) && carritoCount != "0")
+                    {
+                        <span class="cart-badge">@carritoCount</span>
+                    }
             </div>
 
             <div class="dropdown">
@@ -66,11 +65,12 @@
                     <i class="fa-solid fa-ellipsis-vertical"></i> Más
                 </button>
                 <div class="dropdown-content">
+                    @if (rolUsuario == "Restaurante" || rolUsuario == "Administrador")
+                    {
+                        <a asp-controller="Pedidos" asp-action="PedidosRecibidos"><i class="fa-solid fa-bag-shopping"></i> Pedidos Recibidos</a>
+                    }
                     <a asp-controller="Pedidos" asp-action="Movimientos"><i class="fa-solid fa-clock-rotate-left"></i> Mis Pedidos</a>
                     <a asp-controller="Cupones" asp-action="Index"><i class="fa-solid fa-ticket"></i> Cupones</a>
-                    <a href="javascript:void(0)" onclick="abrirCalificar()">
-                        <i class="fa-solid fa-star"></i> Califícanos
-                    </a>
                     <div class="theme-switch-item">
                         <input type="checkbox" id="themeSwitch" class="theme-switch-input">
                         <label for="themeSwitch" class="theme-switch"></label>
@@ -87,13 +87,16 @@
 
             <div class="dropdown">
                 <div class="user-pill">
-                    @if (idUsuarioSesion.HasValue) {
-                        <img src="/Usuarios/Foto/@idUsuarioSesion.Value" alt="User"
-                             onerror="this.style.display='none';this.nextElementSibling.style.display=''">
-                        <i class="fa-solid fa-circle-user user-icon-fallback" style="display:none"></i>
-                    } else {
-                        <i class="fa-solid fa-circle-user user-icon-fallback"></i>
-                    }
+                    @if (idUsuarioSesion.HasValue)
+                        {
+                            <img src="/Usuarios/Foto/@idUsuarioSesion.Value" alt="User"
+                                 onerror="this.style.display='none';this.nextElementSibling.style.display=''">
+                            <i class="fa-solid fa-circle-user user-icon-fallback" style="display:none"></i>
+                        }
+                        else
+                        {
+                            <i class="fa-solid fa-circle-user user-icon-fallback"></i>
+                        }
                     <div class="user-info-text">
                         <span class="user-name">@nombreUsuario</span>
                         <span class="user-role">@rolUsuario</span>
@@ -107,7 +110,6 @@
                     <a href="javascript:void(0);" onclick="confirmarSalida()" class="logout-link">
                         <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
                     </a>
-                        
                 </div>
             </div>
         }

@@ -1,7 +1,7 @@
 const _cs = getComputedStyle(document.documentElement);
 const _swalBg = _cs.getPropertyValue('--section-bg-primary').trim() || '#fffdf9';
 const _swalColor = _cs.getPropertyValue('--text-main').trim() || '#542f28';
-const _swalBtn = _cs.getPropertyValue('--accent-main').trim() || '#d3ab80';
+const _swalBtn = _cs.getPropertyValue('--swal-btn').trim() || '#5a322d';
 
 document.getElementById('registerForm').addEventListener('submit', function (e) {
     e.preventDefault();

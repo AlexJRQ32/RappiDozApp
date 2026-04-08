@@ -1,5 +1,4 @@
-﻿
-@model IEnumerable<RappiDozApp.Models.Restaurante>
+﻿@model IEnumerable<RappiDozApp.Models.Restaurante>
 
 @{
     ViewData["Title"] = "Explora Sabores | Rappi'Doz";
@@ -74,8 +73,11 @@
                                     <span class="delivery-price">₡1,000 envío • 30 min</span>
                                 </div>
 
-                                <a asp-controller="Restaurantes" asp-action="Menu" asp-route-id="@item.Id" class="btn-menu-slim @(item.EstaAbierto ? "" : "disabled")">
-                                    @(item.EstaAbierto ? "Ver Menú" : "Local")
+                                <a asp-controller="Restaurantes" asp-action="Menu" asp-route-id="@item.Id"
+                                   class="btn-menu-slim @(item.EstaAbierto ? "" : "disabled")"
+                                   data-cerrado="@(item.EstaAbierto ? "false" : "true")"
+                                   data-nombre="@item.NombreComercial">
+                                    @(item.EstaAbierto ? "Ver Menú" : "Cerrado")
                                 </a>
                             </div>
                         </div>

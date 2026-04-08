@@ -111,13 +111,13 @@
 }
 
 .btn-accion.edit {
-    background: rgba(var(--accent-main-rgb), 0.14);
-    color: var(--accent-main);
+    background: var(--accent-main);
+    color: var(--accent-contrast);
 }
 
 .btn-accion.delete {
-    background: rgba(255, 77, 77, 0.15);
-    color: #ff4d4d;
+    background: var(--accent-main);
+    color: var(--accent-contrast);
 }
 
 .btn-accion:hover {

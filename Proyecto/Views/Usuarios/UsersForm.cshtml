@@ -20,8 +20,8 @@
                 <div class="position-relative d-inline-block">
                     @{
                         var imgSrc = Model.FotoBinaria != null && Model.FotoBinaria.Length > 0
-                        ? $"data:{Model.ContentType};base64,{Convert.ToBase64String(Model.FotoBinaria)}"
-                        : "/img/usuario-default.jpg";
+                            ? $"data:{Model.ContentType};base64,{Convert.ToBase64String(Model.FotoBinaria)}"
+                            : "/img/usuario-default.jpg";
                     }
                     <img id="previewPerfil" src="@imgSrc" class="rounded-circle profile-preview-img">
 

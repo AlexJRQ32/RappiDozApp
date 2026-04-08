@@ -38,7 +38,7 @@ namespace RappiDozApp.Controllers
         #region LOGIN Y LOGOUT
         public IActionResult Login()
         {
-            return View("~/Views/Accesos/login.cshtml");
+            return View();
         }
 
         [HttpPost]
@@ -48,7 +48,7 @@ namespace RappiDozApp.Controllers
             if (string.IsNullOrEmpty(correo) || string.IsNullOrEmpty(password))
             {
                 ViewBag.Error = "Por favor, complete todos los campos.";
-                return View("~/Views/Accesos/login.cshtml");
+                return View();
             }
 
             var usuario = await _context.Usuarios
@@ -67,14 +67,14 @@ namespace RappiDozApp.Controllers
             }
 
             ViewBag.Error = "Correo o contraseña incorrectos.";
-            return View("~/Views/Accesos/login.cshtml");
+            return View();
         }
 
         [HttpGet]
         public IActionResult Registrar()
         {
             ModelState.Clear();
-            return View("~/Views/Accesos/register.cshtml", new Usuario());
+            return View("Register", new Usuario());
         }
 
         [HttpPost]
@@ -84,7 +84,7 @@ namespace RappiDozApp.Controllers
             if (usuario.PasswordHash != confirmarPassword)
             {
                 ModelState.AddModelError("", "Las contraseñas no coinciden.");
-                return View("~/Views/Accesos/register.cshtml", usuario);
+                return View("Register", usuario);
             }
 
             ModelState.Remove("Rol");
@@ -107,7 +107,7 @@ namespace RappiDozApp.Controllers
                     ModelState.AddModelError("", "Error al registrar. Intenta con otro correo.");
                 }
             }
-            return View("~/Views/Accesos/register.cshtml", usuario);
+            return View("Register", usuario);
         }
 
         public async Task<IActionResult> Salir()
@@ -121,7 +121,7 @@ namespace RappiDozApp.Controllers
         public IActionResult Selector(int usuarioId)
         {
             ViewBag.UsuarioId = usuarioId;
-            return View("~/Views/Accesos/selector.cshtml");
+            return View();
         }
 
         [HttpPost]
@@ -148,7 +148,7 @@ namespace RappiDozApp.Controllers
         {
             ViewBag.UsuarioId = id;
             ViewBag.Categorias = new SelectList(await _context.Categorias.ToListAsync(), "Id", "Nombre");
-            return View("~/Views/Accesos/restaurante-info.cshtml");
+            return View("RestauranteInfo");
         }
 
         [HttpPost]
@@ -189,13 +189,13 @@ namespace RappiDozApp.Controllers
 
             ViewBag.EsRestaurante = (rolId == 2);
 
-            return PartialView("~/Views/Ubicaciones/Mapa.cshtml", new UbicacionUsuario());
+            return PartialView("Mapa", new UbicacionUsuario());
         }
         #endregion
 
         #region RECUPERACIÓN DE CONTRASEÑA
         [HttpGet]
-        public IActionResult OlvidastePassword() => View("~/Views/Accesos/olvidaste-contrasena.cshtml");
+        public IActionResult OlvidastePassword() => View("OlvidasteContrasena");
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -216,7 +216,7 @@ namespace RappiDozApp.Controllers
             {
                 ViewBag.Error = "El correo electrónico no está registrado.";
             }
-            return View("~/Views/Accesos/olvidaste-contrasena.cshtml");
+            return View("OlvidasteContrasena");
         }
 
         private bool EnviarEmail(string correoDestino, string passwordRecuperada)

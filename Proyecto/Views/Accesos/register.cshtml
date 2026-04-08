@@ -1,4 +1,4 @@
-﻿@model RappiDozApp.Models.Usuario
+@model RappiDozApp.Models.Usuario
 
 @{
     Layout = null;
@@ -13,7 +13,7 @@
     <title>Registro - Rappi'Doz</title>
     <script>!function(){var t=localStorage.getItem('rappidoz-theme')||'light';document.documentElement.setAttribute('data-theme',t)}();</script>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
-    <link rel="stylesheet" href="~/css/Accesos/auth-common.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/Accesos/authCommon.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/Accesos/register.css" asp-append-version="true">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -62,7 +62,7 @@
                 </div>
             </section>
 
-            <div id="error-message"
+            <div id="error-message" class="feedback-error hidden-feedback"></div>
 
             <section>
                 <div class="container-button">
@@ -76,7 +76,7 @@
         </form>
     </div>
 
-    <script src="~/js/Accesos/auth-common.js" asp-append-version="true"></script>
+    <script src="~/js/Accesos/authCommon.js" asp-append-version="true"></script>
     <script src="~/js/Accesos/register.js" asp-append-version="true"></script>
 </body>
 </html>

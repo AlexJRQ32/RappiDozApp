@@ -1,5 +1,3 @@
-
-
 .container {
     display: flex;
     justify-content: end;
@@ -12,4 +10,15 @@
 #remember input[type="checkbox"] {
     accent-color: var(--accent-main);
     cursor: pointer;
+}
+
+#toggle-password {
+    pointer-events: all !important;
+    cursor: pointer !important;
+    transition: color 0.3s ease !important;
+    user-select: none;
+}
+
+#toggle-password:hover {
+    color: var(--accent-main) !important;
 }

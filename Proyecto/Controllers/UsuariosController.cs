@@ -1,4 +1,4 @@
-ï»¿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +27,7 @@ namespace RappiDozApp.Controllers
             var usuario = await _context.Usuarios.FindAsync(userId);
             if (usuario == null) return NotFound();
 
-            return PartialView("~/Views/Usuarios/users-form.cshtml", usuario);
+            return PartialView("UsersForm", usuario);
         }
 
         [HttpPost]
@@ -40,7 +40,7 @@ namespace RappiDozApp.Controllers
 
                 if (usuarioDb == null)
                 {
-                    return Json(new { success = false, message = "No se encontrÃ³ el usuario con ID: " + model.Id });
+                    return Json(new { success = false, message = "No se encontró el usuario con ID: " + model.Id });
                 }
 
                 usuarioDb.NombreCompleto = model.NombreCompleto;
@@ -66,7 +66,7 @@ namespace RappiDozApp.Controllers
 
                 HttpContext.Session.SetString("NombreUsuario", usuarioDb.NombreCompleto);
 
-                return Json(new { success = true, message = "Â¡Cambios guardados con Ã©xito!" });
+                return Json(new { success = true, message = "¡Cambios guardados con éxito!" });
             }
             catch (Exception ex)
             {
@@ -94,7 +94,7 @@ namespace RappiDozApp.Controllers
                 Usuario? enBD = usuario.Id > 0 ? await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.Id == usuario.Id) : null;
 
                 if (usuario.Id == 0 && string.IsNullOrEmpty(usuario.PasswordHash))
-                    return Json(new { success = false, message = "ContraseÃ±a obligatoria." });
+                    return Json(new { success = false, message = "Contraseña obligatoria." });
 
                 if (usuario.Id != 0 && string.IsNullOrWhiteSpace(usuario.PasswordHash))
                     usuario.PasswordHash = enBD?.PasswordHash;

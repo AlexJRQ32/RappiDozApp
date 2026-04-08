@@ -38,9 +38,9 @@
     --surface-soft: var(--dashboard-soft-bg);
     --gold-accent: var(--accent-main);
     --transicion-suave: all 0.3s ease;
- }
+}
 
- html[data-theme="dark"] {
+html[data-theme="dark"] {
     --section-bg-primary: #2a252b;
     --section-bg-secondary: #1b171d;
     --section-bg-tertiary: #342e36;
@@ -73,7 +73,7 @@
     --surface-soft: var(--dashboard-soft-bg);
     --gold-accent: var(--accent-main);
     --transicion-suave: all 0.3s ease;
- }
+}
 
 /* #region Dashboard Base */
 body {
@@ -222,6 +222,7 @@ body {
     border: 1.5px solid var(--border-main);
     background-color: var(--dashboard-soft-bg) !important;
     color: var(--dashboard-text) !important;
+    caret-color: var(--dashboard-text) !important;
     font-size: 1rem;
     font-weight: 500;
     width: 100%;

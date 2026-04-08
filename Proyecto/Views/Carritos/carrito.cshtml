@@ -3,12 +3,12 @@
 
 @{
     ViewData["Title"] = "Mi Carrito | Rappi'Doz";
-    
+
     decimal subtotal = ViewBag.Subtotal ?? 0;
     decimal descuento = ViewBag.Descuento ?? 0;
     decimal envio = subtotal > 0 ? 2000 : 0;
     decimal total = (subtotal + envio) - descuento;
-    
+
     var cuponesBilletera = ViewBag.CuponesApartados as List<RappiDozApp.Models.CuponApartado>;
     var ubicaciones = ViewBag.Ubicaciones as List<RappiDozApp.Models.UbicacionUsuario>;
     string codigoAplicado = ViewBag.CodigoAplicado as string;
@@ -19,7 +19,7 @@
     <input type="hidden" id="successMsg" value="@TempData["MensajeExito"]" />
 
     <div class="carrito-bordeado">
-        
+
         <header class="carrito-header">
             <h2 class="carrito-title">
                 <i class="fas fa-shopping-basket"></i> MI PEDIDO
@@ -38,7 +38,7 @@
                     {
                         <div class="item-carrito">
                             <img src="/Productos/Imagen/@item.ProductoId" class="img-carrito" alt="@item.Nombre" loading="lazy">
-                            
+
                             <div class="item-main-info">
                                 <h5 class="item-name">@item.Nombre</h5>
                                 <span class="item-price">₡@item.Precio.ToString("N0")</span>
@@ -112,7 +112,7 @@
 
                     <div class="carrito-cupones-section">
                         <p class="section-label"><i class="fas fa-ticket-alt section-icon"></i> Billetera de Cupones</p>
-                        
+
                         <div class="scroll-cupones">
                             @if (cuponesBilletera != null && cuponesBilletera.Any())
                             {

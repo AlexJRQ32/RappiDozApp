@@ -1,4 +1,4 @@
-ï»¿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RappiDozApp.Data;
 using RappiDozApp.Models;
@@ -23,6 +23,7 @@ namespace RappiDozApp.Controllers
 
             bool esRegistro = usuarioIdRegistro != null;
             ViewBag.EsRegistro = esRegistro;
+            ViewBag.EsRestaurante = esRegistro;
 
             int targetId = usuarioIdRegistro ?? userIdSesion ?? 0;
             if (targetId == 0) return Unauthorized();
@@ -37,20 +38,19 @@ namespace RappiDozApp.Controllers
                 IdUsuario = targetId,
                 Latitud = 9.9333m,
                 Longitud = -84.0833m,
-                NombreUbicacion = esRegistro ? null : "Mi UbicaciÃ³n"
+                NombreUbicacion = esRegistro ? null : "Mi Ubicación"
             };
 
-            return PartialView("~/Views/Ubicaciones/Mapa.cshtml", ultimaUbicacion);
+            return PartialView(ultimaUbicacion);
         }
         #endregion
 
         #region Acciones
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> GuardarUbicacion(string Latitud, string Longitud, string nombreUbicacion = "Mi UbicaciÃ³n")
+        public async Task<IActionResult> GuardarUbicacion(string Latitud, string Longitud, string nombreUbicacion = "Mi Ubicaci\u00f3n")
         {
             int? userId = HttpContext.Session.GetInt32("UsuarioId");
-            if (userId == null) return Json(new { success = false, message = "SesiÃ³n expirada" });
+            if (userId == null) return Json(new { success = false, message = "Sesión expirada" });
 
             bool latOk = decimal.TryParse(Latitud, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal lat);
             bool lngOk = decimal.TryParse(Longitud, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal lng);
@@ -73,21 +73,21 @@ namespace RappiDozApp.Controllers
                     HttpContext.Session.SetString("Latitud", lat.ToString(System.Globalization.CultureInfo.InvariantCulture));
                     HttpContext.Session.SetString("Longitud", lng.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
-                    return Json(new { success = true, message = $"Â¡DirecciÃ³n '{nombreUbicacion}' guardada!" });
+                    return Json(new { success = true, message = $"¡Dirección '{nombreUbicacion}' guardada!" });
                 }
                 catch (Exception ex)
                 {
                     return Json(new { success = false, message = "Error de DB: " + ex.Message });
                 }
             }
-            return Json(new { success = false, message = "Formato de coordenadas invÃ¡lido" });
+            return Json(new { success = false, message = "Formato de coordenadas inválido" });
         }
 
         [HttpPost]
         public async Task<IActionResult> EliminarUbicacion(int id)
         {
             int? userId = HttpContext.Session.GetInt32("UsuarioId");
-            if (userId == null) return Json(new { success = false, message = "SesiÃ³n expirada" });
+            if (userId == null) return Json(new { success = false, message = "Sesión expirada" });
 
             var ubicacion = await _context.UbicacionUsuario
                 .FirstOrDefaultAsync(u => u.IdUbicacion == id && u.IdUsuario == userId);
@@ -99,7 +99,7 @@ namespace RappiDozApp.Controllers
                 return Json(new { success = true });
             }
 
-            return Json(new { success = false, message = "No se encontrÃ³ la ubicaciÃ³n" });
+            return Json(new { success = false, message = "No se encontró la ubicación" });
         }
         #endregion
     }

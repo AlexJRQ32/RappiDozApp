@@ -1,4 +1,4 @@
-﻿@model RappiDozApp.Models.Restaurante
+@model RappiDozApp.Models.Restaurante
 
 <div class="p-4">
     <form id="formRestaurante" enctype="multipart/form-data">
@@ -52,6 +52,19 @@
                 <label class="form-label fw-bold">Ubicación Exacta</label>
                 <textarea asp-for="Direccion" class="form-control rd-input" rows="2" placeholder="Provincia, Cantón y señas..."></textarea>
             </div>
+
+            <div class="col-12">
+                <label class="form-label fw-bold"><i class="fas fa-map-marker-alt me-1"></i> Ubicación en el mapa</label>
+                <input type="hidden" id="Latitud" name="LatitudStr" value="@(Model.Latitud.HasValue ? Model.Latitud.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "")" />
+                <input type="hidden" id="Longitud" name="LongitudStr" value="@(Model.Longitud.HasValue ? Model.Longitud.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "")" />
+                <a href="javascript:void(0);" onclick="openSharedModal('/Restaurantes/ObtenerMapaRestaurante')" class="btn-mapa-restaurante">
+                    <i class="fas fa-map-marked-alt mapa-btn-icon"></i>
+                    <span class="mapa-btn-text">
+                        <span id="texto-ubicacion">@(Model.Latitud.HasValue ? "Ubicación guardada" : "Seleccionar en el mapa")</span>
+                        <span class="mapa-btn-label">Toca para abrir el mapa</span>
+                    </span>
+                </a>
+            </div>
         </div>
 
         <div class="mt-5 pt-4 border-top text-end">
@@ -65,4 +78,4 @@
     </form>
 </div>
 
-<script src="~/js/Dashboard/form-restaurante.js"></script>
+<script src="~/js/Dashboard/formRestaurante.js"></script>

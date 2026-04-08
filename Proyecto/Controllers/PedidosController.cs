@@ -25,35 +25,6 @@ namespace RappiDozApp.Controllers
             return RedirectToAction("Movimientos");
         }
 
-        public async Task<IActionResult> Seguimiento(int id)
-        {
-            var pedido = await _context.Pedidos
-                .Include(p => p.Usuario)
-                .Include(p => p.Restaurante)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (pedido == null) return NotFound();
-
-            decimal latO = 9.9331m;
-            decimal lngO = -84.0768m;
-
-            if (pedido.Restaurante != null && pedido.Restaurante.Latitud != 0)
-            {
-                latO = (decimal)pedido.Restaurante.Latitud;
-                lngO = (decimal)pedido.Restaurante.Longitud;
-            }
-
-            ViewBag.RepartidorLat = latO.ToString(CultureInfo.InvariantCulture);
-            ViewBag.RepartidorLng = lngO.ToString(CultureInfo.InvariantCulture);
-            ViewBag.UsuarioLat = (pedido.EntregaLatitud ?? 9.9350m).ToString(CultureInfo.InvariantCulture);
-            ViewBag.UsuarioLng = (pedido.EntregaLongitud ?? -84.0850m).ToString(CultureInfo.InvariantCulture);
-
-            ViewBag.NombreCliente = pedido.Usuario?.NombreCompleto ?? "Cliente";
-            ViewBag.PedidoId = pedido.Id;
-
-            return View(pedido);
-        }
-
         [HttpGet]
         public async Task<IActionResult> GetRuta(double latO, double lngO, double latD, double lngD)
         {
@@ -154,7 +125,7 @@ namespace RappiDozApp.Controllers
                 return RedirectToAction("Movimientos");
             }
 
-            return View("~/Views/Pedidos/factura.cshtml", pedido);
+            return View(pedido);
         }
 
         [HttpGet]
@@ -169,7 +140,32 @@ namespace RappiDozApp.Controllers
                 .OrderByDescending(p => p.FechaHora)
                 .ToListAsync();
 
-            return View("~/Views/Pedidos/movimientos.cshtml", historial);
+            return View(historial);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PedidosRecibidos()
+        {
+            int? restauranteId = HttpContext.Session.GetInt32("IdRestaurante");
+            if (restauranteId == null) return RedirectToAction("Login", "Accesos");
+
+            var restaurante = await _context.Restaurantes
+                .AsNoTracking()
+                .Select(r => new { r.Id, r.NombreComercial })
+                .FirstOrDefaultAsync(r => r.Id == restauranteId);
+
+            if (restaurante == null) return RedirectToAction("Login", "Accesos");
+
+            var pedidos = await _context.Pedidos
+                .Include(p => p.Usuario)
+                .Include(p => p.MetodoPago)
+                .Include(p => p.Detalles).ThenInclude(d => d.Producto)
+                .Where(p => p.RestauranteId == restauranteId)
+                .OrderByDescending(p => p.FechaHora)
+                .ToListAsync();
+
+            ViewBag.RestauranteNombre = restaurante.NombreComercial;
+            return View(pedidos);
         }
         #endregion
 
@@ -239,6 +235,61 @@ namespace RappiDozApp.Controllers
         #endregion
 
         #region API
+        [HttpGet]
+        public async Task<IActionResult> DatosSeguimiento()
+        {
+            int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+            if (usuarioId == null) return Json(new { activo = false });
+
+            var pedido = await _context.Pedidos
+                .Include(p => p.Restaurante)
+                .Include(p => p.Usuario)
+                .Where(p => p.UsuarioId == usuarioId
+                         && p.Estado != "Entregado"
+                         && p.Estado != "Cancelado")
+                .OrderByDescending(p => p.FechaHora)
+                .FirstOrDefaultAsync();
+
+            if (pedido == null) return Json(new { activo = false });
+
+            return Json(new
+            {
+                activo = true,
+                pedidoId = pedido.Id,
+                estado = pedido.Estado,
+                nombreCliente = pedido.Usuario?.NombreCompleto ?? "Cliente",
+                latOrigen = (pedido.Restaurante?.Latitud ?? 9.9331m).ToString(CultureInfo.InvariantCulture),
+                lngOrigen = (pedido.Restaurante?.Longitud ?? -84.0768m).ToString(CultureInfo.InvariantCulture),
+                latDestino = (pedido.EntregaLatitud ?? 9.9350m).ToString(CultureInfo.InvariantCulture),
+                lngDestino = (pedido.EntregaLongitud ?? -84.0850m).ToString(CultureInfo.InvariantCulture)
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ActualizarEstado(int id, string estado)
+        {
+            var pedido = await _context.Pedidos.FindAsync(id);
+            if (pedido == null) return Json(new { success = false, message = "Pedido no encontrado." });
+
+            pedido.Estado = estado;
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = $"Estado actualizado a {estado}." });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CompletarSeguimiento(int id)
+        {
+            var pedido = await _context.Pedidos.FindAsync(id);
+            if (pedido != null)
+            {
+                pedido.Estado = "Entregado";
+                await _context.SaveChangesAsync();
+            }
+            return Json(new { success = true });
+        }
+
         [HttpGet]
         public async Task<IActionResult> ObtenerEstado(int id)
         {

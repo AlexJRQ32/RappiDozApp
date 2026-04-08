@@ -11,5 +11,6 @@ namespace RappiDozApp.Models
         public string Recomendacion { get; set; }
         public DateTime Fecha { get; set; } = DateTime.Now;
         public int? RestauranteId { get; set; }
+        public int? UsuarioId { get; set; }
     }
 }

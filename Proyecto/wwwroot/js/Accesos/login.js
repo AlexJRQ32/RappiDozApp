@@ -1,7 +1,7 @@
 const _cs = getComputedStyle(document.documentElement);
 const _swalBg = _cs.getPropertyValue('--section-bg-primary').trim() || '#fffdf9';
 const _swalColor = _cs.getPropertyValue('--text-main').trim() || '#542f28';
-const _swalBtn = _cs.getPropertyValue('--accent-main').trim() || '#d3ab80';
+const _swalBtn = _cs.getPropertyValue('--swal-btn').trim() || '#5a322d';
 
 document.getElementById('loginForm').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -63,3 +63,29 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         console.error('Error:', error);
     });
 });
+
+(function () {
+    var toggleBtn = document.getElementById('toggle-password');
+    var passwordInput = document.getElementById('password');
+    if (!toggleBtn || !passwordInput) return;
+
+    toggleBtn.addEventListener('click', function () {
+        var isHidden = passwordInput.type === 'password';
+        passwordInput.type = isHidden ? 'text' : 'password';
+        toggleBtn.className = isHidden ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock';
+        passwordInput.focus();
+    });
+})();
+
+(function () {
+    var correoInput  = document.getElementById('correo');
+    var passwordInput = document.getElementById('password');
+
+    function enableAutocomplete() {
+        if (correoInput)  correoInput.removeAttribute('readonly');
+        if (passwordInput) passwordInput.removeAttribute('readonly');
+    }
+
+    if (correoInput)  correoInput.addEventListener('focus',  enableAutocomplete, { once: true });
+    if (passwordInput) passwordInput.addEventListener('focus', enableAutocomplete, { once: true });
+})();

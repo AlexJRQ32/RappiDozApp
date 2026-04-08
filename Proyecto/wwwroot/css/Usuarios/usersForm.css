@@ -104,6 +104,7 @@
     font-size: 1rem !important;
     background: transparent !important;
     color: var(--text-main) !important;
+    caret-color: var(--text-main) !important;
     width: 100%;
     outline: none !important;
     border-radius: 0 18px 18px 0;

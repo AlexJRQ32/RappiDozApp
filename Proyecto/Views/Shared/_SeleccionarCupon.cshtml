@@ -16,8 +16,7 @@
         <div class="wallet-list">
             @foreach (var cupon in Model)
             {
-                <div onclick="activarCuponParaCompra
-                     class="wallet-card">
+                <div onclick="activarCuponParaCompra('@cupon.Codigo')" class="wallet-card">
 
                     <div class="wallet-card-main">
                         <div class="wallet-icon-box">

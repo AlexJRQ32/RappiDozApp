@@ -56,20 +56,80 @@
 
     // #region Confirmación
     $(document).off('click', '#btnConfirmarFinal').on('click', '#btnConfirmarFinal', function () {
-        var nombre = $('#nombre-ubicacion').val();
         var lat = $('#lat-hidden').val();
         var lng = $('#lng-hidden').val();
+        var nombreInput = document.getElementById('nombre-ubicacion');
 
-        if (!nombre || nombre.trim() === "") {
-            alert("Por favor, escribe un nombre para la ubicación.");
+        if (nombreInput) {
+            var nombre = nombreInput.value.trim();
+            if (!nombre) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campo requerido',
+                    text: 'Por favor, escribe un nombre para la ubicación.',
+                    confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--swal-btn').trim() || '#d97b4a',
+                    background: getComputedStyle(document.documentElement).getPropertyValue('--section-bg-primary').trim() || '#1a1a1a',
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--text-main').trim() || '#ffffff'
+                });
+                return;
+            }
+            var btn = document.getElementById('btnConfirmarFinal');
+            if (btn) btn.disabled = true;
+            fetch('/Ubicaciones/GuardarUbicacion', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'Latitud=' + encodeURIComponent(lat) + '&Longitud=' + encodeURIComponent(lng) + '&nombreUbicacion=' + encodeURIComponent(nombre)
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data.success) {
+                    bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGeneral')).hide();
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Guardado!',
+                        text: data.message,
+                        timer: 1800,
+                        showConfirmButton: false,
+                        background: getComputedStyle(document.documentElement).getPropertyValue('--section-bg-primary').trim() || '#1a1a1a',
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-main').trim() || '#ffffff'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message,
+                        background: getComputedStyle(document.documentElement).getPropertyValue('--section-bg-primary').trim() || '#1a1a1a',
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-main').trim() || '#ffffff'
+                    });
+                }
+            })
+            .catch(function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    text: 'No se pudo guardar la ubicación.',
+                    background: getComputedStyle(document.documentElement).getPropertyValue('--section-bg-primary').trim() || '#1a1a1a',
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--text-main').trim() || '#ffffff'
+                });
+            })
+            .finally(function () {
+                if (btn) btn.disabled = false;
+            });
             return;
         }
 
-        console.log("Datos listos para guardar:", {
-            nombre: nombre,
-            latitud: lat,
-            longitud: lng
-        });
+        var latField = document.getElementById('Latitud');
+        var lngField = document.getElementById('Longitud');
+        var textoSpan = document.getElementById('texto-ubicacion');
+
+        if (latField) latField.value = lat;
+        if (lngField) lngField.value = lng;
+        if (textoSpan) textoSpan.innerHTML = '<i class="fas fa-check-circle"></i> Ubicación seleccionada';
+
+        var modalEl = document.getElementById('modalGeneral');
+        if (modalEl && typeof bootstrap !== 'undefined') {
+            bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+        }
     });
     // #endregion
 

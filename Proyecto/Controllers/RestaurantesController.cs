@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RappiDozApp.Data;
 using RappiDozApp.Models;
@@ -18,11 +18,24 @@ namespace RappiDozApp.Controllers
 
         #region Guardar y Eliminar
         [HttpPost]
-        public async Task<IActionResult> Guardar(Restaurante restaurante, IFormFile fotoArchivo)
+        public async Task<IActionResult> Guardar(Restaurante restaurante, IFormFile? fotoArchivo, string? LatitudStr, string? LongitudStr)
         {
-            ModelState.Remove("Usuarios");
+            ModelState.Remove("Usuario");
             ModelState.Remove("Categoria");
             ModelState.Remove("Productos");
+            ModelState.Remove("Latitud");
+            ModelState.Remove("Longitud");
+
+            if (!string.IsNullOrEmpty(LatitudStr) && decimal.TryParse(LatitudStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal lat))
+                restaurante.Latitud = lat;
+            if (!string.IsNullOrEmpty(LongitudStr) && decimal.TryParse(LongitudStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal lng))
+                restaurante.Longitud = lng;
+
+            if (restaurante.UsuarioId == 0)
+            {
+                var sid = HttpContext.Session.GetInt32("UsuarioId");
+                if (sid.HasValue) restaurante.UsuarioId = sid.Value;
+            }
 
             try
             {
@@ -78,7 +91,16 @@ namespace RappiDozApp.Controllers
 
         #endregion
 
-        #region Vista Pública
+        #region Mapa
+        [HttpGet]
+        public IActionResult ObtenerMapaRestaurante()
+        {
+            ViewBag.EsRestaurante = true;
+            return PartialView("Mapa", new UbicacionUsuario());
+        }
+        #endregion
+
+        #region Vista P�blica
         public async Task<IActionResult> Menu(int id)
         {
             var data = await _context.Restaurantes
@@ -87,21 +109,48 @@ namespace RappiDozApp.Controllers
                 .Select(r => new
                 {
                     r.NombreComercial,
-                    Productos = r.Productos.Select(p => new Producto
+                    r.HoraApertura,
+                    r.HoraCierre,
+                    Productos = r.Productos.Select(p => new
                     {
-                        Id = p.Id,
-                        Nombre = p.Nombre,
-                        Descripcion = p.Descripcion,
-                        Precio = p.Precio,
-                        ContentType = p.ContentType
+                        p.Id,
+                        p.Nombre,
+                        p.Descripcion,
+                        p.Precio,
+                        p.ContentType,
+                        p.CategoriaId,
+                        CategoriaNombre = p.Categoria != null ? p.Categoria.Nombre : "General"
                     }).ToList()
                 })
                 .FirstOrDefaultAsync();
 
             if (data == null) return NotFound();
 
+            var ahora = DateTime.Now.TimeOfDay;
+            bool estaAbierto = data.HoraApertura <= data.HoraCierre
+                ? ahora >= data.HoraApertura && ahora <= data.HoraCierre
+                : ahora >= data.HoraApertura || ahora <= data.HoraCierre;
+
+            if (!estaAbierto)
+                return RedirectToAction("Index", "Home");
+
+            var productos = data.Productos.Select(p => new Producto
+            {
+                Id = p.Id,
+                Nombre = p.Nombre,
+                Descripcion = p.Descripcion,
+                Precio = p.Precio,
+                ContentType = p.ContentType,
+                CategoriaId = p.CategoriaId
+            }).ToList();
+
+            var categoriaMap = data.Productos
+                .GroupBy(p => p.CategoriaId)
+                .ToDictionary(g => g.Key, g => g.First().CategoriaNombre);
+
             ViewBag.RestauranteNombre = data.NombreComercial;
-            return View("~/Views/Restaurantes/Restaurante.cshtml", data.Productos);
+            ViewBag.CategoriaMap = categoriaMap;
+            return View("Restaurante", productos);
         }
         #endregion
 

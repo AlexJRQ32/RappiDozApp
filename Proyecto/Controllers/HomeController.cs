@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RappiDozApp.Data;
 using RappiDozApp.Models;
@@ -8,7 +8,6 @@ namespace RappiDozApp.Controllers
 {
     public class HomeController : Controller
     {
-        private const string ViewName = "~/Views/Home/busqueda.cshtml";
         private readonly ApplicationDbContext _context;
 
         public HomeController(ApplicationDbContext context)
@@ -72,16 +71,17 @@ namespace RappiDozApp.Controllers
                 .ThenBy(r => r.NombreComercial)
                 .ToList();
 
-            return View("~/Views/Home/busqueda.cshtml", listaOrdenada);
+            return View("Busqueda", listaOrdenada);
         }
 
         public IActionResult ManualUsuario()
         {
-            return View("~/Views/Home/Manual_Usuario.cshtml");
+            return View();
         }
+
         public IActionResult Privacy()
         {
-            return View("~/Views/Home/Privacy.cshtml");
+            return View();
         }
         #endregion
 
@@ -89,7 +89,7 @@ namespace RappiDozApp.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View("~/Views/Shared/Error.cshtml", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
         #endregion
     }

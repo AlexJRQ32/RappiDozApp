@@ -189,13 +189,13 @@ html[data-theme="dark"] {
 }
 
     .btn-i.edit {
-        background: var(--brown-dark);
-        color: #fff8ef;
+        background: var(--accent-main);
+        color: var(--accent-contrast);
     }
 
     .btn-i.del {
-        background: rgba(225, 29, 72, 0.15);
-        color: #e11d48;
+        background: var(--accent-main);
+        color: var(--accent-contrast);
     }
 
 .expired {

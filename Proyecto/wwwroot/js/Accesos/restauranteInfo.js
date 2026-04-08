@@ -1,7 +1,7 @@
 const _cs = getComputedStyle(document.documentElement);
 const _swalBg = _cs.getPropertyValue('--section-bg-primary').trim() || '#1a1a1a';
 const _swalColor = _cs.getPropertyValue('--text-main').trim() || '#ffffff';
-const _swalBtn = _cs.getPropertyValue('--accent-main').trim() || '#472825';
+const _swalBtn = _cs.getPropertyValue('--swal-btn').trim() || '#472825';
 
 document.getElementById('restaurantForm').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -10,7 +10,7 @@ document.getElementById('restaurantForm').addEventListener('submit', function (e
     const btn = document.getElementById('button');
     const formData = new FormData(form);
 
-    formData.append
+    formData.append('LatitudStr', document.getElementById('Latitud').value);
     formData.append('LongitudStr', document.getElementById('Longitud').value);
 
     if (!formData.get('LatitudStr') || formData.get('LatitudStr') == "0") {

@@ -1,4 +1,4 @@
-﻿// #region Mapa Compartido
+// #region Mapa Compartido
 window.RappiDozMap = {
     tileUrls: {
         light: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
@@ -67,8 +67,9 @@ window.abrirPerfil = function () {
     openSharedModal('/Usuarios/Perfil');
 };
 
-window.abrirCalificar = function () {
-    openSharedModal('/Valoraciones/Crear');
+window.abrirCalificar = function (pedidoId) {
+    const url = '/Valoraciones/Crear' + (pedidoId ? '?pedidoId=' + pedidoId : '');
+    openSharedModal(url);
 };
 // #endregion
 
@@ -117,7 +118,7 @@ document.addEventListener('submit', function (e) {
             .then(res => {
                 if (res.success) {
                     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGeneral')).hide();
-                    Swal.fire({ icon: 'success', title: 'Éxito', text: res.message, confirmButtonColor: _swalVar('--rd-cafe'), background: _swalVar('--modal-shell-bg'), color: _swalVar('--modal-text') })
+                    Swal.fire({ icon: 'success', title: '\u00c9xito', text: res.message, confirmButtonColor: _swalVar('--swal-btn'), background: _swalVar('--modal-shell-bg'), color: _swalVar('--modal-text') })
                         .then(() => window.location.reload());
                 } else {
                     Swal.fire({ icon: 'error', title: 'Error', text: res.message, background: _swalVar('--modal-shell-bg'), color: _swalVar('--modal-text') });
@@ -143,13 +144,30 @@ document.addEventListener('submit', function (e) {
             .then(res => {
                 if (res.success) {
                     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalGeneral')).hide();
-                    Swal.fire({ icon: 'success', title: 'Gracias', text: res.message, confirmButtonColor: _swalVar('--rd-cafe'), background: _swalVar('--modal-shell-bg'), color: _swalVar('--modal-text') });
+                    Swal.fire({ icon: 'success', title: 'Gracias', text: res.message, confirmButtonColor: _swalVar('--swal-btn'), background: _swalVar('--modal-shell-bg'), color: _swalVar('--modal-text') });
                 } else {
-                    Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'No se pudo guardar la valoración.', background: _swalVar('--modal-shell-bg'), color: _swalVar('--modal-text') });
+                    Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'No se pudo guardar la valoraci\u00f3n.', background: _swalVar('--modal-shell-bg'), color: _swalVar('--modal-text') });
                 }
             })
-            .catch(() => Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo guardar la valoración.', background: _swalVar('--modal-shell-bg'), color: _swalVar('--modal-text') }));
+            .catch(() => Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo guardar la valoraci\u00f3n.', background: _swalVar('--modal-shell-bg'), color: _swalVar('--modal-text') }));
     }
+});
+// #endregion
+
+// #region Restaurante Cerrado
+document.addEventListener('click', function (e) {
+    const link = e.target.closest('[data-cerrado="true"]');
+    if (!link) return;
+    e.preventDefault();
+    const nombre = link.dataset.nombre || 'Este restaurante';
+    Swal.fire({
+        icon: 'info',
+        title: 'Local cerrado',
+        text: `${nombre} no est\u00e1 disponible ahora. Revisa su horario e intenta m\u00e1s tarde.`,
+        confirmButtonColor: _swalVar('--swal-btn'),
+        background: _swalVar('--modal-shell-bg'),
+        color: _swalVar('--modal-text')
+    });
 });
 // #endregion
 

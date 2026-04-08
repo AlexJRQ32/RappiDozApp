@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http
 @using System.Globalization
 @using Microsoft.EntityFrameworkCore
 @inject IHttpContextAccessor HttpContextAccessor
@@ -36,10 +36,24 @@
     }
 }
 
+@if (userId != null)
+{
+    <link rel="stylesheet" href="~/css/Pedidos/seguimientoModal.css" asp-append-version="true" />
+}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
 <section class="hero">
     <div class="hero-content">
+        @if (userId != null)
+        {
+            <div id="seguimiento-hero-wrap" style="display:none;">
+                <button class="seguimiento-hero-btn" onclick="abrirSeguimientoModal()">
+                    <i class="fa-solid fa-route"></i>
+                    <span>Ver seguimiento de mi pedido</span>
+                    <span id="seguimiento-float-badge" class="seguimiento-float-badge"></span>
+                </button>
+            </div>
+        }
         <h1 class="hero-title">Entrega de comida hasta tu puerta</h1>
         <form asp-controller="Home" asp-action="Explorar" method="get" class="search-container">
             <div class="input-wrapper">
@@ -79,7 +93,10 @@
                     {
                         @foreach (var restaurante in Model)
                         {
-                            <a asp-controller="Restaurantes" asp-action="Menu" asp-route-id="@restaurante.Id" class="link-restaurante-horizontal">
+                            <a asp-controller="Restaurantes" asp-action="Menu" asp-route-id="@restaurante.Id"
+                               class="link-restaurante-horizontal"
+                               data-cerrado="@(restaurante.EstaAbierto ? "false" : "true")"
+                               data-nombre="@restaurante.NombreComercial">
                                 <div class="restaurant-card @(restaurante.EstaAbierto ? "" : "cerrado-filtro")">
                                     <div class="card-img-wrapper">
                                         <img src="/Restaurantes/Logo/@restaurante.Id" class="restaurant-logo" loading="lazy">
@@ -145,20 +162,20 @@
                     <h3>Ingresa dirección</h3>
                     <p>Dinos dónde estás para mostrarte los restaurantes con cobertura en tu zona.</p>
                 </div>
-        
+
                 <div class="paso">
                     <i class="fas fa-utensils"></i>
                     <h3>Elige tu comida</h3>
                     <p>Navega por los menús de tus comercios favoritos y arma tu pedido ideal.</p>
                 </div>
-        
+
                 <div class="paso">
                     <i class="fas fa-motorcycle"></i>
                     <h3>Recibe rápido</h3>
                     <p>¡Y listo! Nuestros repartidores vuelan para entregarte tu antojo calientito.</p>
                 </div>
             </div>
-            @if(userId != null)
+            @if (userId != null)
             {
                 <a asp-controller="Home" asp-action="ManualUsuario">
                     <button class="btn-como-funciona">Accede al Manual de Usuaurio </button>
@@ -171,6 +188,9 @@
 @section Scripts {
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script src="~/js/Home/index.js"></script>
+    @if (userId != null)
+    {
+        <script src="~/js/Pedidos/seguimientoModal.js" asp-append-version="true"></script>
+    }
 }

@@ -16,6 +16,7 @@
     <form id="formCalificar" asp-controller="Valoraciones" asp-action="Guardar" method="post">
         @Html.AntiForgeryToken()
         <input type="hidden" name="estrellas" id="inputEstrellas" value="0">
+        <input type="hidden" name="pedidoId" value="@(ViewBag.PedidoId ?? 0)">
 
         <div class="row align-items-center">
             <div class="col-md-6 px-4">
@@ -39,10 +40,9 @@
                     "Sabor que llega, momentos que quedan"
                 </h4>
 
-                
                 <div class="rating-logo-wrap">
                     <img src="/img/logo final.png" alt="RappiDoz Logo" class="rating-logo logo-light-theme">
-    
+
                     <img src="/img/logo-final.png" alt="RappiDoz Logo" class="rating-logo logo-dark-theme">
 
                     <div class="rating-heart-badge">

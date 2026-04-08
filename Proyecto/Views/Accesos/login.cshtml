@@ -1,4 +1,4 @@
-﻿@{
+@{
     Layout = null;
 }
 
@@ -10,13 +10,12 @@
     <title>Iniciar Sesión - Rappi'Doz</title>
     <script>!function(){var t=localStorage.getItem('rappidoz-theme')||'light';document.documentElement.setAttribute('data-theme',t)}();</script>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
-    <link rel="stylesheet" href="~/css/Accesos/auth-common.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/Accesos/authCommon.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/Accesos/login.css" asp-append-version="true">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-
 
     <div class="form">
         <h1>Iniciar Sesión</h1>
@@ -26,15 +25,15 @@
 
             <section>
                 <div class="container-translucid">
-                    <input type="email" name="correo" id="correo" placeholder="Correo electrónico" autofocus required>
+                    <input type="text" name="correo" id="correo" placeholder="Correo electrónico" autocomplete="username" inputmode="email" readonly required>
                     <i class="fa-solid fa-envelope"></i>
                 </div>
             </section>
 
             <section>
                 <div class="container-translucid">
-                    <input type="password" name="password" id="password" placeholder="Contraseña" required>
-                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" name="password" id="password" placeholder="Contraseña" autocomplete="current-password" readonly required>
+                    <i class="fa-solid fa-lock" id="toggle-password"></i>
                 </div>
             </section>
 
@@ -58,7 +57,7 @@
         </div>
     </div>
 
-    <script src="~/js/Accesos/auth-common.js" asp-append-version="true"></script>
+    <script src="~/js/Accesos/authCommon.js" asp-append-version="true"></script>
     <script src="~/js/Accesos/login.js" asp-append-version="true"></script>
 </body>
 </html>

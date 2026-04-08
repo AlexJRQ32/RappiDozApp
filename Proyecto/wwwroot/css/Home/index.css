@@ -7,10 +7,11 @@
     background-repeat: no-repeat;
     width: 100%;
     display: block;
+    position: relative;
     margin-bottom: 50px;
     border-radius: 0 0 40px 40px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    padding: 130px 10% 60px;
+    padding: 175px 10% 60px;
 }
 
 html[data-theme="dark"] .hero {
@@ -68,6 +69,7 @@ html[data-theme="dark"] .hero {
         padding: 12px;
         font-size: 17px;
         color: var(--text-main);
+        caret-color: var(--text-main);
         background: transparent;
     }
 
@@ -589,7 +591,7 @@ html[data-theme="dark"] .leaflet-control-zoom {
 @media (max-width: 768px) {
     .hero {
         height: auto;
-        padding: 120px 5% 60px;
+        padding: 165px 5% 60px;
     }
 
     .hero-title {

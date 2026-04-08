@@ -13,19 +13,21 @@
     }
 
     document.addEventListener("click", function(e) {
-      const link = e.target.closest('a');
-      if (!link) return;
+        const link = e.target.closest('a');
+        if (!link) return;
 
-      const href = link.getAttribute('href');
-      const target = link.getAttribute('target');
+        if (link.dataset.cerrado === 'true') return;
 
-      if (!href || href.startsWith('#') || href.includes("javascript") || target === "_blank") {
-        return; 
-      }
+        const href = link.getAttribute('href');
+        const target = link.getAttribute('target');
 
-      sessionStorage.setItem('showLoader', 'true');
+        if (!href || href.startsWith('#') || href.includes("javascript") || target === "_blank") {
+            return;
+        }
 
-      loader.classList.add('loader-active');
+        sessionStorage.setItem('showLoader', 'true');
+
+        loader.classList.add('loader-active');
     });
 
     window.addEventListener("load", function() {

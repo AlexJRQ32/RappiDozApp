@@ -8,7 +8,7 @@
     decimal tarifa = 500;
 }
 
-<link href="./css/Pedidos/factura.css" rel="stylesheet" />
+<link href="~/css/Pedidos/factura.css" rel="stylesheet" />
 
 <div class="factura-container">
     <div class="ticket">
@@ -75,8 +75,8 @@
             <p class="ticket-thanks">¡Gracias por tu pedido!</p>
             <i class="fas fa-qrcode fa-4x ticket-qr"></i>
 
-            <a asp-action="Seguimiento" asp-controller="Pedidos" asp-route-id="@Model.Id" class="btn-seguir">
-                RASTREAR MI PEDIDO <i class="fas fa-motorcycle ticket-btn-icon"></i>
+            <a href="@Url.Action("Index", "Home")" class="btn-seguir">
+                VER SEGUIMIENTO EN INICIO <i class="fas fa-route ticket-btn-icon"></i>
             </a>
 
             <a href="@Url.Action("Index", "Home")" class="ticket-back-link">

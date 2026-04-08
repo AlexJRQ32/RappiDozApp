@@ -1,0 +1,115 @@
+@model IEnumerable<RappiDozApp.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Pedidos Recibidos | Rappi'Doz";
+}
+
+<div class="pedidos-rec-container">
+    <div class="pedidos-rec-card">
+
+        <div class="header-seccion">
+            <i class="fa-solid fa-bag-shopping header-seccion-icon"></i>
+            <div>
+                <h1 class="header-seccion-title">Pedidos Recibidos</h1>
+                <p class="header-seccion-sub">@ViewBag.RestauranteNombre</p>
+            </div>
+        </div>
+
+        <form id="formEstado" style="display:none;">
+            @Html.AntiForgeryToken()
+        </form>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="movimientos-empty">
+                <i class="fa-solid fa-box-open movimientos-empty-icon"></i>
+                <p class="movimientos-empty-text">Aún no has recibido pedidos.</p>
+            </div>
+        }
+        else
+        {
+            foreach (var pedido in Model)
+            {
+                <div class="pedido-rec-item" id="pedido-@pedido.Id">
+                    <div class="pedido-rec-header">
+                        <div>
+                            <p class="pedido-rec-title">Orden #@pedido.Id</p>
+                            <p class="pedido-rec-fecha">
+                                <i class="fa-regular fa-calendar-days"></i> @pedido.FechaHora.ToString("D")
+                                &nbsp;<i class="fa-regular fa-clock"></i> @pedido.FechaHora.ToString("t")
+                            </p>
+                            <p class="pedido-rec-cliente">
+                                <i class="fa-solid fa-user"></i> @(pedido.Usuario?.NombreCompleto ?? "Cliente")
+                            </p>
+                            @if (pedido.MetodoPago != null)
+                            {
+                                <p class="pedido-rec-pago">
+                                    <i class="fa-solid fa-credit-card"></i> @pedido.MetodoPago.Nombre
+                                </p>
+                            }
+                        </div>
+                        <div class="pedido-rec-right">
+                            @{
+                                var claseEstado = pedido.Estado == "Entregado"
+                                    ? "status-entregado"
+                                    : pedido.Estado == "Cancelado"
+                                        ? "status-cancelado"
+                                        : "status-proceso";
+                            }
+                            <span class="movimiento-status-badge @claseEstado" id="badge-@pedido.Id">
+                                @pedido.Estado
+                            </span>
+                            <div class="pedido-rec-total">₡@pedido.Total.ToString("N0")</div>
+                        </div>
+                    </div>
+
+                    @if (pedido.Detalles != null && pedido.Detalles.Any())
+                    {
+                        <div class="pedido-rec-items">
+                            @foreach (var det in pedido.Detalles)
+                            {
+                                <span class="pedido-rec-det-item">
+                                    <i class="fa-solid fa-circle-dot"></i>
+                                    @det.Cantidad× @(det.Producto?.Nombre ?? "Producto")
+                                    <em>(₡@det.PrecioHistorico.ToString("N0"))</em>
+                                </span>
+                            }
+                        </div>
+                    }
+
+                    <div class="pedido-rec-acciones" id="acciones-@pedido.Id">
+                        @if (pedido.Estado == "Pendiente")
+                        {
+                            <button class="btn-estado btn-aceptar"
+                                    onclick="cambiarEstado(@pedido.Id, 'Aceptado')">
+                                <i class="fa-solid fa-check"></i> Aceptar
+                            </button>
+                            <button class="btn-estado btn-rechazar"
+                                    onclick="cambiarEstado(@pedido.Id, 'Cancelado')">
+                                <i class="fa-solid fa-xmark"></i> Rechazar
+                            </button>
+                        }
+                        else if (pedido.Estado == "Aceptado")
+                        {
+                            <button class="btn-estado btn-preparar"
+                                    onclick="cambiarEstado(@pedido.Id, 'En preparación')">
+                                <i class="fa-solid fa-fire-burner"></i> En preparación
+                            </button>
+                        }
+                        else if (pedido.Estado == "En preparación")
+                        {
+                            <button class="btn-estado btn-entregar"
+                                    onclick="cambiarEstado(@pedido.Id, 'Entregado')">
+                                <i class="fa-solid fa-motorcycle"></i> Marcar como entregado
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/Pedidos/pedidosRecibidos.js" asp-append-version="true"></script>
+}

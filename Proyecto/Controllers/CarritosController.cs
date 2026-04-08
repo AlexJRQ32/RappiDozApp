@@ -1,4 +1,4 @@
-ï»¿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using RappiDozApp.Data;
@@ -58,7 +58,7 @@ namespace RappiDozApp.Controllers
             ViewBag.Subtotal = subtotal;
             ViewBag.Descuento = descuentoMonetario;
 
-            return View("~/Views/Carritos/carrito.cshtml", lista);
+            return View("Carrito", lista);
         }
         #endregion
 
@@ -119,11 +119,11 @@ namespace RappiDozApp.Controllers
                 HttpContext.Session.SetString("DescuentoValor", cupon.Descuento.ToString());
                 HttpContext.Session.SetString("EsPorcentaje", cupon.EsPorcentaje.ToString().ToLower());
 
-                TempData["MensajeExito"] = "Â¡CupÃ³n " + cupon.Codigo + " aplicado!";
+                TempData["MensajeExito"] = "¡Cupón " + cupon.Codigo + " aplicado!";
             }
             else
             {
-                TempData["MensajeError"] = "El cupÃ³n no es vÃ¡lido o ya fue utilizado.";
+                TempData["MensajeError"] = "El cupón no es válido o ya fue utilizado.";
             }
 
             return RedirectToAction("Index");
@@ -135,7 +135,7 @@ namespace RappiDozApp.Controllers
             HttpContext.Session.Remove("DescuentoValor");
             HttpContext.Session.Remove("EsPorcentaje");
 
-            TempData["MensajeExito"] = "CupÃ³n removido correctamente.";
+            TempData["MensajeExito"] = "Cupón removido correctamente.";
             return RedirectToAction("Index");
         }
 

@@ -49,6 +49,7 @@ body {
     --border-main: rgba(211, 171, 128, 0.35);
     --rd-cafe: #5a322d;
     --rd-crema: #f3e5d0;
+    --swal-btn: #d3ab80;
     --sidebar-w: 280px;
     --modal-shell-bg: var(--section-bg-secondary);
     --modal-text: var(--text-main);
@@ -104,6 +105,7 @@ select,
 .form-control,
 .form-select {
     transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+    caret-color: var(--text-main);
 }
 
 input:focus,
@@ -117,6 +119,7 @@ select:focus-visible,
     outline: none;
     border-color: var(--accent-main) !important;
     box-shadow: 0 0 0 0.14rem rgba(var(--accent-main-rgb), 0.18) !important;
+    caret-color: var(--text-main) !important;
 }
 
 input:-webkit-autofill,
@@ -176,6 +179,7 @@ html[data-theme="dark"] {
     --border-main: rgba(211, 171, 128, 0.24);
     --rd-cafe: #d3ab80;
     --rd-crema: rgba(211, 171, 128, 0.14);
+    --swal-btn: #d3ab80;
     --modal-shell-bg: #2a252b;
     --modal-text: #ece4da;
     --modal-border: #f3e5d0;
@@ -234,6 +238,31 @@ html[data-theme="dark"] {
     background: var(--section-bg-secondary);
 }
 /* #endregion */
+
+/* #region Btn Rappi Global */
+.btn-rappi {
+    background: var(--accent-main);
+    color: var(--accent-contrast);
+    border: none;
+    border-radius: 15px;
+    font-weight: 700;
+    padding: 12px 28px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-rappi:hover {
+    background: var(--footer-text);
+    color: var(--accent-contrast);
+    transform: translateY(var(--hover-lift-global));
+    text-decoration: none;
+}
+/* #endregion */
+
 
 /* #region Sidebar */
 .sidebar-rd {

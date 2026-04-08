@@ -103,7 +103,7 @@ body {
         color: var(--text-main);
         outline: none;
         transition: all 0.4s ease;
-        appearance: none; 
+        appearance: none;
     }
 
     

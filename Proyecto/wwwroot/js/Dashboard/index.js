@@ -7,7 +7,7 @@ $(document).ready(function () {
 
 const getBg = () => getComputedStyle(document.documentElement).getPropertyValue('--modal-shell-bg').trim();
 const getColor = () => getComputedStyle(document.documentElement).getPropertyValue('--modal-text').trim();
-const getBtn = () => getComputedStyle(document.documentElement).getPropertyValue('--rd-cafe').trim();
+const getBtn = () => getComputedStyle(document.documentElement).getPropertyValue('--swal-btn').trim();
 
 function cargarSeccion(tipo) {
     $('#sidebar').removeClass('active');
@@ -23,7 +23,7 @@ function cargarSeccion(tipo) {
                 text: 'No se pudo cargar la sección ' + tipo,
                 icon: 'error',
                 background: getBg(),
-                color: getColor()   
+                color: getColor()
             });
         }
     });
@@ -90,7 +90,7 @@ function guardarDatos(entidad) {
                     text: res.message,
                     icon: 'error',
                     background: getBg(),
-                    color: getColor()   
+                    color: getColor()
                 });
             }
         }
@@ -119,7 +119,7 @@ function eliminarRegistro(entidad, id) {
                         text: res.message,
                         icon: 'success',
                         background: getBg(),
-                        color: getColor()   
+                        color: getColor()
                     });
 
                     let sec;
@@ -135,7 +135,7 @@ function eliminarRegistro(entidad, id) {
                         text: res.message,
                         icon: 'error',
                         background: getBg(),
-                        color: getColor()   
+                        color: getColor()
                     });
                 }
             });

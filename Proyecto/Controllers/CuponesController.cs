@@ -1,4 +1,4 @@
-Ôªøusing Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RappiDozApp.Data;
 using RappiDozApp.Models;
@@ -33,7 +33,7 @@ namespace RappiDozApp.Controllers
                     .ToListAsync();
             }
 
-            return View("~/Views/Cupones/cupones.cshtml", cuponesVisibles);
+            return View("Cupones", cuponesVisibles);
         }
 
         #endregion
@@ -46,14 +46,14 @@ namespace RappiDozApp.Controllers
             var emailUsuario = HttpContext.Session.GetString("EmailUsuario");
             if (string.IsNullOrEmpty(emailUsuario))
             {
-                TempData["Error"] = "Inicia sesi√≥n para reclamar cupones.";
+                TempData["Error"] = "Inicia sesiÛn para reclamar cupones.";
                 return RedirectToAction("Index");
             }
 
             var cuponMaestro = await _context.Cupones.FirstOrDefaultAsync(c => c.Codigo == codigo);
             if (cuponMaestro == null || cuponMaestro.Stock <= 0)
             {
-                TempData["Error"] = "Cup√≥n agotado.";
+                TempData["Error"] = "CupÛn agotado.";
                 return RedirectToAction("Index");
             }
 
@@ -80,7 +80,7 @@ namespace RappiDozApp.Controllers
             _context.Update(cuponMaestro);
             await _context.SaveChangesAsync();
 
-            TempData["Exito"] = "¬°Cup√≥n guardado!";
+            TempData["Exito"] = "°CupÛn guardado!";
             return RedirectToAction("Index");
         }
 
@@ -94,7 +94,7 @@ namespace RappiDozApp.Controllers
             var emailUsuario = HttpContext.Session.GetString("EmailUsuario");
             if (string.IsNullOrEmpty(emailUsuario))
             {
-                TempData["MensajeError"] = "Sesi√≥n expirada.";
+                TempData["MensajeError"] = "SesiÛn expirada.";
                 return RedirectToAction("Index", "Carritos");
             }
 
@@ -102,21 +102,21 @@ namespace RappiDozApp.Controllers
 
             string codLimpio = codigo.Trim().ToUpper();
 
-            var cup√≥n = await _context.CuponesApartados
+            var cupÛn = await _context.CuponesApartados
                 .FirstOrDefaultAsync(ca => ca.UsuarioEmail.ToLower() == emailUsuario.ToLower()
                                      && ca.Codigo == codLimpio);
 
-            if (cup√≥n == null)
+            if (cupÛn == null)
             {
-                TempData["MensajeError"] = "El cup√≥n no es v√°lido o no est√° en tu billetera.";
+                TempData["MensajeError"] = "El cupÛn no es v·lido o no est· en tu billetera.";
                 return RedirectToAction("Index", "Carritos");
             }
 
-            HttpContext.Session.SetString("CuponAplicado", cup√≥n.Codigo);
-            HttpContext.Session.SetString("DescuentoValor", cup√≥n.Descuento.ToString());
-            HttpContext.Session.SetString("EsPorcentaje", cup√≥n.EsPorcentaje.ToString().ToLower());
+            HttpContext.Session.SetString("CuponAplicado", cupÛn.Codigo);
+            HttpContext.Session.SetString("DescuentoValor", cupÛn.Descuento.ToString());
+            HttpContext.Session.SetString("EsPorcentaje", cupÛn.EsPorcentaje.ToString().ToLower());
 
-            TempData["MensajeExito"] = "Cup√≥n " + codLimpio + " aplicado.";
+            TempData["MensajeExito"] = "CupÛn " + codLimpio + " aplicado.";
             return RedirectToAction("Index", "Carritos");
         }
 
@@ -129,7 +129,7 @@ namespace RappiDozApp.Controllers
             HttpContext.Session.Remove("DescuentoValor");
             HttpContext.Session.Remove("EsPorcentaje");
 
-            TempData["MensajeExito"] = "Cup√≥n removido.";
+            TempData["MensajeExito"] = "CupÛn removido.";
             return RedirectToAction("Index", "Carritos");
         }
         #endregion

@@ -46,6 +46,20 @@
                                 @pedido.Estado
                             </span>
                             <div class="movimiento-total-preview">₡@pedido.Total.ToString("N0")</div>
+                            @if (pedido.Estado != "Entregado" && pedido.Estado != "Cancelado")
+                            {
+                                <a asp-controller="Home" asp-action="Index"
+                                   class="movimiento-seguimiento-btn">
+                                    <i class="fa-solid fa-location-dot"></i> Ver seguimiento
+                                </a>
+                            }
+                            @if (pedido.Estado == "Entregado")
+                            {
+                                <button type="button" class="movimiento-calificar-btn"
+                                        onclick="abrirCalificar(@pedido.Id)">
+                                    <i class="fa-solid fa-star"></i> Calificar
+                                </button>
+                            }
                         </div>
                     </summary>
 

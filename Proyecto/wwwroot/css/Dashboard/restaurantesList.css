@@ -1,4 +1,3 @@
-
 .card-sede {
     background: var(--surface-card);
     border-radius: 20px;
@@ -30,13 +29,13 @@
 }
 
 .btn-edit {
-    background: var(--surface-elevated);
-    color: var(--accent-main);
+    background: var(--accent-main);
+    color: var(--accent-contrast);
 }
 
 .btn-delete {
-    background: var(--surface-elevated);
-    color: #ff4d4d;
+    background: var(--accent-main);
+    color: var(--accent-contrast);
 }
 
 .restaurants-title,
