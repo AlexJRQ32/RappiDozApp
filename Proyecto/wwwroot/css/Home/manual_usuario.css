@@ -1,0 +1,242 @@
+/* #region Manual Usuario */
+.manual_usuario {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    background-color: var(--section-bg-primary);
+    min-height: 100vh;
+    padding: 80px 20px 60px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+    .manual_usuario h1 {
+        text-align: center;
+        font-size: 2.4rem;
+        font-weight: 800;
+        margin-bottom: 8px;
+        border: none;
+    }
+
+/* #region Hero Banner */
+.manual_usuario::before {
+    content: '';
+    display: flex;
+    background: linear-gradient(135deg, var(--rd-cafe), var(--accent-main));
+    border-radius: 24px;
+    height: 6px;
+    width: 80px;
+    margin: 0 auto 40px;
+}
+
+.manual-page-title {
+    text-align: center;
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 8px;
+}
+
+.manual-page-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 40px;
+}
+/* #endregion */
+
+/* #region Botones de selección (Administrador) */
+.manual-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+}
+
+.manual-buttons .btn-action {
+    background: var(--accent-main);
+    color: var(--accent-contrast);
+    border: none;
+    padding: 14px 28px;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transicion-suave);
+    box-shadow: var(--shadow-soft);
+    letter-spacing: 0.3px;
+}
+
+.manual-buttons .btn-action:hover {
+    background: var(--rd-cafe) !important;
+    color: var(--white);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-standard);
+}
+
+.manual-buttons .btn-action:active {
+    transform: translateY(0);
+}
+/* #endregion */
+
+/* #region Sección del manual */
+.manual-section {
+    max-width: 860px;
+    margin: 0 auto;
+    background: var(--surface-main);
+    border-radius: 24px;
+    border: 1px solid var(--border-main);
+    box-shadow: var(--shadow-soft);
+    padding: 48px 52px;
+    animation: fadeSlideIn 0.4s ease;
+}
+
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.manual-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--rd-cafe);
+    margin-bottom: 6px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--border-main);
+}
+
+.manual-description {
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 36px;
+}
+/* #endregion */
+
+/* #region Subtítulos numerados */
+.manual-subtitle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 32px 0 10px;
+}
+
+.manual-subtitle::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-main);
+    flex-shrink: 0;
+}
+/* #endregion */
+
+/* #region Texto del manual */
+.manual-text {
+    color: var(--text-muted);
+    font-size: 0.97rem;
+    line-height: 1.75;
+    margin-bottom: 4px;
+    padding-left: 22px;
+    border-left: 3px solid var(--accent-soft);
+}
+/* #endregion */
+
+/* #region Responsive */
+@media (max-width: 768px) {
+    .manual_usuario {
+        display: flex;
+        padding: 70px 14px 50px;
+    }
+
+    .manual-section {
+        padding: 32px 24px;
+        border-radius: 18px;
+    }
+
+    .manual-page-title {
+        font-size: 1.8rem;
+    }
+
+    .manual-title {
+        font-size: 1.5rem;
+    }
+
+    .manual-subtitle {
+        font-size: 1rem;
+    }
+
+    .manual-buttons {
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .manual-buttons .btn-action {
+        flex: 1;
+        min-width: 0;
+        font-size: 0.85rem;
+        padding: 12px 14px;
+        text-align: center;
+        height: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .manual-section {
+        padding: 24px 16px;
+    }
+
+    .manual-page-title {
+        font-size: 1.5rem;
+    }
+
+    .manual-title {
+        font-size: 1.3rem;
+    }
+
+    .manual-text {
+        padding-left: 14px;
+    }
+
+    .manual-buttons .btn-action {
+        flex: 1;
+        font-size: 0.78rem;
+        padding: 12px 10px;
+        white-space: normal;
+        line-height: 1.3;
+    }
+}
+/* #endregion */
+
+/* #region Dark mode */
+html[data-theme="dark"] .manual-section {
+    background: var(--surface-main);
+    border-color: var(--border-main);
+    box-shadow: var(--shadow-standard);
+}
+
+html[data-theme="dark"] .manual-title {
+    color: var(--accent-main);
+}
+
+html[data-theme="dark"] .manual-text {
+    border-left-color: var(--soft-green);
+}
+
+html[data-theme="dark"] .manual-buttons .btn-action:hover {
+    background: var(--accent-main);
+    color: var(--accent-contrast);
+}
+/* #endregion */
+/* #endregion */

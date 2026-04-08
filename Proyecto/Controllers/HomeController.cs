@@ -75,6 +75,10 @@ namespace RappiDozApp.Controllers
             return View("~/Views/Home/busqueda.cshtml", listaOrdenada);
         }
 
+        public IActionResult ManualUsuario()
+        {
+            return View("~/Views/Home/Manual_Usuario.cshtml");
+        }
         public IActionResult Privacy()
         {
             return View("~/Views/Home/Privacy.cshtml");

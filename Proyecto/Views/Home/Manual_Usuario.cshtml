@@ -1,0 +1,100 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Manual de Usuario | Rappi'Doz";
+
+    var rolUsuario = HttpContextAccessor.HttpContext.Session.GetString("RolUsuario");
+}
+
+<main class="manual_usuario">
+    
+    @if (rolUsuario == "Administrador")
+    {
+        <h1 class="manual-title">Manuales de Usuarios</h1>
+        <div class="manual-buttons">
+            <button class="btn-action" onclick="mostrarManual('restaurante')">Acceder al Manual de Usuario de Restaurante</button>
+            <button class="btn-action" onclick="mostrarManual('cliente')">Acceder al Manual de Usuario de Cliente</button>
+        </div>
+    }
+
+    @if (rolUsuario == "Restaurante" || rolUsuario == "Administrador")
+    {
+        <section id="manual-restaurante" class="manual-section" style="@(rolUsuario == "Administrador" ? "display:none;" : "")">
+            <h2 class="manual-title">Manual de Usuario - Restaurante</h2>
+            <p class="manual-description">
+                Bienvenido al manual de usuario para restaurantes de Rappi'Doz. Aquí encontrarás toda la información necesaria para gestionar tu restaurante en nuestra plataforma de entrega de comida.
+            </p>
+            <h3 class="manual-subtitle">1. Registro y Configuración del Restaurante</h3>
+            <p class="manual-text">
+                Para comenzar a usar Rappi'Doz como restaurante, primero debes registrarte creando una cuenta. Puedes hacerlo haciendo clic en el botón "Registrarse" en la página de inicio. Completa el formulario con los datos de tu restaurante y crea una contraseña segura. Si ya tienes una cuenta, simplemente haz clic en "Iniciar Sesión" e ingresa tus credenciales.
+            </p>
+            <h3 class="manual-subtitle">2. Gestión del Menú</h3>
+            <p class="manual-text">
+                Una vez registrado, puedes gestionar el menú de tu restaurante. Agrega, edita o elimina productos, establece precios y descripciones, y organiza los elementos en categorías para facilitar la navegación de los clientes.
+            </p>
+            <h3 class="manual-subtitle">3. Gestión de Pedidos</h3>
+            <p class="manual-text">
+                Puedes ver y gestionar los pedidos recibidos desde la sección "Pedidos". Aquí podrás aceptar o rechazar pedidos, actualizar el estado de preparación y notificar a los clientes sobre el progreso de sus pedidos.
+            </p>
+            <h3 class="manual-subtitle">4. Preparación del Pedido</h3>
+            <p class="manual-text">
+                Una vez que hayas aceptado un pedido, comienza la preparación de los productos solicitados. Asegúrate de seguir las instrucciones del cliente y mantener la calidad de los alimentos. Actualiza el estado del pedido a "En preparación" para que el cliente pueda seguir el progreso.
+            </p>
+            <h3 class="manual-subtitle">5. Entrega del Pedido</h3>
+            <p class="manual-text">
+                Una vez que el pedido esté listo, notifícalo al repartidor para que realice la entrega. Asegúrate de que los productos estén correctamente empaquetados y listos para su transporte.
+            </p>
+        </section>
+    }
+
+    @if (rolUsuario == "Cliente" || rolUsuario == "Administrador")
+    {
+        <section id="manual-cliente" class="manual-section" style="@(rolUsuario == "Administrador" ? "display:none;" : "")">
+            <h2 class="manual-title">Manual de Usuario - Cliente</h2>
+            <p class="manual-description">
+                Bienvenido al manual de usuario para clientes de Rappi'Doz. Aquí encontrarás toda la información necesaria para aprovechar al máximo nuestra plataforma de entrega de comida.
+            </p>
+            <h3 class="manual-subtitle">1. Registro y Inicio de Sesión</h3>
+            <p class="manual-text">
+                Para comenzar a usar Rappi'Doz, primero debes registrarte creando una cuenta. Puedes hacerlo haciendo clic en el botón "Registrarse" en la página de inicio. Completa el formulario con tus datos personales y crea una contraseña segura. Si ya tienes una cuenta, simplemente haz clic en "Iniciar Sesión" e ingresa tus credenciales.
+            </p>
+            <h3 class="manual-subtitle">2. Exploración de Restaurantes</h3>
+            <p class="manual-text">
+                Una vez que hayas iniciado sesión, puedes explorar los restaurantes disponibles en tu área. Utiliza la barra de búsqueda para encontrar restaurantes por nombre, tipo de comida o ubicación. También puedes filtrar los resultados por categoría para encontrar exactamente lo que deseas.
+            </p>
+            <h3 class="manual-subtitle">3. Visualización del Menú</h3>
+            <p class="manual-text">
+                Al seleccionar un restaurante, podrás ver su menú completo. Explora las diferentes categorías de alimentos y bebidas, y selecciona los productos que deseas agregar a tu carrito.
+            </p>
+            <h3 class="manual-subtitle">4. Realización de Pedidos</h3>
+            <p class="manual-text">
+                Para realizar un pedido, selecciona el restaurante de tu elección y navega por su menú. Añade los productos que desees a tu carrito y procede al pago. Puedes elegir entre diferentes métodos de pago y confirmar tu pedido.
+            </p>
+            <h3 class="manual-subtitle">5. Pago del Pedido</h3>
+            <p class="manual-text">
+                Rappi'Doz ofrece varias opciones de pago, incluyendo tarjetas de crédito, débito y otros métodos electrónicos. Selecciona tu método de pago preferido, ingresa los detalles necesarios y confirma tu pago para completar tu pedido.
+            </p>
+            <h3 class="manual-subtitle">6. Seguimiento del Pedido</h3>
+            <p class="manual-text">
+                Una vez que hayas realizado tu pedido, puedes realizar un seguimiento en tiempo real desde la sección "Mis Pedidos". Aquí podrás ver el estado de tu pedido, desde la preparación hasta la entrega.
+            </p>
+            <h3 class="manual-subtitle">7. Calificación y Comentarios</h3>
+            <p class="manual-text">
+                Después de recibir tu pedido, te invitamos a calificar tu experiencia y dejar comentarios sobre el restaurante y la calidad de la comida. Esto nos ayuda a mejorar nuestros servicios y a brindar una mejor experiencia a todos nuestros usuarios.
+            </p>
+        </section>
+    }
+</main>
+
+<script>
+    function mostrarManual(rol) {
+        document.getElementById('manual-restaurante').style.display = 'none';
+        document.getElementById('manual-cliente').style.display = 'none';
+
+        if (rol === 'restaurante') {
+            document.getElementById('manual-restaurante').style.display = 'block';
+        } else if (rol === 'cliente') {
+            document.getElementById('manual-cliente').style.display = 'block';
+        }
+    }
+</script>

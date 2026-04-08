@@ -158,6 +158,12 @@
                     <p>¡Y listo! Nuestros repartidores vuelan para entregarte tu antojo calientito.</p>
                 </div>
             </div>
+            @if(userId != null)
+            {
+                <a asp-controller="Home" asp-action="ManualUsuario">
+                    <button class="btn-como-funciona">Accede al Manual de Usuaurio </button>
+                </a>
+            }
         </section>
     </div>
 </main>

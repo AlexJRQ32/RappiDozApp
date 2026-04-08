@@ -502,6 +502,22 @@ html[data-theme="dark"] .leaflet-control-zoom {
         line-height: 1.5;
     }
 
+.btn-como-funciona {
+    background-color: var(--accent-main);
+    color: var(--accent-contrast);
+    border: none;
+    padding: 12px 35px;
+    border-radius: 100px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .btn-como-funciona:hover {
+        background-color: var(--footer-text);
+        transform: translateY(var(--hover-lift-global));
+    }
+
 @media (max-width: 992px) {
     .grid-categorias {
         gap: 10px;
