@@ -96,6 +96,44 @@ body {
     --cart-strong-bg: #5a322d;
     --cart-text: #542f28;
     --cart-border: #d9b38a;
+
+    /* Status badges */
+    --status-success: #27ae60;
+    --status-success-alt: #4ade80;
+    --status-success-bg: rgba(39, 174, 96, 0.15);
+    --status-success-bg-dark: rgba(39, 174, 96, 0.20);
+    --status-success-border: rgba(74, 222, 128, 0.35);
+    --status-success-text: #2e7d32;
+
+    --status-error-light: #f87171;
+    --status-error-text: #c62828;
+    --status-error-bg: rgba(220, 38, 38, 0.18);
+    --status-error-border: rgba(248, 113, 113, 0.35);
+
+    --status-warning: #f97316;
+    --status-warning-text: #ea580c;
+    --status-warning-alt: #fbbf24;
+    --status-warning-bg: rgba(217, 119, 6, 0.18);
+    --status-warning-border: rgba(251, 191, 36, 0.35);
+
+    /* Badge colors (differ between light/dark) */
+    --badge-success-bg: #e8f5e9;
+    --badge-success-text: #2e7d32;
+    --badge-warning-bg: #fffde7;
+    --badge-warning-text: #fbc02d;
+    --badge-open-bg: #1a302a;
+    --badge-closed-bg: #3a1a1a;
+
+    /* Gold accent (tracking/delivery) */
+    --accent-gold: #d4af37;
+    --accent-gold-rgb: 212, 175, 55;
+    --accent-gold-bg: rgba(212, 175, 55, 0.12);
+    --accent-gold-border: rgba(212, 175, 55, 0.35);
+
+    /* Utility */
+    --pure-white: #ffffff;
+    --feedback-success: #8fce00;
+    --brand-rappi: #ff441f;
 }
 /* #endregion */
 
@@ -228,6 +266,14 @@ html[data-theme="dark"] {
     --cart-strong-bg: #d3ab80;
     --cart-text: #ece4da;
     --cart-border: #4a404a;
+
+    /* Badge colors dark overrides */
+    --badge-success-bg: rgba(46, 125, 50, 0.2);
+    --badge-success-text: #66bb6a;
+    --badge-warning-bg: rgba(251, 192, 45, 0.15);
+    --badge-warning-text: #fdd835;
+    --badge-open-bg: rgba(46, 125, 50, 0.2);
+    --badge-closed-bg: rgba(220, 38, 38, 0.2);
 }
 /* #endregion */
 
@@ -356,7 +402,7 @@ html[data-theme="dark"] {
     }
 /* #endregion */
 
-/* #region Cards de Gestión */
+/* #region Cards de Gestiï¿½n */
 .card-gestion-crud {
     background: var(--section-bg-tertiary);
     border-radius: 20px;

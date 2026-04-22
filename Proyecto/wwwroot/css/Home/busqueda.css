@@ -212,12 +212,12 @@
 }
 
 .badge-status.open {
-    background: #1a302a;
-    color: #27ae60;
+    background: var(--badge-open-bg);
+    color: var(--status-success);
 }
 
 .badge-status.closed {
-    background: #3a1a1a;
+    background: var(--badge-closed-bg);
     color: var(--danger-main);
 }
 
@@ -229,7 +229,7 @@
 }
 
 .delivery-price {
-    color: #27ae60;
+    color: var(--status-success);
 }
 
 .btn-menu-slim {

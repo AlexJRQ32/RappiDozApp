@@ -145,18 +145,18 @@
 }
 
 .btn-aceptar {
-    background: #22c55e;
-    color: #fff;
+    background: var(--status-success);
+    color: var(--pure-white);
 }
 
 .btn-rechazar {
-    background: #ef4444;
-    color: #fff;
+    background: var(--danger-main);
+    color: var(--pure-white);
 }
 
 .btn-preparar {
-    background: #f97316;
-    color: #fff;
+    background: var(--status-warning);
+    color: var(--pure-white);
 }
 
 .btn-entregar {
@@ -177,18 +177,18 @@
 }
 
 .status-entregado {
-    background: rgba(34, 197, 94, 0.15);
-    color: #16a34a;
+    background: var(--status-success-bg);
+    color: var(--status-success-text);
 }
 
 .status-cancelado {
-    background: rgba(239, 68, 68, 0.15);
-    color: #dc2626;
+    background: var(--status-error-bg);
+    color: var(--status-error-text);
 }
 
 .status-proceso {
-    background: rgba(249, 115, 22, 0.18);
-    color: #ea580c;
+    background: var(--status-warning-bg);
+    color: var(--status-warning-text);
 }
 /* #endregion */
 

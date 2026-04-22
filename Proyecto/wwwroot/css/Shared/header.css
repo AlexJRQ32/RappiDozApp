@@ -73,14 +73,14 @@
     border-radius: 50%;
     transition-duration: .2s;
     box-shadow: 5px 2px 7px rgba(8, 8, 8, 0.26);
-    border: 5px solid white;
+    border: 5px solid var(--pure-white);
     box-sizing: content-box;
 }
 
 .theme-switch-input:checked + .theme-switch::after {
     transform: translateX(100%);
     transition-duration: .2s;
-    background-color: white;
+    background-color: var(--pure-white);
 }
 
 .theme-switch-input:checked + .theme-switch {
@@ -150,7 +150,7 @@
     top: -5px;
     right: -5px;
     background-color: var(--badge-bg);
-    color: white;
+    color: var(--pure-white);
     font-size: 0.7rem;
     min-width: 18px;
     height: 18px;

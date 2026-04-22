@@ -81,6 +81,6 @@
 }
 
 .wallet-discount {
-    color: #27ae60;
+    color: var(--status-success);
     font-weight: 700;
 }

@@ -131,7 +131,7 @@
     border-radius: 50%;
     border: none;
     background: var(--brown-dark);
-    color: #fff8ef;
+    color: var(--dashboard-sidebar-text);
     transition: 0.3s;
 }
 

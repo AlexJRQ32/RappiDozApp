@@ -108,13 +108,13 @@
 }
 
 .status-entregado {
-    background: rgba(46, 125, 50, 0.14);
-    color: #2e7d32;
+    background: var(--status-success-bg);
+    color: var(--status-success-text);
 }
 
 .status-cancelado {
-    background: rgba(198, 40, 40, 0.14);
-    color: #c62828;
+    background: var(--status-error-bg);
+    color: var(--status-error-text);
 }
 
 .status-proceso {
@@ -234,9 +234,9 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 8px;
-    color: #2e7d32;
+    color: var(--status-success-text);
     font-weight: bold;
-    border: 1px dashed #2e7d32;
+    border: 1px dashed var(--status-success-text);
     padding: 5px;
     border-radius: 5px;
 }

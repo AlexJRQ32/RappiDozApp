@@ -430,12 +430,12 @@ body {
 
 .txt-descuento-positivo,
 .txt-descuento-positivo b {
-    color: #27ae60 !important; 
+    color: var(--status-success) !important;
     font-weight: 700;
 }
 
 .badge-aplicado {
-    color: #27ae60 !important;
+    color: var(--status-success) !important;
 }
 
 .resumen-grand-total {

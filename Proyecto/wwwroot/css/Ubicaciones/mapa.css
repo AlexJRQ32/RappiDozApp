@@ -20,7 +20,7 @@ html[data-theme="dark"] {
 
 html[data-theme="dark"] #mapa-final {
     filter: var(--map-tiles-filter) !important;
-    background: #242424 !important;
+    background: var(--surface-elevated) !important;
 }
 /* #endregion */
 
@@ -172,23 +172,13 @@ html[data-theme="dark"] .leaflet-marker-pane {
 }
 
 .text-camino {
-    background: #fffde7;
-    color: #fbc02d !important;
+    background: var(--badge-warning-bg);
+    color: var(--badge-warning-text) !important;
 }
 
 .text-llegado {
-    background: #e8f5e9;
-    color: #2e7d32 !important;
-}
-
-html[data-theme="dark"] .text-camino {
-    background: rgba(251, 192, 45, 0.15);
-    color: #fdd835 !important;
-}
-
-html[data-theme="dark"] .text-llegado {
-    background: rgba(46, 125, 50, 0.2);
-    color: #66bb6a !important;
+    background: var(--badge-success-bg);
+    color: var(--badge-success-text) !important;
 }
 
 .btn-rappi-confirm {

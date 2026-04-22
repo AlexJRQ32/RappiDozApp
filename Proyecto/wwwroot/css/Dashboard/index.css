@@ -6,38 +6,9 @@
      display: none;
  }
 
-  :root {
-    --section-bg-primary: #fffdf9;
-    --section-bg-secondary: #fbf1df;
-    --section-bg-tertiary: #f4e2c9;
-    --white: #fffdf9;
-    --light-mint: #fbf1df;
-    --text-main: #542f28;
-    --text-muted: #a07e5d;
-    --accent-main: #d3ab80;
-    --accent-main-rgb: 211, 171, 128;
-    --accent-contrast: #542f28;
-    --border-main: rgba(211, 171, 128, 0.35);
-    --surface-main: #fffdf9;
-    --surface-elevated: #f7ead7;
-    --shadow-soft: 0 8px 30px rgba(71, 40, 37, 0.08);
-    --shadow-standard: 0 8px 30px rgba(71, 40, 37, 0.1);
-    --brown-dark: #5a322d;
-    --gold-light: #d3ab80;
-    --dashboard-page-bg: #fbf1df;
-    --dashboard-card-bg: #fffdf9;
-    --dashboard-soft-bg: #f7ead7;
-    --dashboard-text: #542f28;
-    --dashboard-sidebar-bg: #5a322d;
-    --dashboard-sidebar-text: #fff8ef;
-    --dashboard-sidebar-text-rgb: 255, 248, 239;
-    --modal-shell-bg: #fffdf9;
-    --modal-text: #542f28;
-    --cream-bg: var(--dashboard-page-bg);
-    --surface-card: var(--dashboard-card-bg);
-    --surface-soft: var(--dashboard-soft-bg);
-    --gold-accent: var(--accent-main);
-    --transicion-suave: all 0.3s ease;
+ /* Dashboard overrides: solo las variables que difieren de site.css */
+:root {
+    --brown-dark: var(--rd-cafe);
 }
 
 html[data-theme="dark"] {
@@ -46,33 +17,7 @@ html[data-theme="dark"] {
     --section-bg-tertiary: #342e36;
     --white: #2a252b;
     --light-mint: #1b171d;
-    --text-main: #ece4da;
-    --text-muted: #b7aa9f;
-    --accent-main: #d3ab80;
-    --accent-main-rgb: 211, 171, 128;
-    --accent-contrast: #141216;
-    --border-main: rgba(211, 171, 128, 0.24);
-    --surface-main: #1e1c22;
-    --surface-elevated: #28262c;
-    --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.4);
-    --shadow-standard: 0 8px 30px rgba(0, 0, 0, 0.4);
-    --brown-dark: #141216;
-    --gold-light: #d3ab80;
-    --dashboard-page-bg: #1b171d;
-    --dashboard-card-bg: #2a252b;
-    --dashboard-soft-bg: #342e36;
-    --dashboard-text: #ece4da;
-    --dashboard-muted: #b7aa9f;
     --dashboard-sidebar-bg: #141216;
-    --dashboard-sidebar-text: #ece4da;
-    --dashboard-sidebar-text-rgb: 236, 228, 218;
-    --modal-shell-bg: #2a252b;
-    --modal-text: #ece4da;
-    --cream-bg: var(--dashboard-page-bg);
-    --surface-card: var(--dashboard-card-bg);
-    --surface-soft: var(--dashboard-soft-bg);
-    --gold-accent: var(--accent-main);
-    --transicion-suave: all 0.3s ease;
 }
 
 /* #region Dashboard Base */
@@ -136,7 +81,7 @@ body {
     font-size: 1.2rem;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #fff8ef;
+    color: var(--dashboard-sidebar-text);
     background: transparent;
     margin-bottom: 40px;
     font-weight: 800;
@@ -330,12 +275,12 @@ body {
 
 .icon-circle-gold {
     background: linear-gradient(135deg, var(--accent-main), #c4956a);
-    color: #fff8ef;
+    color: var(--dashboard-sidebar-text);
 }
 
 .icon-circle-brown {
-    background: linear-gradient(135deg, #5a322d, #7a4a3f);
-    color: #fff8ef;
+    background: linear-gradient(135deg, var(--rd-cafe), #7a4a3f);
+    color: var(--dashboard-sidebar-text);
 }
 
 .quick-actions-card {
@@ -359,7 +304,7 @@ body {
 
 .quick-actions-card .btn-dark {
     background: var(--brown-dark);
-    color: #fff8ef;
+    color: var(--dashboard-sidebar-text);
 }
 
 .quick-actions-card .btn-outline-dark {

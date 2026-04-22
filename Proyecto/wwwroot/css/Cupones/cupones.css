@@ -50,7 +50,7 @@
 .pin-seguro {
     width: 18px;
     height: 18px;
-    background: radial-gradient(circle at 35% 35%, #ff5e5e, #8b0000);
+    background: radial-gradient(circle at 35% 35%, var(--danger-main), var(--danger-strong));
     border-radius: 50%;
     position: absolute;
     top: 10px;
@@ -115,7 +115,7 @@
 /* #region Voucher Textos */
 .txt-reclamado {
     font-size: 0.6rem;
-    color: #ff5e5e;
+    color: var(--danger-main);
     font-weight: bold;
     margin-top: 5px;
     text-transform: uppercase;
@@ -172,15 +172,15 @@
 
 /* #region Dark Mode */
 html[data-theme="dark"] .voucher-top {
-    background-color: #4a3f50;
-    border: 1px solid rgba(211, 171, 128, 0.35);
+    background-color: var(--surface-elevated);
+    border: 1px solid var(--border-main);
     border-bottom: none;
     box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.4);
 }
 
 html[data-theme="dark"] .voucher-bottom {
-    background-color: #342e36;
-    border: 1px solid rgba(211, 171, 128, 0.35);
+    background-color: var(--dashboard-soft-bg);
+    border: 1px solid var(--border-main);
     border-top: none;
 }
 

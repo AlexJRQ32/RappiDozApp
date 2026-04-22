@@ -58,7 +58,7 @@
 
 .user-save-btn {
     background: var(--brown-dark) !important;
-    color: #fff8ef !important;
+    color: var(--dashboard-sidebar-text) !important;
     border-radius: 15px;
     font-weight: bold;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);

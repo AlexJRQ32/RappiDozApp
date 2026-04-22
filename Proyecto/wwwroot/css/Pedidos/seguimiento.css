@@ -4,7 +4,7 @@
     height: 100vh !important;
     width: 100vw !important;
     overflow: hidden !important;
-    background-color: #121212;
+    background-color: var(--bg-main);
 }
 
 .tracking-wrapper {
@@ -31,7 +31,7 @@
 
 html[data-theme="dark"] #mapa-final {
     filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%) !important;
-    background: #1a1a1a !important;
+    background: var(--surface-main) !important;
 }
 
 html[data-theme="dark"] .leaflet-marker-pane,
@@ -45,31 +45,31 @@ html[data-theme="dark"] .leaflet-shadow-pane {
     left: 20px;
     z-index: 1000;
     width: 320px;
-    background: rgba(26, 26, 26, 0.92);
+    background: rgba(var(--surface-main-rgb), 0.92);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     padding: 25px;
     border-radius: 25px;
     box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-    border: 1px solid rgba(212, 175, 55, 0.4);
+    border: 1px solid rgba(211, 171, 128, 0.4);
     font-family: 'Poppins', sans-serif;
 }
 
 .eta-box {
-    background: #000;
+    background: var(--surface-elevated);
     padding: 20px;
     border-radius: 20px;
     text-align: center;
     margin-top: 15px;
     position: relative;
     overflow: hidden;
-    border: 1px solid #333;
+    border: 1px solid var(--border-main);
 }
 
     .eta-box h4 {
         font-size: 0.7rem;
         text-transform: uppercase;
-        color: #888;
+        color: var(--text-muted);
         margin-bottom: 5px;
         letter-spacing: 1px;
     }
@@ -77,7 +77,7 @@ html[data-theme="dark"] .leaflet-shadow-pane {
     .eta-box span {
         font-size: clamp(1rem, 4vw, 2rem);
         font-weight: 900;
-        color: #fff;
+        color: var(--text-main);
         display: block;
     }
 
@@ -86,7 +86,7 @@ html[data-theme="dark"] .leaflet-shadow-pane {
     bottom: 0;
     left: 0;
     height: 5px;
-    background: #d4af37;
+    background: var(--accent-main);
     width: 0%;
     transition: width 0.4s linear;
 }
@@ -100,17 +100,17 @@ html[data-theme="dark"] .leaflet-shadow-pane {
 }
 
 .text-camino {
-    background: rgba(251, 192, 45, 0.15);
-    color: #fdd835 !important;
+    background: var(--badge-warning-bg);
+    color: var(--badge-warning-text) !important;
 }
 
 .text-llegado {
-    background: rgba(46, 125, 50, 0.2);
-    color: #66bb6a !important;
+    background: var(--badge-success-bg);
+    color: var(--badge-success-text) !important;
 }
 
 .label-custom {
-    color: #d4af37;
+    color: var(--accent-main);
     font-weight: 700;
     font-size: 1.1rem;
 }
@@ -118,21 +118,21 @@ html[data-theme="dark"] .leaflet-shadow-pane {
 .btn-back {
     display: block;
     width: 100%;
-    background: #222;
-    color: #d4af37 !important;
+    background: var(--surface-elevated);
+    color: var(--accent-main) !important;
     text-align: center;
     padding: 12px;
     border-radius: 15px;
     text-decoration: none;
     font-weight: bold;
-    border: 1px solid #d4af37;
+    border: 1px solid var(--accent-main);
     margin-top: 20px;
     transition: all 0.3s ease;
 }
 
     .btn-back:hover {
-        background: #d4af37;
-        color: #000 !important;
+        background: var(--accent-main);
+        color: var(--accent-contrast) !important;
         transform: translateY(-2px);
     }
 
@@ -164,7 +164,7 @@ html[data-theme="dark"] .leaflet-shadow-pane {
 .tracking-wrapper-status {
     align-items: center;
     justify-content: center;
-    background: #121212;
+    background: var(--bg-main);
 }
 
 .tracking-wrapper-status .status-card {
@@ -178,58 +178,58 @@ html[data-theme="dark"] .leaflet-shadow-pane {
 }
 
 .status-info-box {
-    background: #000;
+    background: var(--surface-main);
     padding: 20px;
     border-radius: 20px;
     text-align: center;
     margin-top: 15px;
-    border: 1px solid #333;
+    border: 1px solid var(--border-main);
 }
 
 .status-info-icon {
     font-size: 2.5rem;
-    color: #d4af37;
+    color: var(--accent-gold);
     margin-bottom: 10px;
     display: block;
 }
 
 .status-info-icon-green {
-    color: #66bb6a !important;
+    color: var(--badge-success-text) !important;
 }
 
 .status-info-icon-amber {
-    color: #ffa726 !important;
+    color: var(--status-warning) !important;
 }
 
 .status-info-title {
     font-size: 1rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--text-main);
     margin-top: 0;
     margin-bottom: 8px;
 }
 
 .status-info-text {
     font-size: 0.82rem;
-    color: #aaa;
+    color: var(--text-muted);
     line-height: 1.5;
     margin: 0;
 }
 
 .text-pendiente {
-    background: rgba(255, 152, 0, 0.15);
-    color: #ff9800 !important;
+    background: var(--status-warning-bg);
+    color: var(--status-warning) !important;
 }
 
 .text-preparando {
-    background: rgba(251, 192, 45, 0.15);
-    color: #fdd835 !important;
+    background: var(--badge-warning-bg);
+    color: var(--badge-warning-text) !important;
 }
 
 .status-info-pulse {
     width: 12px;
     height: 12px;
-    background: #d4af37;
+    background: var(--accent-gold);
     border-radius: 50%;
     margin: 12px auto 0;
     animation: seg-pulse 1.5s ease-in-out infinite;
